@@ -1317,29 +1317,50 @@ function navigateToTab(tabName, options = {}) {
   }
 }
 
+function parseHash(hash) {
+  const parts = hash.split('/');
+  return { tab: parts[0], sub: parts[1] || null };
+}
+
+function applyHash(hash) {
+  if (!hash) return;
+  const { tab, sub } = parseHash(hash);
+  const btn = document.querySelector(`[data-tab="${tab}"]`);
+  if (btn) {
+    btn.click();
+    if (tab === 'architecture' && sub) {
+      const validMode = archViewModes.find(m => m.id === sub);
+      if (validMode) {
+        setTimeout(() => setArchViewMode(sub, true), 200);
+      }
+    }
+  }
+}
+
 function initHashRouting() {
   // Read hash on load
   const hash = window.location.hash.slice(1);
-  if (hash) {
-    const btn = document.querySelector(`[data-tab="${hash}"]`);
-    if (btn) setTimeout(() => btn.click(), 100);
-  }
+  if (hash) setTimeout(() => applyHash(hash), 100);
 
   // Update hash on tab change
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const tab = btn.dataset.tab || btn.getAttribute('data-tab');
-      if (tab) history.replaceState(null, '', '#' + tab);
+      if (tab) {
+        // Preserve sub-route for architecture tab
+        if (tab === 'architecture' && archViewMode && archViewMode !== 'structure') {
+          history.replaceState(null, '', '#architecture/' + archViewMode);
+        } else {
+          history.replaceState(null, '', '#' + tab);
+        }
+      }
     });
   });
 
   // Handle back/forward
   window.addEventListener('hashchange', () => {
     const h = window.location.hash.slice(1);
-    if (h) {
-      const btn = document.querySelector(`[data-tab="${h}"]`);
-      if (btn) btn.click();
-    }
+    if (h) applyHash(h);
   });
 }
 
@@ -3422,12 +3443,20 @@ const archZonePositions = {
   'China Ecosystem': { x: 630, y: 644, w: 320, h: 160, id: 'china-ecosystem' }
 };
 
-function setArchViewMode(mode) {
+function setArchViewMode(mode, skipHash) {
   archViewMode = mode;
   // Update toggle button states
   document.querySelectorAll('.arch-view-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.mode === mode);
   });
+  // Update URL hash
+  if (!skipHash) {
+    if (mode === 'structure') {
+      history.replaceState(null, '', '#architecture');
+    } else {
+      history.replaceState(null, '', '#architecture/' + mode);
+    }
+  }
   // Render overlays
   renderArchOverlay();
   // Render defense panel below diagram
