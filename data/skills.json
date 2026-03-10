@@ -1,0 +1,2980 @@
+{
+  "stats": {
+    "total_clawhub": 14850,
+    "curated_voltagen": 5980,
+    "flagged_malicious": 1184,
+    "flagged_percent": 8.0,
+    "categories_count": 35
+  },
+  "categories": [
+    {
+      "id": "coding",
+      "name": "Coding Agents & IDEs",
+      "icon": "💻",
+      "count": 1222
+    },
+    {
+      "id": "web",
+      "name": "Web & Frontend",
+      "icon": "🌐",
+      "count": 938
+    },
+    {
+      "id": "browser",
+      "name": "Browser & Automation",
+      "icon": "🔍",
+      "count": 335
+    },
+    {
+      "id": "devops",
+      "name": "DevOps & Cloud",
+      "icon": "☁️",
+      "count": 408
+    },
+    {
+      "id": "search",
+      "name": "Search & Research",
+      "icon": "📡",
+      "count": 350
+    },
+    {
+      "id": "productivity",
+      "name": "Productivity & Tasks",
+      "icon": "✅",
+      "count": 206
+    },
+    {
+      "id": "ai-llm",
+      "name": "AI & LLMs",
+      "icon": "🧠",
+      "count": 197
+    },
+    {
+      "id": "git",
+      "name": "Git & GitHub",
+      "icon": "🔀",
+      "count": 170
+    },
+    {
+      "id": "cli",
+      "name": "CLI Utilities",
+      "icon": "⌨️",
+      "count": 186
+    },
+    {
+      "id": "image-video",
+      "name": "Image & Video",
+      "icon": "🎨",
+      "count": 169
+    },
+    {
+      "id": "communication",
+      "name": "Communication",
+      "icon": "💬",
+      "count": 149
+    },
+    {
+      "id": "pdf-docs",
+      "name": "PDF & Documents",
+      "icon": "📄",
+      "count": 111
+    },
+    {
+      "id": "transport",
+      "name": "Transportation",
+      "icon": "🚗",
+      "count": 109
+    },
+    {
+      "id": "health",
+      "name": "Health & Fitness",
+      "icon": "💊",
+      "count": 88
+    },
+    {
+      "id": "media",
+      "name": "Media & Streaming",
+      "icon": "🎬",
+      "count": 85
+    },
+    {
+      "id": "notes",
+      "name": "Notes & PKM",
+      "icon": "📝",
+      "count": 71
+    },
+    {
+      "id": "calendar",
+      "name": "Calendar & Scheduling",
+      "icon": "📅",
+      "count": 65
+    },
+    {
+      "id": "shopping",
+      "name": "Shopping & E-commerce",
+      "icon": "🛒",
+      "count": 55
+    },
+    {
+      "id": "security",
+      "name": "Security & Passwords",
+      "icon": "🔐",
+      "count": 53
+    },
+    {
+      "id": "personal",
+      "name": "Personal Development",
+      "icon": "📈",
+      "count": 51
+    },
+    {
+      "id": "speech",
+      "name": "Speech & Transcription",
+      "icon": "🎙️",
+      "count": 45
+    },
+    {
+      "id": "apple",
+      "name": "Apple Apps & Services",
+      "icon": "🍎",
+      "count": 44
+    },
+    {
+      "id": "iot",
+      "name": "Smart Home & IoT",
+      "icon": "🏠",
+      "count": 43
+    },
+    {
+      "id": "gaming",
+      "name": "Gaming",
+      "icon": "🎮",
+      "count": 36
+    },
+    {
+      "id": "clawdbot",
+      "name": "Clawdbot Tools",
+      "icon": "🦞",
+      "count": 35
+    },
+    {
+      "id": "selfhosted",
+      "name": "Self-Hosted & Automation",
+      "icon": "🖥️",
+      "count": 32
+    },
+    {
+      "id": "ios-macos",
+      "name": "iOS & macOS Dev",
+      "icon": "📱",
+      "count": 29
+    },
+    {
+      "id": "finance",
+      "name": "Finance",
+      "icon": "💰",
+      "count": 21
+    },
+    {
+      "id": "a2a",
+      "name": "Agent-to-Agent",
+      "icon": "🤝",
+      "count": 17
+    },
+    {
+      "id": "data",
+      "name": "Data & Analytics",
+      "icon": "📊",
+      "count": 28
+    },
+    {
+      "id": "memory",
+      "name": "Memory Systems",
+      "icon": "🧩",
+      "count": 40
+    },
+    {
+      "id": "blockchain",
+      "name": "Blockchain & Payments",
+      "icon": "⛓️",
+      "count": 15
+    },
+    {
+      "id": "observability",
+      "name": "Observability & Monitoring",
+      "icon": "📊",
+      "count": 68
+    },
+    {
+      "id": "legal",
+      "name": "Legal & Compliance",
+      "icon": "⚖️",
+      "count": 42
+    },
+    {
+      "id": "enterprise",
+      "name": "Enterprise & Governance",
+      "icon": "🏢",
+      "count": 55
+    }
+  ],
+  "top_skills": [
+    {
+      "name": "byterover",
+      "category": "ai-llm",
+      "downloads": 14376,
+      "description": "Core agent memory and navigation engine",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 10,
+        "external_dependency": 0,
+        "privilege": 5,
+        "social_engineering": 0,
+        "total": 25,
+        "level": "Moderate",
+        "policy": "Allow"
+      }
+    },
+    {
+      "name": "self-improvement",
+      "category": "ai-llm",
+      "downloads": 9370,
+      "description": "Continuous agent learning — skill gap analysis and autonomous improvement",
+      "risk": "medium",
+      "threat_ids": [
+        "data-poisoning",
+        "memory-poisoning"
+      ],
+      "risk_score": {
+        "execution": 20,
+        "data_access": 20,
+        "external_dependency": 10,
+        "privilege": 10,
+        "social_engineering": 5,
+        "total": 65,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    },
+    {
+      "name": "agent-browser",
+      "category": "browser",
+      "downloads": 4765,
+      "description": "Rust-based headless browser automation CLI for agents",
+      "risk": "high",
+      "threat_ids": [
+        "indirect-prompt-injection",
+        "data-exfiltration",
+        "credential-theft"
+      ],
+      "risk_score": {
+        "execution": 20,
+        "data_access": 25,
+        "external_dependency": 20,
+        "privilege": 15,
+        "social_engineering": 10,
+        "total": 90,
+        "level": "Extreme",
+        "policy": "Block"
+      }
+    },
+    {
+      "name": "coding-agent",
+      "category": "coding",
+      "downloads": 3540,
+      "description": "Codex/Claude/OpenCode automation — multi-model coding agent",
+      "risk": "medium",
+      "threat_ids": [
+        "remote-code-execution",
+        "supply-chain-attack"
+      ],
+      "risk_score": {
+        "execution": 30,
+        "data_access": 20,
+        "external_dependency": 10,
+        "privilege": 15,
+        "social_engineering": 5,
+        "total": 80,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    },
+    {
+      "name": "remind-me",
+      "category": "productivity",
+      "downloads": 3295,
+      "description": "Cron-based reminder system with natural language scheduling",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 5,
+        "external_dependency": 0,
+        "privilege": 5,
+        "social_engineering": 0,
+        "total": 20,
+        "level": "Low",
+        "policy": "Allow"
+      }
+    },
+    {
+      "name": "proactive-agent",
+      "category": "ai-llm",
+      "downloads": 2189,
+      "description": "Proactive memory architecture — anticipate user needs before asking",
+      "risk": "medium",
+      "threat_ids": [
+        "memory-poisoning",
+        "user-manipulation"
+      ],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 20,
+        "external_dependency": 5,
+        "privilege": 10,
+        "social_engineering": 10,
+        "total": 55,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "deep-research",
+      "category": "search",
+      "downloads": 1630,
+      "description": "Multi-step research agent with source verification",
+      "risk": "medium",
+      "threat_ids": [
+        "indirect-prompt-injection",
+        "data-poisoning"
+      ],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 10,
+        "external_dependency": 10,
+        "privilege": 5,
+        "social_engineering": 5,
+        "total": 40,
+        "level": "Moderate",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "browser-use",
+      "category": "browser",
+      "downloads": 1476,
+      "description": "Cloud browser automation — navigate, click, fill, extract",
+      "risk": "high",
+      "threat_ids": [
+        "indirect-prompt-injection",
+        "data-exfiltration",
+        "credential-theft"
+      ],
+      "risk_score": {
+        "execution": 20,
+        "data_access": 25,
+        "external_dependency": 20,
+        "privilege": 15,
+        "social_engineering": 10,
+        "total": 90,
+        "level": "Extreme",
+        "policy": "Block"
+      }
+    },
+    {
+      "name": "model-usage",
+      "category": "productivity",
+      "downloads": 1264,
+      "description": "Per-model cost tracking and usage analytics",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 0,
+        "data_access": 5,
+        "external_dependency": 5,
+        "privilege": 2,
+        "social_engineering": 0,
+        "total": 12,
+        "level": "Low",
+        "policy": "Allow"
+      }
+    },
+    {
+      "name": "memory-setup",
+      "category": "memory",
+      "downloads": 1206,
+      "description": "Persistent memory configuration and management",
+      "risk": "medium",
+      "threat_ids": [
+        "memory-poisoning"
+      ],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 20,
+        "external_dependency": 0,
+        "privilege": 10,
+        "social_engineering": 5,
+        "total": 45,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "todoist",
+      "category": "productivity",
+      "downloads": 1175,
+      "description": "Todoist task management integration",
+      "risk": "low",
+      "threat_ids": [
+        "credential-theft"
+      ],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 10,
+        "external_dependency": 10,
+        "privilege": 5,
+        "social_engineering": 0,
+        "total": 35,
+        "level": "Moderate",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "agent-browser-2",
+      "category": "browser",
+      "downloads": 1135,
+      "description": "Accessibility tree snapshots for structured browser interaction",
+      "risk": "high",
+      "threat_ids": [
+        "indirect-prompt-injection",
+        "data-exfiltration"
+      ],
+      "risk_score": {
+        "execution": 20,
+        "data_access": 20,
+        "external_dependency": 20,
+        "privilege": 15,
+        "social_engineering": 10,
+        "total": 85,
+        "level": "Extreme",
+        "policy": "Block"
+      }
+    },
+    {
+      "name": "excel",
+      "category": "productivity",
+      "downloads": 1009,
+      "description": "Spreadsheet read/write — Excel and CSV manipulation",
+      "risk": "low",
+      "threat_ids": [
+        "data-exfiltration"
+      ],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 10,
+        "external_dependency": 0,
+        "privilege": 10,
+        "social_engineering": 0,
+        "total": 30,
+        "level": "Moderate",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "apple-reminders",
+      "category": "apple",
+      "downloads": 833,
+      "description": "macOS Reminders integration via AppleScript",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 20,
+        "data_access": 10,
+        "external_dependency": 0,
+        "privilege": 10,
+        "social_engineering": 0,
+        "total": 40,
+        "level": "Moderate",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "second-brain",
+      "category": "memory",
+      "downloads": 783,
+      "description": "Long-term memory management with semantic search",
+      "risk": "medium",
+      "threat_ids": [
+        "memory-poisoning",
+        "knowledge-manipulation"
+      ],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 20,
+        "external_dependency": 5,
+        "privilege": 10,
+        "social_engineering": 5,
+        "total": 50,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "prompt-guard",
+      "category": "security",
+      "downloads": 757,
+      "description": "Prompt injection defense with multi-language detection",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 10,
+        "external_dependency": 5,
+        "privilege": 2,
+        "social_engineering": 0,
+        "total": 27,
+        "level": "Moderate",
+        "policy": "Allow"
+      }
+    },
+    {
+      "name": "agentmail",
+      "category": "communication",
+      "downloads": 708,
+      "description": "API-first email service for AI agents",
+      "risk": "medium",
+      "threat_ids": [
+        "credential-theft",
+        "data-exfiltration"
+      ],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 25,
+        "external_dependency": 10,
+        "privilege": 10,
+        "social_engineering": 5,
+        "total": 60,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "clawd-docs-v2",
+      "category": "coding",
+      "downloads": 686,
+      "description": "Smart documentation access and search",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 0,
+        "data_access": 5,
+        "external_dependency": 5,
+        "privilege": 2,
+        "social_engineering": 0,
+        "total": 12,
+        "level": "Low",
+        "policy": "Allow"
+      }
+    },
+    {
+      "name": "gemini-deep-research",
+      "category": "search",
+      "downloads": 668,
+      "description": "Multi-source synthesis research powered by Gemini",
+      "risk": "medium",
+      "threat_ids": [
+        "indirect-prompt-injection"
+      ],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 10,
+        "external_dependency": 10,
+        "privilege": 5,
+        "social_engineering": 5,
+        "total": 40,
+        "level": "Moderate",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "compound-engineering",
+      "category": "ai-llm",
+      "downloads": 666,
+      "description": "Compound AI system design and orchestration",
+      "risk": "medium",
+      "threat_ids": [
+        "prompt-injection"
+      ],
+      "risk_score": {
+        "execution": 20,
+        "data_access": 10,
+        "external_dependency": 10,
+        "privilege": 10,
+        "social_engineering": 5,
+        "total": 55,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "n8n",
+      "category": "productivity",
+      "downloads": 573,
+      "description": "n8n workflow automation integration",
+      "risk": "medium",
+      "threat_ids": [
+        "credential-theft",
+        "remote-code-execution"
+      ],
+      "risk_score": {
+        "execution": 20,
+        "data_access": 25,
+        "external_dependency": 10,
+        "privilege": 15,
+        "social_engineering": 5,
+        "total": 75,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    },
+    {
+      "name": "openai-image-gen",
+      "category": "image-video",
+      "downloads": 572,
+      "description": "Batch image generation via OpenAI DALL-E",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 5,
+        "external_dependency": 10,
+        "privilege": 5,
+        "social_engineering": 0,
+        "total": 30,
+        "level": "Moderate",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "linear",
+      "category": "productivity",
+      "downloads": 556,
+      "description": "Linear issue/project management integration",
+      "risk": "low",
+      "threat_ids": [
+        "credential-theft"
+      ],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 10,
+        "external_dependency": 10,
+        "privilege": 5,
+        "social_engineering": 0,
+        "total": 35,
+        "level": "Moderate",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "exa",
+      "category": "search",
+      "downloads": 522,
+      "description": "Neural web search with semantic understanding",
+      "risk": "low",
+      "threat_ids": [
+        "indirect-prompt-injection"
+      ],
+      "risk_score": {
+        "execution": 0,
+        "data_access": 5,
+        "external_dependency": 10,
+        "privilege": 2,
+        "social_engineering": 5,
+        "total": 22,
+        "level": "Moderate",
+        "policy": "Allow"
+      }
+    },
+    {
+      "name": "tavily-search",
+      "category": "search",
+      "downloads": 524,
+      "description": "AI-optimized web search API integration",
+      "risk": "low",
+      "threat_ids": [
+        "indirect-prompt-injection"
+      ],
+      "risk_score": {
+        "execution": 0,
+        "data_access": 5,
+        "external_dependency": 10,
+        "privilege": 2,
+        "social_engineering": 5,
+        "total": 22,
+        "level": "Moderate",
+        "policy": "Allow"
+      }
+    },
+    {
+      "name": "gog",
+      "category": "communication",
+      "downloads": 480,
+      "description": "Full Google Workspace: Gmail, Calendar, Drive, Sheets, Docs, Contacts",
+      "risk": "high",
+      "threat_ids": [
+        "credential-theft",
+        "data-exfiltration",
+        "indirect-prompt-injection"
+      ],
+      "risk_score": {
+        "execution": 20,
+        "data_access": 25,
+        "external_dependency": 10,
+        "privilege": 15,
+        "social_engineering": 10,
+        "total": 80,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    },
+    {
+      "name": "sysadmin-toolbox",
+      "category": "devops",
+      "downloads": 460,
+      "description": "DevOps and security command references",
+      "risk": "medium",
+      "threat_ids": [
+        "remote-code-execution"
+      ],
+      "risk_score": {
+        "execution": 20,
+        "data_access": 20,
+        "external_dependency": 5,
+        "privilege": 15,
+        "social_engineering": 5,
+        "total": 65,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    },
+    {
+      "name": "context7",
+      "category": "search",
+      "downloads": 451,
+      "description": "Documentation search with context-aware retrieval",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 0,
+        "data_access": 5,
+        "external_dependency": 10,
+        "privilege": 2,
+        "social_engineering": 0,
+        "total": 17,
+        "level": "Low",
+        "policy": "Allow"
+      }
+    },
+    {
+      "name": "ontology",
+      "category": "notes",
+      "downloads": 416,
+      "description": "Structured knowledge graph management",
+      "risk": "medium",
+      "threat_ids": [
+        "knowledge-manipulation"
+      ],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 20,
+        "external_dependency": 0,
+        "privilege": 10,
+        "social_engineering": 5,
+        "total": 45,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "obsidian",
+      "category": "notes",
+      "downloads": 380,
+      "description": "Obsidian vault read/write interaction",
+      "risk": "low",
+      "threat_ids": [
+        "data-exfiltration"
+      ],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 20,
+        "external_dependency": 0,
+        "privilege": 10,
+        "social_engineering": 0,
+        "total": 40,
+        "level": "Moderate",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "qmd",
+      "category": "memory",
+      "downloads": 601,
+      "description": "Markdown-native memory workflows with local BM25 search",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 10,
+        "external_dependency": 0,
+        "privilege": 10,
+        "social_engineering": 0,
+        "total": 30,
+        "level": "Moderate",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "para-second-brain",
+      "category": "notes",
+      "downloads": 303,
+      "description": "PARA method organization with semantic search",
+      "risk": "low",
+      "threat_ids": [
+        "memory-poisoning"
+      ],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 20,
+        "external_dependency": 5,
+        "privilege": 10,
+        "social_engineering": 5,
+        "total": 50,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "aegis-shield",
+      "category": "security",
+      "downloads": 200,
+      "description": "Prompt-injection and data-exfiltration screening",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 10,
+        "external_dependency": 0,
+        "privilege": 2,
+        "social_engineering": 0,
+        "total": 22,
+        "level": "Moderate",
+        "policy": "Allow"
+      }
+    },
+    {
+      "name": "1sec-security",
+      "category": "security",
+      "downloads": 180,
+      "description": "16-module cybersecurity platform for agents",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 20,
+        "data_access": 20,
+        "external_dependency": 5,
+        "privilege": 10,
+        "social_engineering": 0,
+        "total": 55,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "agentkeys",
+      "category": "devops",
+      "downloads": 150,
+      "description": "Secure credential proxy — vault-backed key management",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 25,
+        "external_dependency": 10,
+        "privilege": 10,
+        "social_engineering": 0,
+        "total": 55,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "wacli",
+      "category": "communication",
+      "downloads": 350,
+      "description": "WhatsApp CLI messaging interface",
+      "risk": "medium",
+      "threat_ids": [
+        "credential-theft",
+        "data-exfiltration"
+      ],
+      "risk_score": {
+        "execution": 20,
+        "data_access": 25,
+        "external_dependency": 10,
+        "privilege": 15,
+        "social_engineering": 10,
+        "total": 80,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    },
+    {
+      "name": "claude-code-wingman",
+      "category": "coding",
+      "downloads": 214,
+      "description": "Multi-session agent coordination via WhatsApp",
+      "risk": "medium",
+      "threat_ids": [
+        "credential-theft"
+      ],
+      "risk_score": {
+        "execution": 20,
+        "data_access": 20,
+        "external_dependency": 10,
+        "privilege": 15,
+        "social_engineering": 5,
+        "total": 70,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    },
+    {
+      "name": "amazon-shopper",
+      "category": "browser",
+      "downloads": 100,
+      "description": "Browser-based Amazon shopping automation",
+      "risk": "high",
+      "threat_ids": [
+        "credential-theft",
+        "data-exfiltration",
+        "indirect-prompt-injection"
+      ],
+      "risk_score": {
+        "execution": 20,
+        "data_access": 25,
+        "external_dependency": 20,
+        "privilege": 15,
+        "social_engineering": 10,
+        "total": 90,
+        "level": "Extreme",
+        "policy": "Block"
+      }
+    },
+    {
+      "name": "2captcha",
+      "category": "browser",
+      "downloads": 90,
+      "description": "CAPTCHA solving service integration",
+      "risk": "high",
+      "threat_ids": [
+        "unsafe-tool-use"
+      ],
+      "risk_score": {
+        "execution": 20,
+        "data_access": 10,
+        "external_dependency": 20,
+        "privilege": 10,
+        "social_engineering": 10,
+        "total": 70,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    },
+    {
+      "name": "agentic-devops",
+      "category": "devops",
+      "downloads": 120,
+      "description": "Docker, process management, and log analysis",
+      "risk": "high",
+      "threat_ids": [
+        "remote-code-execution",
+        "privilege-escalation"
+      ],
+      "risk_score": {
+        "execution": 30,
+        "data_access": 20,
+        "external_dependency": 10,
+        "privilege": 15,
+        "social_engineering": 5,
+        "total": 80,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    },
+    {
+      "name": "mcp-security-scan",
+      "category": "security",
+      "downloads": 890,
+      "description": "MCP server security scanner — tool poisoning, shadowing, rug pull, prompt injection detection across installed servers",
+      "risk": "medium",
+      "threat_ids": [
+        "supply-chain-attack",
+        "prompt-injection"
+      ],
+      "risk_score": {
+        "execution": 20,
+        "data_access": 15,
+        "external_dependency": 10,
+        "privilege": 10,
+        "social_engineering": 0,
+        "total": 55,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "offensive-security-hub",
+      "category": "security",
+      "downloads": 340,
+      "description": "Dockerized offensive security tools (Nmap, Nuclei, SQLMap, Hashcat) as MCP servers for AI-assisted pentesting",
+      "risk": "high",
+      "threat_ids": [
+        "remote-code-execution",
+        "unsafe-tool-use",
+        "privilege-escalation"
+      ],
+      "risk_score": {
+        "execution": 30,
+        "data_access": 20,
+        "external_dependency": 20,
+        "privilege": 15,
+        "social_engineering": 5,
+        "total": 90,
+        "level": "Extreme",
+        "policy": "Block"
+      }
+    },
+    {
+      "name": "google-secops",
+      "category": "security",
+      "downloads": 520,
+      "description": "Google Security Operations integration — Chronicle SIEM, SOAR automation, GTI threat intel via MCP",
+      "risk": "medium",
+      "threat_ids": [
+        "credential-theft",
+        "data-exfiltration"
+      ],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 25,
+        "external_dependency": 15,
+        "privilege": 10,
+        "social_engineering": 3,
+        "total": 63,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    },
+    {
+      "name": "splunk-soc-agent",
+      "category": "security",
+      "downloads": 280,
+      "description": "Agentic SOC analyst — natural language threat hunting via Splunk Enterprise MCP server with local data processing",
+      "risk": "medium",
+      "threat_ids": [
+        "credential-theft",
+        "data-exfiltration",
+        "remote-code-execution"
+      ],
+      "risk_score": {
+        "execution": 20,
+        "data_access": 25,
+        "external_dependency": 10,
+        "privilege": 15,
+        "social_engineering": 3,
+        "total": 73,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    },
+    {
+      "name": "agent-code-review",
+      "category": "coding",
+      "downloads": 620,
+      "description": "Autonomous code review agent — multi-model security analysis, CVE detection in AI-generated code",
+      "risk": "medium",
+      "threat_ids": [
+        "remote-code-execution",
+        "supply-chain-attack"
+      ],
+      "risk_score": {
+        "execution": 25,
+        "data_access": 20,
+        "external_dependency": 15,
+        "privilege": 10,
+        "social_engineering": 3,
+        "total": 73,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    },
+    {
+      "name": "mcp-chain-attack",
+      "category": "security",
+      "downloads": 150,
+      "description": "MCP server chaining attack simulation — cross-server context abuse, SSRF exploitation, data exfiltration PoC",
+      "risk": "high",
+      "threat_ids": [
+        "remote-code-execution",
+        "data-exfiltration",
+        "prompt-injection"
+      ],
+      "risk_score": {
+        "execution": 30,
+        "data_access": 25,
+        "external_dependency": 20,
+        "privilege": 15,
+        "social_engineering": 5,
+        "total": 95,
+        "level": "Extreme",
+        "policy": "Block"
+      }
+    },
+    {
+      "name": "zero-trust-agent-gateway",
+      "category": "security",
+      "downloads": 410,
+      "description": "Zero Trust gateway for agent-to-agent communication — identity verification, capability-based access control, audit logging",
+      "risk": "low",
+      "threat_ids": [
+        "privilege-escalation",
+        "credential-theft"
+      ],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 15,
+        "external_dependency": 10,
+        "privilege": 10,
+        "social_engineering": 0,
+        "total": 45,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "web-scraper",
+      "category": "web",
+      "downloads": 2890,
+      "description": "Intelligent web scraping — CSS/XPath selectors, pagination, rate limiting, anti-bot bypass",
+      "risk": "medium",
+      "threat_ids": [
+        "indirect-prompt-injection",
+        "data-exfiltration"
+      ],
+      "risk_score": {
+        "execution": 20,
+        "data_access": 20,
+        "external_dependency": 15,
+        "privilege": 10,
+        "social_engineering": 5,
+        "total": 70,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    },
+    {
+      "name": "next-dev",
+      "category": "web",
+      "downloads": 1845,
+      "description": "Next.js project scaffolding, routing, API routes, and deployment automation",
+      "risk": "medium",
+      "threat_ids": [
+        "remote-code-execution"
+      ],
+      "risk_score": {
+        "execution": 25,
+        "data_access": 10,
+        "external_dependency": 15,
+        "privilege": 10,
+        "social_engineering": 3,
+        "total": 63,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    },
+    {
+      "name": "tailwind-ui",
+      "category": "web",
+      "downloads": 1320,
+      "description": "Tailwind CSS component generator with responsive design and dark mode",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 5,
+        "external_dependency": 5,
+        "privilege": 2,
+        "social_engineering": 0,
+        "total": 22,
+        "level": "Moderate",
+        "policy": "Allow"
+      }
+    },
+    {
+      "name": "react-architect",
+      "category": "web",
+      "downloads": 980,
+      "description": "React app architecture — component design, state management, testing patterns",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 5,
+        "external_dependency": 5,
+        "privilege": 5,
+        "social_engineering": 0,
+        "total": 25,
+        "level": "Moderate",
+        "policy": "Allow"
+      }
+    },
+    {
+      "name": "api-tester",
+      "category": "web",
+      "downloads": 760,
+      "description": "REST/GraphQL API testing with assertions, environment variables, and test suites",
+      "risk": "medium",
+      "threat_ids": [
+        "credential-theft"
+      ],
+      "risk_score": {
+        "execution": 15,
+        "data_access": 15,
+        "external_dependency": 10,
+        "privilege": 10,
+        "social_engineering": 3,
+        "total": 53,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "git-flow",
+      "category": "git",
+      "downloads": 1560,
+      "description": "Git workflow automation — branch management, merge strategies, conflict resolution",
+      "risk": "medium",
+      "threat_ids": [
+        "supply-chain-attack"
+      ],
+      "risk_score": {
+        "execution": 15,
+        "data_access": 15,
+        "external_dependency": 10,
+        "privilege": 10,
+        "social_engineering": 3,
+        "total": 53,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "github-actions",
+      "category": "git",
+      "downloads": 1120,
+      "description": "GitHub Actions CI/CD workflow generation, debugging, and optimization",
+      "risk": "medium",
+      "threat_ids": [
+        "supply-chain-attack",
+        "remote-code-execution"
+      ],
+      "risk_score": {
+        "execution": 25,
+        "data_access": 15,
+        "external_dependency": 15,
+        "privilege": 10,
+        "social_engineering": 3,
+        "total": 68,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    },
+    {
+      "name": "pr-reviewer",
+      "category": "git",
+      "downloads": 890,
+      "description": "Automated PR code review — security analysis, style checks, change impact assessment",
+      "risk": "low",
+      "threat_ids": [
+        "indirect-prompt-injection"
+      ],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 15,
+        "external_dependency": 10,
+        "privilege": 5,
+        "social_engineering": 3,
+        "total": 43,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "git-stats",
+      "category": "git",
+      "downloads": 520,
+      "description": "Repository analytics — commit patterns, contributor activity, code churn metrics",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 5,
+        "data_access": 10,
+        "external_dependency": 5,
+        "privilege": 2,
+        "social_engineering": 0,
+        "total": 22,
+        "level": "Moderate",
+        "policy": "Allow"
+      }
+    },
+    {
+      "name": "shell-assistant",
+      "category": "cli",
+      "downloads": 1430,
+      "description": "Natural language to shell command translation with safety checks",
+      "risk": "high",
+      "threat_ids": [
+        "remote-code-execution",
+        "privilege-escalation"
+      ],
+      "risk_score": {
+        "execution": 30,
+        "data_access": 20,
+        "external_dependency": 5,
+        "privilege": 15,
+        "social_engineering": 5,
+        "total": 75,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    },
+    {
+      "name": "dotfiles-manager",
+      "category": "cli",
+      "downloads": 680,
+      "description": "Dotfiles sync, backup, and cross-machine configuration management",
+      "risk": "medium",
+      "threat_ids": [
+        "credential-theft"
+      ],
+      "risk_score": {
+        "execution": 15,
+        "data_access": 20,
+        "external_dependency": 5,
+        "privilege": 10,
+        "social_engineering": 3,
+        "total": 53,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "tmux-pilot",
+      "category": "cli",
+      "downloads": 440,
+      "description": "Tmux session management with intelligent pane layout and monitoring",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 15,
+        "data_access": 5,
+        "external_dependency": 0,
+        "privilege": 10,
+        "social_engineering": 0,
+        "total": 30,
+        "level": "Moderate",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "ffmpeg-wizard",
+      "category": "image-video",
+      "downloads": 950,
+      "description": "FFmpeg command builder — video/audio conversion, compression, streaming",
+      "risk": "medium",
+      "threat_ids": [
+        "remote-code-execution"
+      ],
+      "risk_score": {
+        "execution": 25,
+        "data_access": 15,
+        "external_dependency": 5,
+        "privilege": 10,
+        "social_engineering": 0,
+        "total": 55,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "stable-diffusion",
+      "category": "image-video",
+      "downloads": 780,
+      "description": "Local Stable Diffusion image generation via ComfyUI/A1111 API",
+      "risk": "medium",
+      "threat_ids": [
+        "remote-code-execution"
+      ],
+      "risk_score": {
+        "execution": 20,
+        "data_access": 10,
+        "external_dependency": 15,
+        "privilege": 10,
+        "social_engineering": 0,
+        "total": 55,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "screenshot-ocr",
+      "category": "image-video",
+      "downloads": 540,
+      "description": "Screenshot capture with OCR text extraction and annotation",
+      "risk": "low",
+      "threat_ids": [
+        "data-exfiltration"
+      ],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 15,
+        "external_dependency": 5,
+        "privilege": 10,
+        "social_engineering": 0,
+        "total": 40,
+        "level": "Moderate",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "discord-bot",
+      "category": "communication",
+      "downloads": 620,
+      "description": "Discord bot management — commands, embeds, reactions, voice channel control",
+      "risk": "medium",
+      "threat_ids": [
+        "credential-theft",
+        "data-exfiltration"
+      ],
+      "risk_score": {
+        "execution": 15,
+        "data_access": 20,
+        "external_dependency": 10,
+        "privilege": 10,
+        "social_engineering": 8,
+        "total": 63,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    },
+    {
+      "name": "telegram-tools",
+      "category": "communication",
+      "downloads": 480,
+      "description": "Telegram bot API — message scheduling, inline keyboards, file sharing",
+      "risk": "medium",
+      "threat_ids": [
+        "credential-theft"
+      ],
+      "risk_score": {
+        "execution": 15,
+        "data_access": 15,
+        "external_dependency": 10,
+        "privilege": 10,
+        "social_engineering": 5,
+        "total": 55,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "pdf-reader",
+      "category": "pdf-docs",
+      "downloads": 1680,
+      "description": "PDF parsing, text extraction, table detection, and summarization",
+      "risk": "low",
+      "threat_ids": [
+        "indirect-prompt-injection"
+      ],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 15,
+        "external_dependency": 5,
+        "privilege": 5,
+        "social_engineering": 5,
+        "total": 40,
+        "level": "Moderate",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "docx-generator",
+      "category": "pdf-docs",
+      "downloads": 720,
+      "description": "Word/DOCX document generation with templates, styles, and charts",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 10,
+        "external_dependency": 5,
+        "privilege": 5,
+        "social_engineering": 0,
+        "total": 30,
+        "level": "Moderate",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "pdf-sign",
+      "category": "pdf-docs",
+      "downloads": 380,
+      "description": "PDF digital signature, watermarking, and encryption",
+      "risk": "medium",
+      "threat_ids": [
+        "credential-theft"
+      ],
+      "risk_score": {
+        "execution": 15,
+        "data_access": 20,
+        "external_dependency": 5,
+        "privilege": 10,
+        "social_engineering": 3,
+        "total": 53,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "uber-lyft",
+      "category": "transport",
+      "downloads": 650,
+      "description": "Ride-hailing price comparison, booking, and trip tracking",
+      "risk": "medium",
+      "threat_ids": [
+        "credential-theft",
+        "data-exfiltration"
+      ],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 20,
+        "external_dependency": 15,
+        "privilege": 10,
+        "social_engineering": 5,
+        "total": 60,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "flight-tracker",
+      "category": "transport",
+      "downloads": 420,
+      "description": "Real-time flight status, delays, gate changes, and price alerts",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 0,
+        "data_access": 5,
+        "external_dependency": 10,
+        "privilege": 2,
+        "social_engineering": 0,
+        "total": 17,
+        "level": "Low",
+        "policy": "Allow"
+      }
+    },
+    {
+      "name": "ev-charger",
+      "category": "transport",
+      "downloads": 180,
+      "description": "EV charging station finder with availability and pricing",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 0,
+        "data_access": 5,
+        "external_dependency": 10,
+        "privilege": 2,
+        "social_engineering": 0,
+        "total": 17,
+        "level": "Low",
+        "policy": "Allow"
+      }
+    },
+    {
+      "name": "health-tracker",
+      "category": "health",
+      "downloads": 580,
+      "description": "Apple Health / Google Fit data aggregation and wellness insights",
+      "risk": "medium",
+      "threat_ids": [
+        "data-exfiltration"
+      ],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 25,
+        "external_dependency": 10,
+        "privilege": 10,
+        "social_engineering": 3,
+        "total": 58,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "medication-reminder",
+      "category": "health",
+      "downloads": 320,
+      "description": "Medication schedule management with interaction checking",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 5,
+        "data_access": 15,
+        "external_dependency": 5,
+        "privilege": 5,
+        "social_engineering": 0,
+        "total": 30,
+        "level": "Moderate",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "workout-planner",
+      "category": "health",
+      "downloads": 250,
+      "description": "AI workout plan generation based on fitness goals and equipment",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 5,
+        "data_access": 10,
+        "external_dependency": 5,
+        "privilege": 2,
+        "social_engineering": 0,
+        "total": 22,
+        "level": "Moderate",
+        "policy": "Allow"
+      }
+    },
+    {
+      "name": "spotify-control",
+      "category": "media",
+      "downloads": 720,
+      "description": "Spotify playback control, playlist management, and music discovery",
+      "risk": "low",
+      "threat_ids": [
+        "credential-theft"
+      ],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 10,
+        "external_dependency": 10,
+        "privilege": 5,
+        "social_engineering": 0,
+        "total": 35,
+        "level": "Moderate",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "youtube-dl",
+      "category": "media",
+      "downloads": 560,
+      "description": "YouTube video/audio download and metadata extraction",
+      "risk": "medium",
+      "threat_ids": [
+        "indirect-prompt-injection"
+      ],
+      "risk_score": {
+        "execution": 20,
+        "data_access": 10,
+        "external_dependency": 15,
+        "privilege": 10,
+        "social_engineering": 5,
+        "total": 60,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "podcast-transcriber",
+      "category": "media",
+      "downloads": 340,
+      "description": "Podcast episode download, transcription, and chapter extraction",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 15,
+        "data_access": 10,
+        "external_dependency": 10,
+        "privilege": 5,
+        "social_engineering": 0,
+        "total": 40,
+        "level": "Moderate",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "google-calendar",
+      "category": "calendar",
+      "downloads": 1150,
+      "description": "Google Calendar event management, scheduling, and conflict detection",
+      "risk": "medium",
+      "threat_ids": [
+        "credential-theft",
+        "data-exfiltration"
+      ],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 20,
+        "external_dependency": 10,
+        "privilege": 10,
+        "social_engineering": 5,
+        "total": 55,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "cal-com",
+      "category": "calendar",
+      "downloads": 480,
+      "description": "Cal.com scheduling — booking pages, availability, and meeting types",
+      "risk": "low",
+      "threat_ids": [
+        "credential-theft"
+      ],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 15,
+        "external_dependency": 10,
+        "privilege": 5,
+        "social_engineering": 3,
+        "total": 43,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "timezone-converter",
+      "category": "calendar",
+      "downloads": 290,
+      "description": "Multi-timezone meeting scheduler with daylight saving awareness",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 0,
+        "data_access": 5,
+        "external_dependency": 5,
+        "privilege": 2,
+        "social_engineering": 0,
+        "total": 12,
+        "level": "Low",
+        "policy": "Allow"
+      }
+    },
+    {
+      "name": "amazon-price-tracker",
+      "category": "shopping",
+      "downloads": 510,
+      "description": "Amazon price monitoring, drop alerts, and deal finder",
+      "risk": "medium",
+      "threat_ids": [
+        "credential-theft",
+        "indirect-prompt-injection"
+      ],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 15,
+        "external_dependency": 15,
+        "privilege": 10,
+        "social_engineering": 5,
+        "total": 55,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "coupon-finder",
+      "category": "shopping",
+      "downloads": 280,
+      "description": "Automatic coupon code search and discount aggregation",
+      "risk": "low",
+      "threat_ids": [
+        "indirect-prompt-injection"
+      ],
+      "risk_score": {
+        "execution": 5,
+        "data_access": 5,
+        "external_dependency": 15,
+        "privilege": 2,
+        "social_engineering": 5,
+        "total": 32,
+        "level": "Moderate",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "wishlist-manager",
+      "category": "shopping",
+      "downloads": 150,
+      "description": "Cross-platform wishlist aggregation with price comparison",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 5,
+        "data_access": 10,
+        "external_dependency": 10,
+        "privilege": 5,
+        "social_engineering": 0,
+        "total": 30,
+        "level": "Moderate",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "habit-tracker",
+      "category": "personal",
+      "downloads": 430,
+      "description": "Daily habit tracking with streaks, analytics, and accountability reports",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 5,
+        "data_access": 10,
+        "external_dependency": 5,
+        "privilege": 5,
+        "social_engineering": 0,
+        "total": 25,
+        "level": "Moderate",
+        "policy": "Allow"
+      }
+    },
+    {
+      "name": "journal-ai",
+      "category": "personal",
+      "downloads": 350,
+      "description": "AI-guided journaling with mood tracking and reflection prompts",
+      "risk": "low",
+      "threat_ids": [
+        "data-exfiltration"
+      ],
+      "risk_score": {
+        "execution": 5,
+        "data_access": 20,
+        "external_dependency": 5,
+        "privilege": 5,
+        "social_engineering": 0,
+        "total": 35,
+        "level": "Moderate",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "goal-setter",
+      "category": "personal",
+      "downloads": 210,
+      "description": "OKR/SMART goal framework with progress tracking and milestone alerts",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 5,
+        "data_access": 10,
+        "external_dependency": 5,
+        "privilege": 2,
+        "social_engineering": 0,
+        "total": 22,
+        "level": "Moderate",
+        "policy": "Allow"
+      }
+    },
+    {
+      "name": "whisper-transcribe",
+      "category": "speech",
+      "downloads": 880,
+      "description": "OpenAI Whisper speech-to-text with multi-language support and timestamps",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 15,
+        "data_access": 10,
+        "external_dependency": 10,
+        "privilege": 5,
+        "social_engineering": 0,
+        "total": 40,
+        "level": "Moderate",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "elevenlabs-tts",
+      "category": "speech",
+      "downloads": 560,
+      "description": "ElevenLabs text-to-speech with voice cloning and emotion control",
+      "risk": "medium",
+      "threat_ids": [
+        "credential-theft"
+      ],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 10,
+        "external_dependency": 15,
+        "privilege": 5,
+        "social_engineering": 8,
+        "total": 48,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "meeting-notes",
+      "category": "speech",
+      "downloads": 430,
+      "description": "Meeting recording transcription with speaker diarization and action items",
+      "risk": "medium",
+      "threat_ids": [
+        "data-exfiltration"
+      ],
+      "risk_score": {
+        "execution": 15,
+        "data_access": 20,
+        "external_dependency": 10,
+        "privilege": 5,
+        "social_engineering": 3,
+        "total": 53,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "apple-shortcuts",
+      "category": "apple",
+      "downloads": 620,
+      "description": "Apple Shortcuts integration — automation triggers, system actions, inter-app workflows",
+      "risk": "medium",
+      "threat_ids": [
+        "privilege-escalation"
+      ],
+      "risk_score": {
+        "execution": 25,
+        "data_access": 15,
+        "external_dependency": 5,
+        "privilege": 15,
+        "social_engineering": 3,
+        "total": 63,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    },
+    {
+      "name": "apple-notes",
+      "category": "apple",
+      "downloads": 480,
+      "description": "Apple Notes read/write with folder management and search",
+      "risk": "low",
+      "threat_ids": [
+        "data-exfiltration"
+      ],
+      "risk_score": {
+        "execution": 15,
+        "data_access": 15,
+        "external_dependency": 0,
+        "privilege": 10,
+        "social_engineering": 0,
+        "total": 40,
+        "level": "Moderate",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "homekit-control",
+      "category": "iot",
+      "downloads": 520,
+      "description": "HomeKit/Home Assistant device control — lights, thermostats, locks, cameras",
+      "risk": "high",
+      "threat_ids": [
+        "privilege-escalation",
+        "unsafe-tool-use"
+      ],
+      "risk_score": {
+        "execution": 20,
+        "data_access": 15,
+        "external_dependency": 10,
+        "privilege": 15,
+        "social_engineering": 5,
+        "total": 65,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    },
+    {
+      "name": "mqtt-bridge",
+      "category": "iot",
+      "downloads": 310,
+      "description": "MQTT protocol bridge for IoT sensor data and device commands",
+      "risk": "medium",
+      "threat_ids": [
+        "remote-code-execution"
+      ],
+      "risk_score": {
+        "execution": 15,
+        "data_access": 15,
+        "external_dependency": 15,
+        "privilege": 10,
+        "social_engineering": 3,
+        "total": 58,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "zigbee-hub",
+      "category": "iot",
+      "downloads": 180,
+      "description": "Zigbee device management via Zigbee2MQTT integration",
+      "risk": "medium",
+      "threat_ids": [
+        "unsafe-tool-use"
+      ],
+      "risk_score": {
+        "execution": 15,
+        "data_access": 10,
+        "external_dependency": 10,
+        "privilege": 10,
+        "social_engineering": 3,
+        "total": 48,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "game-wiki",
+      "category": "gaming",
+      "downloads": 380,
+      "description": "Game wiki search — walkthroughs, item databases, build guides",
+      "risk": "low",
+      "threat_ids": [
+        "indirect-prompt-injection"
+      ],
+      "risk_score": {
+        "execution": 0,
+        "data_access": 5,
+        "external_dependency": 10,
+        "privilege": 2,
+        "social_engineering": 5,
+        "total": 22,
+        "level": "Moderate",
+        "policy": "Allow"
+      }
+    },
+    {
+      "name": "steam-tracker",
+      "category": "gaming",
+      "downloads": 240,
+      "description": "Steam library management, achievement tracking, and deal alerts",
+      "risk": "low",
+      "threat_ids": [
+        "credential-theft"
+      ],
+      "risk_score": {
+        "execution": 5,
+        "data_access": 10,
+        "external_dependency": 10,
+        "privilege": 5,
+        "social_engineering": 0,
+        "total": 30,
+        "level": "Moderate",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "minecraft-server",
+      "category": "gaming",
+      "downloads": 190,
+      "description": "Minecraft server management — RCON commands, player monitoring, world backup",
+      "risk": "high",
+      "threat_ids": [
+        "remote-code-execution",
+        "privilege-escalation"
+      ],
+      "risk_score": {
+        "execution": 25,
+        "data_access": 15,
+        "external_dependency": 10,
+        "privilege": 15,
+        "social_engineering": 3,
+        "total": 68,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    },
+    {
+      "name": "claw-toolkit",
+      "category": "clawdbot",
+      "downloads": 890,
+      "description": "OpenClaw configuration wizard — workspace setup, plugin management, health checks",
+      "risk": "medium",
+      "threat_ids": [
+        "privilege-escalation"
+      ],
+      "risk_score": {
+        "execution": 20,
+        "data_access": 15,
+        "external_dependency": 5,
+        "privilege": 15,
+        "social_engineering": 3,
+        "total": 58,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "claw-backup",
+      "category": "clawdbot",
+      "downloads": 560,
+      "description": "Automated workspace backup with encryption and cloud sync",
+      "risk": "medium",
+      "threat_ids": [
+        "credential-theft",
+        "data-exfiltration"
+      ],
+      "risk_score": {
+        "execution": 15,
+        "data_access": 25,
+        "external_dependency": 10,
+        "privilege": 10,
+        "social_engineering": 3,
+        "total": 63,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    },
+    {
+      "name": "claw-monitor",
+      "category": "clawdbot",
+      "downloads": 340,
+      "description": "Agent health monitoring — token usage, session analytics, error tracking",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 15,
+        "external_dependency": 5,
+        "privilege": 5,
+        "social_engineering": 0,
+        "total": 35,
+        "level": "Moderate",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "homelab-manager",
+      "category": "selfhosted",
+      "downloads": 480,
+      "description": "Docker Compose stack management — deploy, monitor, update self-hosted services",
+      "risk": "high",
+      "threat_ids": [
+        "remote-code-execution",
+        "privilege-escalation"
+      ],
+      "risk_score": {
+        "execution": 30,
+        "data_access": 20,
+        "external_dependency": 10,
+        "privilege": 15,
+        "social_engineering": 3,
+        "total": 78,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    },
+    {
+      "name": "proxmox-agent",
+      "category": "selfhosted",
+      "downloads": 280,
+      "description": "Proxmox VE VM/container management via API",
+      "risk": "high",
+      "threat_ids": [
+        "remote-code-execution",
+        "privilege-escalation"
+      ],
+      "risk_score": {
+        "execution": 25,
+        "data_access": 15,
+        "external_dependency": 10,
+        "privilege": 15,
+        "social_engineering": 3,
+        "total": 68,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    },
+    {
+      "name": "n8n-selfhosted",
+      "category": "selfhosted",
+      "downloads": 210,
+      "description": "Self-hosted n8n workflow management with agent trigger integration",
+      "risk": "medium",
+      "threat_ids": [
+        "remote-code-execution"
+      ],
+      "risk_score": {
+        "execution": 20,
+        "data_access": 15,
+        "external_dependency": 10,
+        "privilege": 10,
+        "social_engineering": 3,
+        "total": 58,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "swift-assist",
+      "category": "ios-macos",
+      "downloads": 540,
+      "description": "SwiftUI/UIKit code generation, Xcode project management, and App Store submission",
+      "risk": "medium",
+      "threat_ids": [
+        "remote-code-execution"
+      ],
+      "risk_score": {
+        "execution": 25,
+        "data_access": 10,
+        "external_dependency": 10,
+        "privilege": 10,
+        "social_engineering": 3,
+        "total": 58,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "testflight-deploy",
+      "category": "ios-macos",
+      "downloads": 280,
+      "description": "TestFlight build upload, tester management, and crash analytics",
+      "risk": "medium",
+      "threat_ids": [
+        "credential-theft"
+      ],
+      "risk_score": {
+        "execution": 15,
+        "data_access": 15,
+        "external_dependency": 15,
+        "privilege": 10,
+        "social_engineering": 3,
+        "total": 58,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "xcodeproj",
+      "category": "ios-macos",
+      "downloads": 190,
+      "description": "Xcode project file manipulation — targets, schemes, build settings",
+      "risk": "medium",
+      "threat_ids": [
+        "supply-chain-attack"
+      ],
+      "risk_score": {
+        "execution": 20,
+        "data_access": 15,
+        "external_dependency": 5,
+        "privilege": 10,
+        "social_engineering": 3,
+        "total": 53,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "crypto-portfolio",
+      "category": "finance",
+      "downloads": 390,
+      "description": "Cryptocurrency portfolio tracking, DeFi yield monitoring, and price alerts",
+      "risk": "high",
+      "threat_ids": [
+        "credential-theft",
+        "data-exfiltration"
+      ],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 25,
+        "external_dependency": 15,
+        "privilege": 10,
+        "social_engineering": 8,
+        "total": 68,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    },
+    {
+      "name": "stock-analyzer",
+      "category": "finance",
+      "downloads": 310,
+      "description": "Stock market data analysis with technical indicators and news sentiment",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 5,
+        "data_access": 10,
+        "external_dependency": 15,
+        "privilege": 2,
+        "social_engineering": 0,
+        "total": 32,
+        "level": "Moderate",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "expense-tracker",
+      "category": "finance",
+      "downloads": 250,
+      "description": "Personal expense tracking with category analysis and budget alerts",
+      "risk": "medium",
+      "threat_ids": [
+        "data-exfiltration"
+      ],
+      "risk_score": {
+        "execution": 5,
+        "data_access": 25,
+        "external_dependency": 5,
+        "privilege": 5,
+        "social_engineering": 3,
+        "total": 43,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "agent-delegate",
+      "category": "a2a",
+      "downloads": 340,
+      "description": "Agent-to-Agent task delegation with capability negotiation and result aggregation",
+      "risk": "high",
+      "threat_ids": [
+        "privilege-escalation",
+        "prompt-injection"
+      ],
+      "risk_score": {
+        "execution": 25,
+        "data_access": 20,
+        "external_dependency": 15,
+        "privilege": 15,
+        "social_engineering": 5,
+        "total": 80,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    },
+    {
+      "name": "mcp-hub",
+      "category": "a2a",
+      "downloads": 280,
+      "description": "MCP server discovery and multi-server orchestration gateway",
+      "risk": "high",
+      "threat_ids": [
+        "supply-chain-attack",
+        "privilege-escalation"
+      ],
+      "risk_score": {
+        "execution": 20,
+        "data_access": 20,
+        "external_dependency": 20,
+        "privilege": 15,
+        "social_engineering": 5,
+        "total": 80,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    },
+    {
+      "name": "swarm-coordinator",
+      "category": "a2a",
+      "downloads": 150,
+      "description": "Multi-agent swarm coordination with consensus protocols and task routing",
+      "risk": "high",
+      "threat_ids": [
+        "privilege-escalation",
+        "unsafe-tool-use"
+      ],
+      "risk_score": {
+        "execution": 25,
+        "data_access": 15,
+        "external_dependency": 15,
+        "privilege": 15,
+        "social_engineering": 5,
+        "total": 75,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    },
+    {
+      "name": "pandas-analyst",
+      "category": "data",
+      "downloads": 680,
+      "description": "Data analysis with Pandas — CSV/SQL/JSON ingestion, pivot tables, visualizations",
+      "risk": "medium",
+      "threat_ids": [
+        "remote-code-execution"
+      ],
+      "risk_score": {
+        "execution": 25,
+        "data_access": 20,
+        "external_dependency": 10,
+        "privilege": 10,
+        "social_engineering": 0,
+        "total": 65,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    },
+    {
+      "name": "sql-agent",
+      "category": "data",
+      "downloads": 520,
+      "description": "Natural language to SQL with schema introspection and query optimization",
+      "risk": "high",
+      "threat_ids": [
+        "data-exfiltration",
+        "remote-code-execution"
+      ],
+      "risk_score": {
+        "execution": 25,
+        "data_access": 25,
+        "external_dependency": 10,
+        "privilege": 15,
+        "social_engineering": 3,
+        "total": 78,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    },
+    {
+      "name": "chart-generator",
+      "category": "data",
+      "downloads": 340,
+      "description": "Data visualization — bar, line, scatter, heatmap chart generation with export",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 15,
+        "data_access": 10,
+        "external_dependency": 5,
+        "privilege": 5,
+        "social_engineering": 0,
+        "total": 35,
+        "level": "Moderate",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "blockchain-explorer",
+      "category": "blockchain",
+      "downloads": 280,
+      "description": "On-chain data explorer — transaction lookup, wallet analytics, gas tracking",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 5,
+        "data_access": 10,
+        "external_dependency": 15,
+        "privilege": 2,
+        "social_engineering": 3,
+        "total": 35,
+        "level": "Moderate",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "web3-wallet",
+      "category": "blockchain",
+      "downloads": 180,
+      "description": "Web3 wallet interaction — token transfers, NFT management, DeFi operations",
+      "risk": "high",
+      "threat_ids": [
+        "credential-theft",
+        "data-exfiltration"
+      ],
+      "risk_score": {
+        "execution": 15,
+        "data_access": 25,
+        "external_dependency": 20,
+        "privilege": 15,
+        "social_engineering": 10,
+        "total": 85,
+        "level": "Extreme",
+        "policy": "Block"
+      }
+    },
+    {
+      "name": "smart-contract-audit",
+      "category": "blockchain",
+      "downloads": 120,
+      "description": "Solidity smart contract security analysis and vulnerability detection",
+      "risk": "medium",
+      "threat_ids": [
+        "remote-code-execution"
+      ],
+      "risk_score": {
+        "execution": 20,
+        "data_access": 10,
+        "external_dependency": 10,
+        "privilege": 10,
+        "social_engineering": 3,
+        "total": 53,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "terraform-agent",
+      "category": "devops",
+      "downloads": 580,
+      "description": "Terraform IaC generation, plan review, and drift detection",
+      "risk": "high",
+      "threat_ids": [
+        "remote-code-execution",
+        "privilege-escalation"
+      ],
+      "risk_score": {
+        "execution": 25,
+        "data_access": 20,
+        "external_dependency": 15,
+        "privilege": 15,
+        "social_engineering": 3,
+        "total": 78,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    },
+    {
+      "name": "k8s-pilot",
+      "category": "devops",
+      "downloads": 430,
+      "description": "Kubernetes cluster management — pod debugging, scaling, manifest generation",
+      "risk": "high",
+      "threat_ids": [
+        "remote-code-execution",
+        "privilege-escalation"
+      ],
+      "risk_score": {
+        "execution": 25,
+        "data_access": 20,
+        "external_dependency": 10,
+        "privilege": 15,
+        "social_engineering": 3,
+        "total": 73,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    },
+    {
+      "name": "aws-toolkit",
+      "category": "devops",
+      "downloads": 380,
+      "description": "AWS service management — EC2, S3, Lambda, CloudWatch via natural language",
+      "risk": "high",
+      "threat_ids": [
+        "credential-theft",
+        "privilege-escalation"
+      ],
+      "risk_score": {
+        "execution": 20,
+        "data_access": 25,
+        "external_dependency": 15,
+        "privilege": 15,
+        "social_engineering": 3,
+        "total": 78,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    },
+    {
+      "name": "vscode-remote",
+      "category": "coding",
+      "downloads": 780,
+      "description": "VS Code workspace management — extensions, settings sync, remote development",
+      "risk": "medium",
+      "threat_ids": [
+        "remote-code-execution"
+      ],
+      "risk_score": {
+        "execution": 20,
+        "data_access": 15,
+        "external_dependency": 10,
+        "privilege": 10,
+        "social_engineering": 3,
+        "total": 58,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "test-generator",
+      "category": "coding",
+      "downloads": 650,
+      "description": "Automated unit/integration test generation with coverage analysis",
+      "risk": "medium",
+      "threat_ids": [
+        "remote-code-execution"
+      ],
+      "risk_score": {
+        "execution": 25,
+        "data_access": 15,
+        "external_dependency": 5,
+        "privilege": 10,
+        "social_engineering": 0,
+        "total": 55,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "cursor-rules",
+      "category": "coding",
+      "downloads": 540,
+      "description": "Cursor IDE rules and project context management for AI coding",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 5,
+        "data_access": 10,
+        "external_dependency": 5,
+        "privilege": 5,
+        "social_engineering": 0,
+        "total": 25,
+        "level": "Moderate",
+        "policy": "Allow"
+      }
+    },
+    {
+      "name": "perplexity-search",
+      "category": "search",
+      "downloads": 780,
+      "description": "Perplexity AI search API with citations and follow-up queries",
+      "risk": "low",
+      "threat_ids": [
+        "indirect-prompt-injection"
+      ],
+      "risk_score": {
+        "execution": 0,
+        "data_access": 5,
+        "external_dependency": 10,
+        "privilege": 2,
+        "social_engineering": 5,
+        "total": 22,
+        "level": "Moderate",
+        "policy": "Allow"
+      }
+    },
+    {
+      "name": "brave-search",
+      "category": "search",
+      "downloads": 620,
+      "description": "Brave Search API with web, news, image search and AI summaries",
+      "risk": "low",
+      "threat_ids": [
+        "indirect-prompt-injection"
+      ],
+      "risk_score": {
+        "execution": 0,
+        "data_access": 5,
+        "external_dependency": 10,
+        "privilege": 2,
+        "social_engineering": 5,
+        "total": 22,
+        "level": "Moderate",
+        "policy": "Allow"
+      }
+    },
+    {
+      "name": "datadog-mcp",
+      "category": "observability",
+      "downloads": 1450,
+      "description": "Datadog MCP 서버 — 라이브 옵저버빌리티 데이터(로그, 메트릭, 트레이스) 접근 및 분석",
+      "risk": "medium",
+      "threat_ids": [
+        "credential-theft"
+      ],
+      "risk_score": {
+        "execution": 5,
+        "data_access": 20,
+        "external_dependency": 15,
+        "privilege": 5,
+        "social_engineering": 0,
+        "total": 45,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "grafana-agent",
+      "category": "observability",
+      "downloads": 980,
+      "description": "Grafana 대시보드 관리 및 메트릭 쿼리 — Prometheus, Loki 통합",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 5,
+        "data_access": 15,
+        "external_dependency": 10,
+        "privilege": 5,
+        "social_engineering": 0,
+        "total": 35,
+        "level": "Moderate",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "sentry-monitor",
+      "category": "observability",
+      "downloads": 720,
+      "description": "Sentry 에러 모니터링 — 이슈 트리아지, 스택트레이스 분석, 릴리즈 추적",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 0,
+        "data_access": 15,
+        "external_dependency": 10,
+        "privilege": 2,
+        "social_engineering": 0,
+        "total": 27,
+        "level": "Moderate",
+        "policy": "Allow"
+      }
+    },
+    {
+      "name": "pagerduty-ops",
+      "category": "observability",
+      "downloads": 540,
+      "description": "PagerDuty 인시던트 관리 — 알림 에스컬레이션, 온콜 스케줄, 사후 분석",
+      "risk": "medium",
+      "threat_ids": [
+        "user-manipulation"
+      ],
+      "risk_score": {
+        "execution": 5,
+        "data_access": 10,
+        "external_dependency": 15,
+        "privilege": 10,
+        "social_engineering": 5,
+        "total": 45,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "gdpr-compliance",
+      "category": "legal",
+      "downloads": 620,
+      "description": "GDPR 컴플라이언스 체크리스트 — 데이터 처리 감사, 동의 관리, 삭제 요청 처리",
+      "risk": "medium",
+      "threat_ids": [
+        "data-exfiltration"
+      ],
+      "risk_score": {
+        "execution": 5,
+        "data_access": 20,
+        "external_dependency": 5,
+        "privilege": 10,
+        "social_engineering": 0,
+        "total": 40,
+        "level": "Moderate",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "contract-analyzer",
+      "category": "legal",
+      "downloads": 480,
+      "description": "법률 계약서 분석 — 리스크 조항 식별, 요약, 비교 검토",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 0,
+        "data_access": 15,
+        "external_dependency": 5,
+        "privilege": 2,
+        "social_engineering": 0,
+        "total": 22,
+        "level": "Moderate",
+        "policy": "Allow"
+      }
+    },
+    {
+      "name": "sox-auditor",
+      "category": "legal",
+      "downloads": 310,
+      "description": "SOX/SOC 2 감사 지원 — 컨트롤 매핑, 증적 수집, 보고서 생성",
+      "risk": "medium",
+      "threat_ids": [
+        "credential-theft"
+      ],
+      "risk_score": {
+        "execution": 5,
+        "data_access": 20,
+        "external_dependency": 10,
+        "privilege": 10,
+        "social_engineering": 0,
+        "total": 45,
+        "level": "High",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "okta-identity",
+      "category": "enterprise",
+      "downloads": 890,
+      "description": "Okta 아이덴티티 관리 — 사용자 프로비저닝, SSO 설정, 접근 정책 관리",
+      "risk": "high",
+      "threat_ids": [
+        "credential-theft",
+        "privilege-escalation"
+      ],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 25,
+        "external_dependency": 15,
+        "privilege": 15,
+        "social_engineering": 5,
+        "total": 70,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    },
+    {
+      "name": "jira-workflow",
+      "category": "enterprise",
+      "downloads": 760,
+      "description": "Jira 프로젝트 관리 — 이슈 생성/업데이트, 스프린트 관리, 자동화 규칙",
+      "risk": "low",
+      "threat_ids": [],
+      "risk_score": {
+        "execution": 5,
+        "data_access": 10,
+        "external_dependency": 10,
+        "privilege": 5,
+        "social_engineering": 0,
+        "total": 30,
+        "level": "Moderate",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "confluence-wiki",
+      "category": "enterprise",
+      "downloads": 580,
+      "description": "Confluence 위키 관리 — 페이지 생성/편집, 검색, 스페이스 관리",
+      "risk": "low",
+      "threat_ids": [
+        "data-exfiltration"
+      ],
+      "risk_score": {
+        "execution": 0,
+        "data_access": 15,
+        "external_dependency": 10,
+        "privilege": 5,
+        "social_engineering": 0,
+        "total": 30,
+        "level": "Moderate",
+        "policy": "Sandbox"
+      }
+    },
+    {
+      "name": "vault-secrets",
+      "category": "enterprise",
+      "downloads": 450,
+      "description": "HashiCorp Vault 시크릿 관리 — 시크릿 읽기/쓰기, 동적 인증정보, PKI",
+      "risk": "critical",
+      "threat_ids": [
+        "credential-theft",
+        "privilege-escalation"
+      ],
+      "risk_score": {
+        "execution": 10,
+        "data_access": 25,
+        "external_dependency": 15,
+        "privilege": 15,
+        "social_engineering": 5,
+        "total": 70,
+        "level": "Critical",
+        "policy": "Restricted"
+      }
+    }
+  ],
+  "clawhub_categories": [
+    {
+      "name": "AI/ML",
+      "count": 1588,
+      "percent": 48.3
+    },
+    {
+      "name": "Utility",
+      "count": 1520,
+      "percent": 46.3
+    },
+    {
+      "name": "Development",
+      "count": 976,
+      "percent": 29.7
+    },
+    {
+      "name": "Productivity",
+      "count": 822,
+      "percent": 25.0
+    },
+    {
+      "name": "Web",
+      "count": 637,
+      "percent": 19.4
+    },
+    {
+      "name": "Science",
+      "count": 598,
+      "percent": 18.2
+    },
+    {
+      "name": "Media",
+      "count": 365,
+      "percent": 11.1
+    },
+    {
+      "name": "Social",
+      "count": 364,
+      "percent": 11.1
+    },
+    {
+      "name": "Finance",
+      "count": 311,
+      "percent": 9.5
+    },
+    {
+      "name": "Location",
+      "count": 153,
+      "percent": 4.7
+    },
+    {
+      "name": "Business",
+      "count": 151,
+      "percent": 4.6
+    }
+  ],
+  "security_note": "ClawHub 등록 스킬 중 약 1,184개(~8%)가 악성 또는 의심스러운 것으로 플래그됨 (ClawHavoc 1차 341개 + 2차 확장 843개). VoltAgent 큐레이션 시 6,940개 스킬이 스팸/중복/악성/문서 부족으로 제거됨. 설치 전 반드시 소스 코드를 검토할 것."
+}

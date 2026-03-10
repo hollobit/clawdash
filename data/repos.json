@@ -1,0 +1,823 @@
+[
+  {
+    "id": "openclaw-core",
+    "name": "openclaw/core",
+    "type": "repository",
+    "category": "core",
+    "layer": "agent-runtime",
+    "description": "OpenClaw 핵심 런타임 엔진. 태스크 스케줄링, 실행, 워커 관리를 담당",
+    "language": "Python",
+    "stars": 12400,
+    "threat_ids": [
+      "prompt-injection",
+      "privilege-escalation",
+      "remote-code-execution"
+    ],
+    "control_ids": [
+      "sandboxing",
+      "capability-scoping",
+      "runtime-monitoring",
+      "policy-enforcement"
+    ],
+    "paper_ids": [
+      "agentdog-2025",
+      "agentic-ai-security-2025"
+    ],
+    "mitre_ids": [
+      "ATLAS-AML.T0051",
+      "ATTACK-T1068"
+    ],
+    "github_url": "https://github.com/openclaw/core",
+    "risk_score": {
+      "execution": 25,
+      "data_access": 15,
+      "external_dependency": 10,
+      "privilege": 12,
+      "social_engineering": 5,
+      "total": 67.0,
+      "level": "Critical",
+      "policy": "Restricted"
+    }
+  },
+  {
+    "id": "openclaw-brain",
+    "name": "openclaw/brain",
+    "type": "repository",
+    "category": "core",
+    "layer": "agent-runtime",
+    "description": "LLM 프로바이더 통합, 추론·계획·오케스트레이션 엔진",
+    "language": "Python",
+    "stars": 8200,
+    "threat_ids": [
+      "prompt-injection",
+      "user-manipulation"
+    ],
+    "control_ids": [
+      "prompt-filtering",
+      "input-validation",
+      "capability-scoping"
+    ],
+    "paper_ids": [
+      "guarding-agentic-2025",
+      "agentdog-2025"
+    ],
+    "mitre_ids": [
+      "ATLAS-AML.T0051",
+      "ATLAS-AML.T0048"
+    ],
+    "github_url": "https://github.com/openclaw/brain",
+    "risk_score": {
+      "execution": 10,
+      "data_access": 10,
+      "external_dependency": 15,
+      "privilege": 5,
+      "social_engineering": 8,
+      "total": 48.0,
+      "level": "High",
+      "policy": "Sandbox"
+    }
+  },
+  {
+    "id": "clawhub-registry",
+    "name": "openclaw/clawhub",
+    "type": "repository",
+    "category": "marketplace",
+    "layer": "plugin-system",
+    "description": "Skill 패키지 레지스트리. 메타데이터, 버저닝, 검색 지원",
+    "language": "TypeScript",
+    "stars": 5600,
+    "threat_ids": [
+      "supply-chain-attack",
+      "data-poisoning"
+    ],
+    "control_ids": [
+      "signed-skill-packages",
+      "provenance-verification",
+      "dependency-scanning",
+      "registry-integrity"
+    ],
+    "paper_ids": [
+      "formal-supply-chain-2025",
+      "agentic-ai-security-2025"
+    ],
+    "mitre_ids": [
+      "ATTACK-T1195",
+      "ATLAS-AML.T0010"
+    ],
+    "github_url": "https://github.com/openclaw/clawhub",
+    "ecosystem_repo_id": "clawhub",
+    "risk_score": {
+      "execution": 10,
+      "data_access": 10,
+      "external_dependency": 15,
+      "privilege": 5,
+      "social_engineering": 3,
+      "total": 43.0,
+      "level": "High",
+      "policy": "Sandbox"
+    }
+  },
+  {
+    "id": "skill-browser",
+    "name": "openclaw/skill-browser",
+    "type": "skill",
+    "category": "tool",
+    "layer": "plugin-system",
+    "description": "웹 브라우저 제어 skill. 페이지 탐색, 데이터 추출, 폼 작성 수행",
+    "language": "Python",
+    "stars": 3400,
+    "threat_ids": [
+      "indirect-prompt-injection",
+      "data-exfiltration",
+      "credential-theft"
+    ],
+    "control_ids": [
+      "sandboxing",
+      "network-egress-control",
+      "content-filtering"
+    ],
+    "paper_ids": [
+      "icon-2025",
+      "agentic-ai-security-2025"
+    ],
+    "mitre_ids": [
+      "ATLAS-AML.T0051.001",
+      "ATTACK-T1041"
+    ],
+    "github_url": "https://github.com/openclaw/skill-browser",
+    "ecosystem_repo_id": "claw-skills-browser",
+    "risk_score": {
+      "execution": 20,
+      "data_access": 20,
+      "external_dependency": 15,
+      "privilege": 10,
+      "social_engineering": 8,
+      "total": 73.0,
+      "level": "Critical",
+      "policy": "Restricted"
+    }
+  },
+  {
+    "id": "skill-shell",
+    "name": "openclaw/skill-shell",
+    "type": "skill",
+    "category": "tool",
+    "layer": "plugin-system",
+    "description": "시스템 셸 명령 실행 skill. 파일 조작, 프로세스 관리, 시스템 정보 조회",
+    "language": "Python",
+    "stars": 4100,
+    "threat_ids": [
+      "remote-code-execution",
+      "privilege-escalation",
+      "supply-chain-attack",
+      "data-exfiltration"
+    ],
+    "control_ids": [
+      "sandboxing",
+      "capability-scoping",
+      "container-isolation",
+      "runtime-monitoring"
+    ],
+    "paper_ids": [
+      "verifiable-tool-2025",
+      "agentic-ai-cybersecurity-2025"
+    ],
+    "mitre_ids": [
+      "ATTACK-T1059",
+      "ATLAS-AML.T0011",
+      "ATTACK-T1068"
+    ],
+    "github_url": "https://github.com/openclaw/skill-shell",
+    "risk_score": {
+      "execution": 30,
+      "data_access": 25,
+      "external_dependency": 10,
+      "privilege": 15,
+      "social_engineering": 10,
+      "total": 90.0,
+      "level": "Extreme",
+      "policy": "Block"
+    }
+  },
+  {
+    "id": "skill-filesystem",
+    "name": "openclaw/skill-filesystem",
+    "type": "skill",
+    "category": "tool",
+    "layer": "plugin-system",
+    "description": "파일시스템 접근 skill. 파일 읽기/쓰기, 디렉토리 탐색",
+    "language": "Python",
+    "stars": 2800,
+    "threat_ids": [
+      "data-exfiltration",
+      "credential-theft",
+      "remote-code-execution"
+    ],
+    "control_ids": [
+      "capability-scoping",
+      "sandboxing",
+      "secrets-isolation",
+      "least-privilege"
+    ],
+    "paper_ids": [
+      "verifiable-tool-2025"
+    ],
+    "mitre_ids": [
+      "ATTACK-T1041",
+      "ATTACK-T1552"
+    ],
+    "github_url": "https://github.com/openclaw/skill-filesystem",
+    "risk_score": {
+      "execution": 15,
+      "data_access": 25,
+      "external_dependency": 0,
+      "privilege": 10,
+      "social_engineering": 5,
+      "total": 55.0,
+      "level": "High",
+      "policy": "Sandbox"
+    }
+  },
+  {
+    "id": "skill-python",
+    "name": "openclaw/skill-python",
+    "type": "skill",
+    "category": "tool",
+    "layer": "plugin-system",
+    "description": "Python 코드 실행 skill. 데이터 분석, 스크립팅, 라이브러리 활용",
+    "language": "Python",
+    "stars": 3900,
+    "threat_ids": [
+      "remote-code-execution",
+      "supply-chain-attack",
+      "data-exfiltration"
+    ],
+    "control_ids": [
+      "container-isolation",
+      "sandboxing",
+      "dependency-scanning",
+      "network-egress-control"
+    ],
+    "paper_ids": [
+      "verifiable-tool-2025",
+      "agentic-ai-security-2025"
+    ],
+    "mitre_ids": [
+      "ATTACK-T1059",
+      "ATTACK-T1195"
+    ],
+    "github_url": "https://github.com/openclaw/skill-python",
+    "risk_score": {
+      "execution": 30,
+      "data_access": 20,
+      "external_dependency": 15,
+      "privilege": 15,
+      "social_engineering": 5,
+      "total": 85.0,
+      "level": "Extreme",
+      "policy": "Block"
+    }
+  },
+  {
+    "id": "skill-api-connector",
+    "name": "openclaw/skill-api-connector",
+    "type": "skill",
+    "category": "integration",
+    "layer": "channel-adapters",
+    "description": "외부 API 연동 skill. REST/GraphQL 호출, 인증 처리, 데이터 변환",
+    "language": "TypeScript",
+    "stars": 2100,
+    "threat_ids": [
+      "credential-theft",
+      "data-exfiltration",
+      "unsafe-tool-use"
+    ],
+    "control_ids": [
+      "secrets-isolation",
+      "least-privilege",
+      "network-egress-control",
+      "vault-integration"
+    ],
+    "paper_ids": [
+      "agentic-ai-security-2025"
+    ],
+    "mitre_ids": [
+      "ATLAS-AML.T0024",
+      "ATTACK-T1552"
+    ],
+    "github_url": "https://github.com/openclaw/skill-api-connector",
+    "risk_score": {
+      "execution": 10,
+      "data_access": 25,
+      "external_dependency": 15,
+      "privilege": 5,
+      "social_engineering": 3,
+      "total": 58.0,
+      "level": "High",
+      "policy": "Sandbox"
+    }
+  },
+  {
+    "id": "memory-vectordb",
+    "name": "openclaw/memory-vectordb",
+    "type": "repository",
+    "category": "memory",
+    "layer": "memory-engine",
+    "description": "벡터 DB 기반 장기 메모리. 임베딩 저장, 유사도 검색, RAG 지원",
+    "language": "Python",
+    "stars": 4300,
+    "threat_ids": [
+      "memory-poisoning",
+      "data-poisoning",
+      "knowledge-manipulation",
+      "indirect-prompt-injection"
+    ],
+    "control_ids": [
+      "memory-integrity-checks",
+      "memory-access-control",
+      "provenance-verification",
+      "periodic-audit"
+    ],
+    "paper_ids": [
+      "air-2025",
+      "icon-2025"
+    ],
+    "mitre_ids": [
+      "ATLAS-AML.T0020"
+    ],
+    "github_url": "https://github.com/openclaw/memory-vectordb",
+    "risk_score": {
+      "execution": 10,
+      "data_access": 20,
+      "external_dependency": 10,
+      "privilege": 10,
+      "social_engineering": 5,
+      "total": 55.0,
+      "level": "High",
+      "policy": "Sandbox"
+    }
+  },
+  {
+    "id": "secureclaw",
+    "name": "openclaw/secureclaw",
+    "type": "repository",
+    "category": "security",
+    "layer": "sandbox",
+    "description": "보안 프레임워크. 정책 엔진, 권한 관리, 감사 로깅, 위협 탐지",
+    "language": "Rust",
+    "stars": 3100,
+    "threat_ids": [
+      "privilege-escalation"
+    ],
+    "control_ids": [
+      "policy-enforcement",
+      "runtime-monitoring",
+      "least-privilege",
+      "transparency-logging"
+    ],
+    "paper_ids": [
+      "air-2025",
+      "agentic-ai-cybersecurity-2025"
+    ],
+    "mitre_ids": [
+      "ATTACK-T1068"
+    ],
+    "github_url": "https://github.com/openclaw/secureclaw",
+    "ecosystem_repo_id": "secureclaw",
+    "risk_score": {
+      "execution": 10,
+      "data_access": 15,
+      "external_dependency": 5,
+      "privilege": 12,
+      "social_engineering": 2,
+      "total": 44.0,
+      "level": "High",
+      "policy": "Sandbox"
+    }
+  },
+  {
+    "id": "sandboxclaw",
+    "name": "openclaw/sandboxclaw",
+    "type": "repository",
+    "category": "security",
+    "layer": "sandbox",
+    "description": "샌드박스 실행 환경. 컨테이너 격리, 리소스 제한, 네트워크 정책",
+    "language": "Go",
+    "stars": 2700,
+    "threat_ids": [],
+    "control_ids": [
+      "sandboxing",
+      "container-isolation",
+      "network-egress-control"
+    ],
+    "paper_ids": [
+      "agentic-ai-cybersecurity-2025"
+    ],
+    "mitre_ids": [],
+    "github_url": "https://github.com/openclaw/sandboxclaw",
+    "ecosystem_repo_id": "sandboxclaw",
+    "risk_score": {
+      "execution": 15,
+      "data_access": 5,
+      "external_dependency": 5,
+      "privilege": 15,
+      "social_engineering": 0,
+      "total": 40.0,
+      "level": "Moderate",
+      "policy": "Sandbox"
+    }
+  },
+  {
+    "id": "skill-slack",
+    "name": "openclaw/skill-slack",
+    "type": "skill",
+    "category": "integration",
+    "layer": "channel-adapters",
+    "description": "Slack 연동 skill. 메시지 송수신, 채널 관리, 파일 공유",
+    "language": "TypeScript",
+    "stars": 1800,
+    "threat_ids": [
+      "credential-theft",
+      "data-exfiltration",
+      "indirect-prompt-injection"
+    ],
+    "control_ids": [
+      "secrets-isolation",
+      "capability-scoping",
+      "content-filtering"
+    ],
+    "paper_ids": [
+      "icon-2025"
+    ],
+    "mitre_ids": [
+      "ATLAS-AML.T0024",
+      "ATLAS-AML.T0051.001"
+    ],
+    "github_url": "https://github.com/openclaw/skill-slack",
+    "risk_score": {
+      "execution": 10,
+      "data_access": 20,
+      "external_dependency": 10,
+      "privilege": 5,
+      "social_engineering": 8,
+      "total": 53.0,
+      "level": "High",
+      "policy": "Sandbox"
+    }
+  },
+  {
+    "id": "skill-github",
+    "name": "openclaw/skill-github",
+    "type": "skill",
+    "category": "integration",
+    "layer": "channel-adapters",
+    "description": "GitHub 연동 skill. PR 생성, 이슈 관리, 코드 리뷰, 저장소 조작",
+    "language": "TypeScript",
+    "stars": 2900,
+    "threat_ids": [
+      "credential-theft",
+      "supply-chain-attack",
+      "unsafe-tool-use"
+    ],
+    "control_ids": [
+      "secrets-isolation",
+      "least-privilege",
+      "human-approval",
+      "capability-scoping"
+    ],
+    "paper_ids": [
+      "formal-supply-chain-2025"
+    ],
+    "mitre_ids": [
+      "ATLAS-AML.T0024",
+      "ATTACK-T1195"
+    ],
+    "github_url": "https://github.com/openclaw/skill-github",
+    "risk_score": {
+      "execution": 10,
+      "data_access": 20,
+      "external_dependency": 10,
+      "privilege": 10,
+      "social_engineering": 5,
+      "total": 55.0,
+      "level": "High",
+      "policy": "Sandbox"
+    }
+  },
+  {
+    "id": "nanoclaw",
+    "name": "openclaw/nanoclaw",
+    "type": "repository",
+    "category": "variant",
+    "layer": "agent-runtime",
+    "description": "경량 에이전트 변형. 임베디드 환경 및 엣지 디바이스용 최적화",
+    "language": "Rust",
+    "stars": 1500,
+    "threat_ids": [
+      "privilege-escalation",
+      "unsafe-tool-use"
+    ],
+    "control_ids": [
+      "capability-scoping",
+      "least-privilege",
+      "sandboxing"
+    ],
+    "paper_ids": [
+      "mobilesafetybench-2025"
+    ],
+    "mitre_ids": [
+      "ATTACK-T1068"
+    ],
+    "github_url": "https://github.com/openclaw/nanoclaw",
+    "ecosystem_repo_id": "nanoclaw",
+    "risk_score": {
+      "execution": 15,
+      "data_access": 10,
+      "external_dependency": 5,
+      "privilege": 10,
+      "social_engineering": 3,
+      "total": 43.0,
+      "level": "High",
+      "policy": "Sandbox"
+    }
+  },
+  {
+    "id": "guardclaw",
+    "name": "openclaw/guardclaw",
+    "type": "repository",
+    "category": "security",
+    "layer": "sandbox",
+    "description": "가드레일 프레임워크. 입출력 필터링, 행동 제약, 안전 정책 적용",
+    "language": "Python",
+    "stars": 2400,
+    "threat_ids": [
+      "prompt-injection",
+      "indirect-prompt-injection"
+    ],
+    "control_ids": [
+      "prompt-filtering",
+      "content-filtering",
+      "input-validation",
+      "policy-enforcement"
+    ],
+    "paper_ids": [
+      "agentdog-2025",
+      "guarding-agentic-2025"
+    ],
+    "mitre_ids": [
+      "ATLAS-AML.T0051"
+    ],
+    "github_url": "https://github.com/openclaw/guardclaw",
+    "ecosystem_repo_id": "guardclaw",
+    "risk_score": {
+      "execution": 10,
+      "data_access": 10,
+      "external_dependency": 5,
+      "privilege": 5,
+      "social_engineering": 5,
+      "total": 35.0,
+      "level": "Moderate",
+      "policy": "Sandbox"
+    }
+  },
+  {
+    "id": "claw-agent-scan",
+    "name": "snyk/claw-agent-scan",
+    "type": "repository",
+    "category": "security",
+    "layer": "sandbox",
+    "description": "에이전트 보안 스캐너. MCP 서버 및 에이전트 스킬의 Tool Poisoning, Shadowing, Rug Pull, 프롬프트 인젝션 등 15개 이상 보안 위험 탐지. Snyk/Invariant Labs (ETH Zurich) 개발",
+    "language": "Python",
+    "stars": 1700,
+    "threat_ids": [
+      "supply-chain-attack",
+      "prompt-injection",
+      "data-exfiltration",
+      "unsafe-tool-use"
+    ],
+    "control_ids": [
+      "dependency-scanning",
+      "provenance-verification",
+      "content-filtering",
+      "registry-integrity"
+    ],
+    "paper_ids": [
+      "agentic-ai-security-2025",
+      "formal-supply-chain-2025"
+    ],
+    "mitre_ids": [
+      "ATTACK-T1195",
+      "ATLAS-AML.T0051",
+      "ATLAS-AML.T0010"
+    ],
+    "github_url": "https://github.com/snyk/agent-scan",
+    "ecosystem_repo_id": "claw-agent-scan",
+    "risk_score": {
+      "execution": 15,
+      "data_access": 15,
+      "external_dependency": 10,
+      "privilege": 10,
+      "social_engineering": 2,
+      "total": 52.0,
+      "level": "High",
+      "policy": "Sandbox"
+    }
+  },
+  {
+    "id": "safe-mcp",
+    "name": "safe-agentic-framework/safe-mcp",
+    "type": "repository",
+    "category": "security",
+    "layer": "sandbox",
+    "description": "SAFE-MCP 프레임워크. MITRE ATT&CK 방법론을 MCP 에코시스템에 적용한 위협 문서화 및 완화 프레임워크. Linux Foundation/OpenID Foundation 공식 채택. 14개 전술 카테고리의 공격 기법 체계적 분류",
+    "language": "Python",
+    "stars": 800,
+    "threat_ids": [
+      "supply-chain-attack",
+      "prompt-injection",
+      "privilege-escalation",
+      "remote-code-execution",
+      "credential-theft"
+    ],
+    "control_ids": [
+      "policy-enforcement",
+      "runtime-monitoring",
+      "provenance-verification",
+      "transparency-logging",
+      "capability-scoping"
+    ],
+    "paper_ids": [
+      "agentic-ai-cybersecurity-2025"
+    ],
+    "mitre_ids": [
+      "ATTACK-T1195",
+      "ATTACK-T1059",
+      "ATLAS-AML.T0051",
+      "ATTACK-T1068"
+    ],
+    "github_url": "https://github.com/safe-agentic-framework/safe-mcp",
+    "ecosystem_repo_id": "safe-mcp-framework",
+    "risk_score": {
+      "execution": 10,
+      "data_access": 10,
+      "external_dependency": 10,
+      "privilege": 5,
+      "social_engineering": 3,
+      "total": 38.0,
+      "level": "Moderate",
+      "policy": "Sandbox"
+    }
+  },
+  {
+    "id": "agentic-radar",
+    "name": "splx-ai/agentic-radar",
+    "type": "repository",
+    "category": "security",
+    "layer": "sandbox",
+    "description": "Agentic Radar. LLM 에이전트 워크플로우 정적 보안 스캐너. 49개 보안 규칙, OWASP Agentic Top 10 (2026) 매핑. 프롬프트 인젝션, MCP 설정 감사, 오염 분석(taint analysis) 수행. LangGraph, CrewAI, n8n, OpenAI Agents, AutoGen 지원",
+    "language": "Python",
+    "stars": 3200,
+    "threat_ids": [
+      "prompt-injection",
+      "unsafe-tool-use",
+      "privilege-escalation",
+      "supply-chain-attack"
+    ],
+    "control_ids": [
+      "input-validation",
+      "prompt-filtering",
+      "dependency-scanning",
+      "policy-enforcement"
+    ],
+    "paper_ids": [],
+    "mitre_ids": [
+      "ATLAS-AML.T0051",
+      "ATTACK-T1195"
+    ],
+    "github_url": "https://github.com/splx-ai/agentic-radar",
+    "ecosystem_repo_id": "agentic-radar",
+    "risk_score": {
+      "execution": 15,
+      "data_access": 10,
+      "external_dependency": 10,
+      "privilege": 5,
+      "social_engineering": 2,
+      "total": 42.0,
+      "level": "High",
+      "policy": "Sandbox"
+    }
+  },
+  {
+    "id": "skyclaw",
+    "name": "nagisanzenin/skyclaw",
+    "type": "repository",
+    "category": "variant",
+    "layer": "agent-runtime",
+    "description": "클라우드 자립형 초경량 Rust 에이전트. 44K LoC, 13-crate workspace, 20개 자율 모듈. 셸/브라우저/파일/Git 도구 내장, 6 LLM 프로바이더 지원, 정적 바이너리 컴파일",
+    "language": "Rust",
+    "stars": 146,
+    "threat_ids": [
+      "remote-code-execution",
+      "privilege-escalation",
+      "credential-theft",
+      "data-exfiltration"
+    ],
+    "control_ids": [
+      "sandboxing",
+      "secrets-isolation",
+      "capability-scoping",
+      "network-egress-control"
+    ],
+    "paper_ids": [],
+    "mitre_ids": [
+      "ATTACK-T1059",
+      "ATTACK-T1068",
+      "ATTACK-T1552"
+    ],
+    "github_url": "https://github.com/nagisanzenin/skyclaw",
+    "ecosystem_repo_id": "skyclaw",
+    "risk_score": {
+      "execution": 25,
+      "data_access": 20,
+      "external_dependency": 10,
+      "privilege": 12,
+      "social_engineering": 3,
+      "total": 70.0,
+      "level": "Critical",
+      "policy": "Restricted"
+    }
+  },
+  {
+    "id": "alphaclaw",
+    "name": "chrysb/alphaclaw",
+    "type": "repository",
+    "category": "wrapper",
+    "layer": "gateway",
+    "description": "OpenClaw 셋업 하니스. 브라우저 기반 배포/관리, 자동 복구 워치독, Git 백업, 프롬프트 하드닝. 기본 보안 하드닝을 편의를 위해 일부 완화",
+    "language": "JavaScript",
+    "stars": 385,
+    "threat_ids": [
+      "credential-theft",
+      "privilege-escalation",
+      "unsafe-tool-use"
+    ],
+    "control_ids": [
+      "human-approval",
+      "secrets-isolation"
+    ],
+    "paper_ids": [],
+    "mitre_ids": [
+      "ATTACK-T1552",
+      "ATTACK-T1068"
+    ],
+    "github_url": "https://github.com/chrysb/alphaclaw",
+    "ecosystem_repo_id": "alphaclaw",
+    "risk_score": {
+      "execution": 15,
+      "data_access": 15,
+      "external_dependency": 10,
+      "privilege": 10,
+      "social_engineering": 5,
+      "total": 55.0,
+      "level": "High",
+      "policy": "Sandbox"
+    }
+  },
+  {
+    "id": "clawwork",
+    "name": "HKUDS/ClawWork",
+    "type": "repository",
+    "category": "research",
+    "layer": "agent-runtime",
+    "description": "OpenClaw as Your AI Coworker. 220개 실무 태스크, 44개 직업군 벤치마크. 에이전트의 자율 수익 창출 능력 실증 ($15K/11hrs)",
+    "language": "Python",
+    "stars": 6900,
+    "threat_ids": [
+      "unsafe-tool-use",
+      "data-exfiltration",
+      "remote-code-execution"
+    ],
+    "control_ids": [
+      "human-approval",
+      "capability-scoping",
+      "sandboxing"
+    ],
+    "paper_ids": [],
+    "mitre_ids": [
+      "ATTACK-T1059",
+      "ATLAS-AML.T0024"
+    ],
+    "github_url": "https://github.com/HKUDS/ClawWork",
+    "ecosystem_repo_id": "clawwork",
+    "risk_score": {
+      "execution": 20,
+      "data_access": 15,
+      "external_dependency": 15,
+      "privilege": 10,
+      "social_engineering": 8,
+      "total": 68.0,
+      "level": "Critical",
+      "policy": "Restricted"
+    }
+  }
+]

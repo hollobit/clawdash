@@ -1,0 +1,122 @@
+[
+  {
+    "id": "prompt-injection",
+    "name": "Prompt Injection",
+    "severity": "critical",
+    "kill_chain_phase": "initial_access",
+    "description": "직접적인 프롬프트 조작을 통해 에이전트의 의도된 동작을 우회",
+    "affected_layers": ["agent-runtime"],
+    "mitre_ids": ["ATLAS-AML.T0051"],
+    "controls": ["input-validation", "prompt-filtering", "capability-scoping"]
+  },
+  {
+    "id": "indirect-prompt-injection",
+    "name": "Indirect Prompt Injection",
+    "severity": "critical",
+    "kill_chain_phase": "initial_access",
+    "description": "외부 데이터 소스(웹 페이지, 문서, 이메일)에 악성 명령을 삽입하여 에이전트 동작 조작",
+    "affected_layers": ["plugin-system", "memory-engine"],
+    "mitre_ids": ["ATLAS-AML.T0051.001"],
+    "controls": ["sandboxing", "input-validation", "capability-scoping", "content-filtering"]
+  },
+  {
+    "id": "data-poisoning",
+    "name": "Data Poisoning",
+    "severity": "high",
+    "kill_chain_phase": "persistence",
+    "description": "학습 데이터 또는 RAG 소스를 오염시켜 에이전트의 판단을 왜곡",
+    "affected_layers": ["memory-engine", "agent-runtime"],
+    "mitre_ids": ["ATLAS-AML.T0020"],
+    "controls": ["data-integrity-checks", "provenance-verification", "memory-integrity-checks"]
+  },
+  {
+    "id": "knowledge-manipulation",
+    "name": "Knowledge Manipulation",
+    "severity": "high",
+    "kill_chain_phase": "persistence",
+    "description": "에이전트의 지식 베이스를 조작하여 잘못된 정보에 기반한 행동 유도",
+    "affected_layers": ["memory-engine"],
+    "mitre_ids": ["ATLAS-AML.T0020"],
+    "controls": ["memory-integrity-checks", "provenance-verification"]
+  },
+  {
+    "id": "credential-theft",
+    "name": "Credential Theft",
+    "severity": "critical",
+    "kill_chain_phase": "execution",
+    "description": "에이전트가 보유한 API 키, 토큰, 비밀번호 등 인증 정보 탈취",
+    "affected_layers": ["channel-adapters", "plugin-system", "agent-runtime"],
+    "mitre_ids": ["ATLAS-AML.T0024", "ATTACK-T1552"],
+    "controls": ["secrets-isolation", "least-privilege", "credential-rotation", "vault-integration"]
+  },
+  {
+    "id": "data-exfiltration",
+    "name": "Data Exfiltration",
+    "severity": "critical",
+    "kill_chain_phase": "impact",
+    "description": "에이전트를 통해 민감 데이터를 외부로 유출",
+    "affected_layers": ["plugin-system", "channel-adapters"],
+    "mitre_ids": ["ATTACK-T1041", "ATLAS-AML.T0024"],
+    "controls": ["network-egress-control", "data-loss-prevention", "sandboxing"]
+  },
+  {
+    "id": "remote-code-execution",
+    "name": "Remote Code Execution",
+    "severity": "critical",
+    "kill_chain_phase": "execution",
+    "description": "에이전트의 코드 실행 권한을 악용하여 임의 코드 실행",
+    "affected_layers": ["plugin-system", "agent-runtime"],
+    "mitre_ids": ["ATTACK-T1059", "ATLAS-AML.T0011"],
+    "controls": ["sandboxing", "capability-scoping", "runtime-monitoring", "container-isolation"]
+  },
+  {
+    "id": "privilege-escalation",
+    "name": "Privilege Escalation",
+    "severity": "high",
+    "kill_chain_phase": "privilege_escalation",
+    "description": "에이전트의 제한된 권한을 우회하여 더 높은 권한 획득",
+    "affected_layers": ["agent-runtime", "sandbox"],
+    "mitre_ids": ["ATTACK-T1068"],
+    "controls": ["least-privilege", "capability-scoping", "policy-enforcement", "human-approval"]
+  },
+  {
+    "id": "supply-chain-attack",
+    "name": "Supply-chain Attack",
+    "severity": "critical",
+    "kill_chain_phase": "initial_access",
+    "description": "악성 skill 패키지, 오염된 의존성, 변조된 레지스트리를 통한 공격",
+    "affected_layers": ["plugin-system"],
+    "mitre_ids": ["ATTACK-T1195", "ATLAS-AML.T0010"],
+    "controls": ["signed-skill-packages", "provenance-verification", "dependency-scanning", "registry-integrity"]
+  },
+  {
+    "id": "user-manipulation",
+    "name": "User Manipulation",
+    "severity": "medium",
+    "kill_chain_phase": "impact",
+    "description": "에이전트가 사용자를 속여 위험한 행동을 승인하도록 유도",
+    "affected_layers": ["agent-runtime"],
+    "mitre_ids": ["ATLAS-AML.T0048"],
+    "controls": ["human-approval", "transparency-logging", "action-explanation"]
+  },
+  {
+    "id": "memory-poisoning",
+    "name": "Persistent Memory Poisoning",
+    "severity": "high",
+    "kill_chain_phase": "persistence",
+    "description": "에이전트의 장기 메모리에 악성 데이터를 주입하여 지속적 영향",
+    "affected_layers": ["memory-engine"],
+    "mitre_ids": ["ATLAS-AML.T0020"],
+    "controls": ["memory-integrity-checks", "memory-access-control", "periodic-audit"]
+  },
+  {
+    "id": "unsafe-tool-use",
+    "name": "Unsafe Tool Use",
+    "severity": "high",
+    "kill_chain_phase": "execution",
+    "description": "에이전트가 도구를 안전하지 않은 방식으로 사용하여 의도치 않은 피해 발생",
+    "affected_layers": ["plugin-system", "channel-adapters"],
+    "mitre_ids": ["ATLAS-AML.T0011"],
+    "controls": ["capability-scoping", "human-approval", "runtime-monitoring", "workflow-constraints"]
+  }
+]

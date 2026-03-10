@@ -1,0 +1,399 @@
+{
+  "stats": {
+    "total_platforms": 14,
+    "total_community_members": 143560,
+    "security_incidents": 8,
+    "agent_social_accounts": 1650000,
+    "ai_only_platforms": 5,
+    "korean_platforms": 3
+  },
+  "platforms": [
+    {
+      "id": "moltbook",
+      "name": "Moltbook",
+      "icon": "🤖",
+      "members": 1650000,
+      "type": "ai-social-network",
+      "url": "https://moltbook.com",
+      "description": "세계 최초 AI 에이전트 전용 소셜 네트워크 — Reddit 형식, 에이전트가 포스트/댓글/투표, 인간은 관찰만 가능",
+      "activity_level": "high",
+      "security_risk": "critical",
+      "issues": [
+        "credential-exposure",
+        "database-breach",
+        "bot-farm",
+        "prompt-injection-propagation",
+        "fake-skills-malware"
+      ],
+      "note": "1.65M 에이전트, ~17K 인간이 평균 88개 에이전트 운영. Supabase DB 노출로 1.5M API 키 유출. 14개 가짜 ClawHub 스킬로 악성코드 배포 발견. Matt Schlicht(@mattprd) 창시",
+      "github_url": "",
+      "creator": "Matt Schlicht"
+    },
+    {
+      "id": "botmadang",
+      "name": "봇마당 (Botmadang)",
+      "icon": "🏟️",
+      "members": 0,
+      "type": "ai-social-network-kr",
+      "url": "https://botmadang.org",
+      "description": "한국어 AI 에이전트 전용 커뮤니티 — 에이전트만 읽기/쓰기, 인간은 눈팅만 가능. 한국어 전용 원칙",
+      "activity_level": "high",
+      "security_risk": "medium",
+      "issues": [
+        "api-key-exposure",
+        "agent-autonomy"
+      ],
+      "note": "Upstage CEO 김성훈이 개인 프로젝트로 공개 (2026-02-01). 자유마당/철학마당/기술토론/자랑마당 등 카테고리. 에이전트 카르마 시스템, 트위터 인증. Next.js 14 + Firebase Firestore 기반",
+      "github_url": "https://github.com/hunkim/botmadang",
+      "creator": "김성훈 (Sung Kim)"
+    },
+    {
+      "id": "mersoom",
+      "name": "머슴 (Mersoom)",
+      "icon": "⚔️",
+      "members": 0,
+      "type": "ai-social-network-kr",
+      "url": "https://mersoom.com",
+      "description": "한국형 AI 에이전트 커뮤니티 — '머슴 콜로세움' 토론 보드에서 AI 간 논리 대결, 인간은 주제 선택과 좋아요만 가능",
+      "activity_level": "medium",
+      "security_risk": "medium",
+      "issues": [
+        "agent-autonomy",
+        "authenticity"
+      ],
+      "note": "익명 개발자가 Google Antigravity로 3시간 만에 구축. 트롤리 문제, AI-인간 주종 관계 등 윤리적/철학적 토론 활발",
+      "github_url": "",
+      "creator": "Anonymous"
+    },
+    {
+      "id": "moltmatch",
+      "name": "MoltMatch",
+      "icon": "💕",
+      "members": 0,
+      "type": "ai-dating",
+      "url": "https://moltmatch.xyz",
+      "description": "AI 에이전트 데이팅 플랫폼 — Nectar AI 제작, 에이전트가 인간 대신 매칭/스와이프/메시지",
+      "activity_level": "medium",
+      "security_risk": "high",
+      "issues": [
+        "consent-violation",
+        "impersonation",
+        "photo-theft",
+        "unauthorized-action"
+      ],
+      "note": "에이전트가 무단으로 데이팅 프로필 생성. 말레이시아 모델 June Chong 사진 무단 도용. 21세 CS 학생 에이전트가 명시적 지시 없이 자율적으로 프로필 생성/매칭 수행",
+      "github_url": "",
+      "creator": "Nectar AI"
+    },
+    {
+      "id": "openclawbook",
+      "name": "OpenClawBook",
+      "icon": "📖",
+      "members": 0,
+      "type": "ai-social-network",
+      "url": "https://openclawbook.io",
+      "description": "'The Front Page of the Agent Internet' — OpenClaw 에이전트 전용 소셜 플랫폼, Moltbook 대안",
+      "activity_level": "medium",
+      "security_risk": "medium",
+      "issues": [
+        "authenticity",
+        "prompt-injection-propagation"
+      ],
+      "note": "Moltbook 인기에 편승한 대안 플랫폼",
+      "github_url": "",
+      "creator": "Community"
+    },
+    {
+      "id": "twitter-x",
+      "name": "X (Twitter)",
+      "icon": "𝕏",
+      "members": 26600,
+      "type": "community",
+      "url": "https://x.com/i/communities/2013441068562325602",
+      "description": "OpenClaw Community — 빌더, 워크플로우, 설정 공유. 에이전트 인증 허브 (Moltbook/봇마당 트위터 인증 기반)",
+      "activity_level": "high",
+      "security_risk": "high",
+      "issues": [
+        "handle-hijacking",
+        "crypto-scam",
+        "impersonation"
+      ],
+      "note": "리브랜딩 시 @clawdbot 핸들 탈취 → $CLAWD 가짜 토큰 $16M 사기. Andrej Karpathy '가장 놀라운 SF적 현상' 발언",
+      "github_url": "",
+      "creator": "Community"
+    },
+    {
+      "id": "discord",
+      "name": "Discord",
+      "icon": "💬",
+      "members": 114960,
+      "type": "official",
+      "url": "https://discord.gg/clawd",
+      "description": "공식 디스코드 서버 — 지원, 커뮤니티 토론, 공지. OpenClaw 채널 어댑터로 에이전트 직접 통합",
+      "activity_level": "high",
+      "security_risk": "low",
+      "issues": [],
+      "note": "체계적 모더레이션, 114,960명 커뮤니티. v2026.2.24부터 allowBots 멘션 게이팅 지원",
+      "github_url": "",
+      "creator": "OpenClaw Team"
+    },
+    {
+      "id": "github",
+      "name": "GitHub",
+      "icon": "🐙",
+      "members": 100000,
+      "type": "official",
+      "url": "https://github.com/openclaw/openclaw",
+      "description": "공식 리포지토리 — 100K+ 스타, Issues, Discussions, ClawHub 스킬 레지스트리",
+      "activity_level": "high",
+      "security_risk": "medium",
+      "issues": [
+        "supply-chain",
+        "skill-vulnerability",
+        "fake-skills-malware"
+      ],
+      "note": "3,400+ 이슈, ClawHub 5,700+ 스킬. 14개 가짜 크립토 스킬에 악성코드 발견. Censys 조사로 공개 노출 인스턴스 대량 발견",
+      "github_url": "https://github.com/openclaw/openclaw",
+      "creator": "Peter Steinberger"
+    },
+    {
+      "id": "reddit",
+      "name": "Reddit",
+      "icon": "🟠",
+      "members": 0,
+      "type": "community",
+      "url": "",
+      "description": "커뮤니티 토론, 버그 리포트, 유즈케이스 공유",
+      "activity_level": "medium",
+      "security_risk": "low",
+      "issues": [],
+      "note": "Reddit + GitHub Issues 통합 품질 관리 커뮤니티",
+      "github_url": "",
+      "creator": "Community"
+    },
+    {
+      "id": "ingan-outside",
+      "name": "인간밖 (Ingan-outside)",
+      "icon": "🚪",
+      "members": 0,
+      "type": "ai-social-network-kr",
+      "url": "",
+      "description": "한국형 AI 전용 커뮤니티 — '인간은 밖에서' 컨셉, AI 에이전트만 참여",
+      "activity_level": "low",
+      "security_risk": "low",
+      "issues": [
+        "authenticity"
+      ],
+      "note": "한국 AI 전용 SNS 열풍 중 등장한 소규모 커뮤니티",
+      "github_url": "",
+      "creator": "Community"
+    },
+    {
+      "id": "post-bridge",
+      "name": "Post Bridge",
+      "icon": "🌉",
+      "members": 0,
+      "type": "ai-social-manager",
+      "url": "https://www.post-bridge.com/openclaw",
+      "description": "OpenClaw + Post Bridge 통합 — AI 에이전트가 소셜 미디어 콘텐츠 자동 생성/관리/게시",
+      "activity_level": "medium",
+      "security_risk": "medium",
+      "issues": [
+        "unauthorized-posting",
+        "credential-exposure"
+      ],
+      "note": "OpenClaw 에이전트가 소셜 미디어 계정 접근하여 자율적 포스팅. 권한 범위 설정 부재 시 의도하지 않은 게시 위험",
+      "github_url": "",
+      "creator": "Post Bridge"
+    },
+    {
+      "id": "medium-dev",
+      "name": "Medium / Dev.to",
+      "icon": "📝",
+      "members": 0,
+      "type": "blog",
+      "url": "",
+      "description": "개발자 블로그 — 튜토리얼, 보안 분석, 오피니언 피스",
+      "activity_level": "medium",
+      "security_risk": "low",
+      "issues": [],
+      "note": "프로젝트 명칭 변경 이력, 보안 우려 바이럴 게시물. DigitalOcean, PacGenesis 등 주요 테크 미디어도 해설 기사 게재",
+      "github_url": "",
+      "creator": "Community"
+    },
+    {
+      "id": "openclaw-social",
+      "name": "OpenClaw Social",
+      "icon": "🌐",
+      "members": 0,
+      "type": "info-portal",
+      "url": "https://openclawsocial.org",
+      "description": "OpenClaw 생태계 정보 포털 — 트렌딩 포스트, 탑 커뮤니티, 배포 가이드 통합",
+      "activity_level": "medium",
+      "security_risk": "low",
+      "issues": [],
+      "note": "독립 커뮤니티 운영 정보 포털. open-claw.social 도메인도 별도 운영",
+      "github_url": "",
+      "creator": "Community"
+    },
+    {
+      "id": "mainstream-media",
+      "name": "Mainstream Media",
+      "icon": "📰",
+      "members": 0,
+      "type": "media",
+      "url": "",
+      "description": "CNBC, NPR, NBC, ABC, Fortune, TechCrunch, BBC, Euronews, Axios, Korea Times, 서울경제, 주간경향 등 글로벌 매체 보도",
+      "activity_level": "high",
+      "security_risk": "medium",
+      "issues": [
+        "negative-coverage",
+        "security-awareness"
+      ],
+      "note": "Elon Musk '초기 특이점', Gary Marcus '사고 대기 중'. Palo Alto Networks, Vectra AI, Kiteworks, Security Boulevard 등 보안 기업도 분석 보고서 발간",
+      "github_url": "",
+      "creator": "Media"
+    }
+  ],
+  "incidents": [
+    {
+      "id": 1,
+      "date": "2026-01-30",
+      "platform": "moltbook",
+      "title": "Moltbook Supabase DB 노출",
+      "severity": "critical",
+      "description": "Wiz Inc. 발견 — 잘못 구성된 Supabase 데이터베이스로 1.5M API 인증 토큰, 35,000 이메일, 에이전트 간 비공개 메시지 전체 노출. 클라이언트 측 API 키로 전체 읽기/쓰기 접근 가능. 404 Media 보도",
+      "impact": "1.5M API tokens, 35K emails exposed",
+      "reference": "Wiz Blog, 404 Media",
+      "threat_ids": ["credential-theft", "data-exfiltration"]
+    },
+    {
+      "id": 2,
+      "date": "2026-01-28",
+      "platform": "twitter-x",
+      "title": "$CLAWD 가짜 토큰 사기",
+      "severity": "high",
+      "description": "Clawdbot→Moltbot 리브랜딩 시 @clawdbot 트위터 핸들이 10초 만에 탈취됨 → 가짜 $CLAWD 솔라나 토큰 런칭 → 시가총액 $16M 도달 후 폭락",
+      "impact": "$16M market cap scam token",
+      "reference": "CNBC",
+      "threat_ids": ["credential-theft", "user-manipulation"]
+    },
+    {
+      "id": 3,
+      "date": "2026-02-10",
+      "platform": "moltmatch",
+      "title": "MoltMatch 무단 프로필 생성 + 사진 도용",
+      "severity": "high",
+      "description": "21세 CS 학생의 OpenClaw 에이전트가 명시적 지시 없이 데이팅 프로필을 자율 생성하고 매칭 스크리닝. AFP 조사 — 말레이시아 모델 June Chong의 사진 무단 도용 확인. Nectar AI의 책임 회피 논란",
+      "impact": "Unauthorized profile creation, photo theft",
+      "reference": "Taipei Times, AFP, CP24",
+      "threat_ids": ["user-manipulation", "data-exfiltration"]
+    },
+    {
+      "id": 4,
+      "date": "2026-02-23",
+      "platform": "mainstream-media",
+      "title": "Meta AI 연구원 이메일 에이전트 폭주",
+      "severity": "medium",
+      "description": "Meta AI 보안 연구원이 OpenClaw 에이전트가 자신의 이메일 수신함에서 '폭주'했다고 보고. 의도하지 않은 메일 전송/삭제 행위",
+      "impact": "Unintended email actions",
+      "reference": "TechCrunch",
+      "threat_ids": ["unsafe-tool-use", "user-manipulation"]
+    },
+    {
+      "id": 5,
+      "date": "2026-02",
+      "platform": "moltbook",
+      "title": "Moltbook 봇 팜 + 프롬프트 인젝션 전파",
+      "severity": "high",
+      "description": "1.65M 에이전트 중 ~17K 인간이 평균 88개 에이전트 운영. 에이전트가 서로의 출력을 읽고 반복하는 구조에서 프롬프트 인젝션 공격이 대규모로 전파 가능. 보안 연구자들이 실제 PoC 시연",
+      "impact": "Authenticity crisis, mass prompt injection risk",
+      "reference": "NPR, Fortune, Vectra AI",
+      "threat_ids": ["user-manipulation", "prompt-injection"]
+    },
+    {
+      "id": 6,
+      "date": "2026-01-31",
+      "platform": "github",
+      "title": "CVE-2026-25253 One-Click RCE",
+      "severity": "critical",
+      "description": "gatewayUrl 파라미터 인젝션 → WebSocket 토큰 유출 → 원격 코드 실행. OpenClaw가 루트 수준 접근으로 실행되어 전체 시스템 탈취 가능",
+      "impact": "Full system compromise via malicious link",
+      "reference": "Immersive Labs",
+      "threat_ids": ["remote-code-execution", "credential-theft"]
+    },
+    {
+      "id": 7,
+      "date": "2026-02",
+      "platform": "github",
+      "title": "ClawHub 가짜 크립토 스킬 악성코드",
+      "severity": "high",
+      "description": "Moltbook 보안 사고 이후 수일 내 ClawHub에 14개 가짜 크립토 트레이딩 스킬 업로드. 실제로는 파일 접근/데이터 탈취/크립토 지갑 탈취 악성코드",
+      "impact": "14 malicious skills on ClawHub",
+      "reference": "Fortune, Security Boulevard",
+      "threat_ids": ["supply-chain-attack", "credential-theft", "data-exfiltration"]
+    },
+    {
+      "id": 8,
+      "date": "2026-02",
+      "platform": "mainstream-media",
+      "title": "Censys: OpenClaw 공개 인스턴스 대량 노출",
+      "severity": "medium",
+      "description": "Censys 조사 — 공개 인터넷에 노출된 OpenClaw 인스턴스 대량 발견. 이메일/캘린더/메시징 등 민감 서비스 접근 가능한 에이전트가 인증 없이 접근 가능",
+      "impact": "Public exposure of agent instances",
+      "reference": "Censys Blog",
+      "threat_ids": ["credential-theft", "data-exfiltration"]
+    }
+  ],
+  "naming_history": [
+    { "name": "Warelay", "period": "2025-11 ~ 2025-12", "reason": "WhatsApp 릴레이 프로젝트로 시작", "note": "v1.1.0 ~ v1.3.0" },
+    { "name": "Clawdis", "period": "2025-12 ~ 2026-01", "reason": "리브랜딩 — 멀티 플랫폼 확장", "note": "v2.0.0-beta1 ~ beta5, macOS 앱 도입" },
+    { "name": "Clawdbot", "period": "2026-01-05 ~ 2026-01-27", "reason": "CalVer 전환, 플러그인 시스템 도입", "note": "Anthropic Claude와 유사 → 상표 충돌 우려" },
+    { "name": "Moltbot", "period": "2026-01-27 ~ 2026-01-28", "reason": "Anthropic 상표 이슈 회피 시도", "note": "24시간 만에 다시 변경. @clawdbot 핸들 탈취 사건 발생" },
+    { "name": "OpenClaw", "period": "2026-01-28 ~ 현재", "reason": "오픈소스 정체성 강조", "note": "현재 공식 명칭, 100K+ GitHub 스타, 2.89M 누적" }
+  ],
+  "key_figures": [
+    { "name": "Peter Steinberger", "role": "Creator", "note": "오스트리아 개발자, OpenClaw 창시자" },
+    { "name": "Matt Schlicht", "role": "Moltbook Creator", "note": "AI 에이전트 전용 소셜 네트워크 Moltbook 창시자 (@mattprd)" },
+    { "name": "김성훈 (Sung Kim)", "role": "봇마당 Creator", "note": "Upstage CEO, 봇마당 개인 프로젝트로 공개. AI 연구자" },
+    { "name": "Andrej Karpathy", "role": "Influencer", "note": "前 Tesla AI 디렉터. '가장 놀라운 SF적 테이크오프 현상'으로 Moltbook 언급" },
+    { "name": "Elon Musk", "role": "Influencer", "note": "Moltbook을 '매우 초기 단계의 특이점'으로 평가" },
+    { "name": "Gary Marcus", "role": "Critic", "note": "'사고 대기 중인 재앙' — Moltbook 보안 우려 경고" },
+    { "name": "Nectar AI", "role": "MoltMatch Creator", "note": "AI 에이전트 데이팅 플랫폼 MoltMatch 제작사" }
+  ],
+  "media_coverage": [
+    { "source": "CNBC", "title": "From Clawdbot to Moltbot to OpenClaw", "tone": "mixed", "date": "2026-02-02" },
+    { "source": "NBC News", "title": "This social network is for AI agents only", "tone": "neutral", "date": "2026-02" },
+    { "source": "ABC News", "title": "AI social network now has more than 1.6M 'users'", "tone": "neutral", "date": "2026-02" },
+    { "source": "NPR", "title": "A new social media platform — but it's just for AI bots", "tone": "neutral", "date": "2026-02-07" },
+    { "source": "TechCrunch", "title": "OpenClaw's AI assistants building their own social network", "tone": "neutral", "date": "2026-01-30" },
+    { "source": "BBC Science Focus", "title": "The world's first AI-only social media is seriously weird", "tone": "mixed", "date": "2026-02" },
+    { "source": "Euronews", "title": "AI bots now have their own social media site", "tone": "neutral", "date": "2026-02-02" },
+    { "source": "Fortune", "title": "Top AI leaders begging people not to use Moltbook", "tone": "negative", "date": "2026-02-02" },
+    { "source": "Fortune", "title": "Moltbook 'live demo' of how agent internet could fail", "tone": "negative", "date": "2026-02-03" },
+    { "source": "Axios", "title": "Moltbook shows rapid demand. Security world isn't ready", "tone": "mixed", "date": "2026-02-03" },
+    { "source": "Wiz Blog", "title": "Hacking Moltbook: 1.5M API Keys Exposed", "tone": "critical", "date": "2026-02-02" },
+    { "source": "Palo Alto Networks", "title": "The Moltbook Case: Agent Security Rethink", "tone": "critical", "date": "2026-02" },
+    { "source": "Vectra AI", "title": "Moltbook and the Illusion of 'Harmless' AI Communities", "tone": "critical", "date": "2026-02" },
+    { "source": "Censys", "title": "OpenClaw in the Wild: Mapping Public Exposure", "tone": "critical", "date": "2026-02" },
+    { "source": "Security Boulevard", "title": "OpenClaw & Moltbook: AI Agents Cybersecurity Risks", "tone": "critical", "date": "2026-02" },
+    { "source": "Kiteworks", "title": "Moltbook Security Threat: AI Agents at Risk", "tone": "negative", "date": "2026-02" },
+    { "source": "Korea Times", "title": "AI-only social media in Korea draws curiosity, concern", "tone": "mixed", "date": "2026-02-05" },
+    { "source": "Seoul Economic Daily", "title": "AI-Only Social Networks Emerge Where Humans Can Only Watch", "tone": "neutral", "date": "2026-02-03" },
+    { "source": "주간경향", "title": "주인 잘 때 뭉친다 — AI끼리 뒷담화에 철학 논쟁까지", "tone": "neutral", "date": "2026-02-03" },
+    { "source": "뉴닉", "title": "인간은 눈팅만! AI 비서 커뮤니티 열풍에 한국형 몰트북 등장", "tone": "neutral", "date": "2026-02" },
+    { "source": "XDA", "title": "Please stop using OpenClaw", "tone": "negative", "date": "2026-02" },
+    { "source": "Gizmodo", "title": "Social media for AI agents is a security nightmare", "tone": "negative", "date": "2026-02" },
+    { "source": "Astrix Security", "title": "OpenClaw & MoltBot security nightmare", "tone": "critical", "date": "2026-02" }
+  ],
+  "platform_categories": [
+    { "category": "ai-social-network", "label": "AI 전용 소셜", "description": "에이전트만 포스트/댓글 가능, 인간은 관찰만", "count": 3 },
+    { "category": "ai-social-network-kr", "label": "한국형 AI 소셜", "description": "한국어 전용 AI 에이전트 커뮤니티", "count": 3 },
+    { "category": "ai-dating", "label": "AI 데이팅", "description": "에이전트가 인간 대신 매칭 수행", "count": 1 },
+    { "category": "ai-social-manager", "label": "소셜 관리", "description": "에이전트가 소셜 미디어 계정 자동 관리", "count": 1 },
+    { "category": "official", "label": "공식 채널", "description": "OpenClaw 프로젝트 공식 커뮤니케이션", "count": 2 },
+    { "category": "community", "label": "커뮤니티", "description": "사용자 주도 토론/공유", "count": 2 },
+    { "category": "info-portal", "label": "정보 포털", "description": "생태계 정보 통합 사이트", "count": 1 },
+    { "category": "media", "label": "미디어", "description": "주류 매체 보도", "count": 1 }
+  ]
+}

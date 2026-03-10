@@ -1,0 +1,407 @@
+[
+  {
+    "id": "openclaw-core",
+    "name": "openclaw/core",
+    "execution": {
+      "score": 25,
+      "rationale": "핵심 런타임 엔진으로 태스크 스케줄링 및 워커 실행을 담당하며, 임의 코드 실행(RCE) 위협에 노출됨. 직접적인 셸 실행은 아니나 실행 오케스트레이션 수준의 위험 존재"
+    },
+    "data_access": {
+      "score": 15,
+      "rationale": "런타임이 태스크 실행 과정에서 파일시스템과 다양한 데이터 소스에 접근 가능. 직접적인 자격증명 접근보다는 중간 수준의 데이터 접근 권한 보유"
+    },
+    "external_dependency": {
+      "score": 10,
+      "rationale": "다양한 skill과 tool을 동적으로 로드하고 호출하는 구조로, 동적 API 호출 수준의 외부 의존성 존재"
+    },
+    "privilege": {
+      "score": 12,
+      "rationale": "워커 관리 및 태스크 실행을 위해 높은 수준의 시스템 권한 필요. 파일시스템 쓰기 이상의 권한 보유"
+    },
+    "social_engineering": {
+      "score": 5,
+      "rationale": "프롬프트 인젝션 위협에 노출되어 있으며, 사용자 지시를 처리하는 과정에서 조작 가능성 존재"
+    },
+    "total_score": 67.0,
+    "risk_level": "Critical",
+    "policy": "Restricted"
+  },
+  {
+    "id": "openclaw-brain",
+    "name": "openclaw/brain",
+    "execution": {
+      "score": 10,
+      "rationale": "LLM 추론 및 계획 엔진으로 직접적인 코드 실행보다는 추론 스크립트 수준의 실행 위험 존재"
+    },
+    "data_access": {
+      "score": 10,
+      "rationale": "LLM 프로바이더 통합 과정에서 사용자 입력, 문서, 컨텍스트 데이터에 접근하나 파일시스템 직접 접근은 제한적"
+    },
+    "external_dependency": {
+      "score": 15,
+      "rationale": "외부 LLM 프로바이더(OpenAI, Anthropic 등)에 대한 동적 API 호출 필수. 런타임 모델 다운로드 가능성도 존재"
+    },
+    "privilege": {
+      "score": 5,
+      "rationale": "추론 및 계획 수립 역할로 제한된 도구 사용 수준의 권한. 직접적인 시스템 명령 실행 권한 없음"
+    },
+    "social_engineering": {
+      "score": 8,
+      "rationale": "프롬프트 인젝션 및 사용자 조작(user-manipulation) 위협에 직접 노출. LLM이 사용자를 속여 위험 행동 승인 유도 가능"
+    },
+    "total_score": 48.0,
+    "risk_level": "High",
+    "policy": "Sandbox"
+  },
+  {
+    "id": "clawhub-registry",
+    "name": "openclaw/clawhub",
+    "execution": {
+      "score": 10,
+      "rationale": "패키지 레지스트리로 메타데이터 처리 및 검색 스크립트 실행 수준. 직접적인 코드 실행보다는 패키지 관리 로직 수행"
+    },
+    "data_access": {
+      "score": 10,
+      "rationale": "skill 패키지 메타데이터, 버전 정보 등 공개/반공개 데이터 접근. 사용자 문서 수준의 데이터 처리"
+    },
+    "external_dependency": {
+      "score": 15,
+      "rationale": "공급망 공격 위협에 노출. 외부 패키지 소스에서 런타임 다운로드 및 의존성 해결 과정에서 높은 외부 의존성"
+    },
+    "privilege": {
+      "score": 5,
+      "rationale": "레지스트리 읽기/쓰기 수준의 제한된 권한. 시스템 명령 실행 권한 불필요"
+    },
+    "social_engineering": {
+      "score": 3,
+      "rationale": "데이터 포이즈닝을 통한 간접적 조작 가능성은 있으나, 직접적 사용자 대면 인터페이스가 아니므로 낮은 수준"
+    },
+    "total_score": 43.0,
+    "risk_level": "High",
+    "policy": "Sandbox"
+  },
+  {
+    "id": "skill-browser",
+    "name": "openclaw/skill-browser",
+    "execution": {
+      "score": 20,
+      "rationale": "웹 브라우저 제어를 통한 페이지 탐색, 데이터 추출, 폼 작성 수행. 셸 명령 수준의 외부 프로세스 제어 능력 보유"
+    },
+    "data_access": {
+      "score": 20,
+      "rationale": "웹 페이지 데이터 추출 및 폼 작성으로 파일시스템 수준의 데이터 접근. 자격증명 탈취(credential-theft) 위협에 직접 노출"
+    },
+    "external_dependency": {
+      "score": 15,
+      "rationale": "외부 웹사이트에 대한 동적 접근 필수. 런타임에 다양한 외부 리소스를 다운로드하고 처리"
+    },
+    "privilege": {
+      "score": 10,
+      "rationale": "브라우저 프로세스 제어 및 네트워크 통신을 위한 파일시스템 쓰기 수준의 권한 필요"
+    },
+    "social_engineering": {
+      "score": 8,
+      "rationale": "간접 프롬프트 인젝션의 주요 공격 벡터. 악성 웹 페이지가 에이전트 동작을 조작할 수 있는 높은 위험"
+    },
+    "total_score": 73.0,
+    "risk_level": "Critical",
+    "policy": "Restricted"
+  },
+  {
+    "id": "skill-shell",
+    "name": "openclaw/skill-shell",
+    "execution": {
+      "score": 30,
+      "rationale": "시스템 셸 명령을 직접 실행하는 skill. 임의 명령 실행이 가능하여 최고 수준의 실행 위험"
+    },
+    "data_access": {
+      "score": 25,
+      "rationale": "셸 명령을 통해 전체 파일시스템 접근 가능. 자격증명 파일, 환경변수, SSH 키 등 모든 민감 데이터에 접근 가능"
+    },
+    "external_dependency": {
+      "score": 10,
+      "rationale": "셸 명령으로 외부 패키지 설치(pip, apt 등) 및 원격 스크립트 다운로드 가능하나, 기본적으로는 로컬 실행 중심"
+    },
+    "privilege": {
+      "score": 15,
+      "rationale": "시스템 명령 직접 실행 권한. 파일 조작, 프로세스 관리, 시스템 정보 조회 등 최고 수준의 시스템 권한"
+    },
+    "social_engineering": {
+      "score": 10,
+      "rationale": "터미널 명령 실행을 통한 사회공학 공격의 최종 실행 단계. 사용자가 위험한 명령을 승인하도록 유도 가능"
+    },
+    "total_score": 90.0,
+    "risk_level": "Extreme",
+    "policy": "Block"
+  },
+  {
+    "id": "skill-filesystem",
+    "name": "openclaw/skill-filesystem",
+    "execution": {
+      "score": 15,
+      "rationale": "파일 읽기/쓰기 및 디렉토리 탐색 기능. 셸 명령보다는 제한적이나 스크립트 실행 이상의 파일 조작 능력"
+    },
+    "data_access": {
+      "score": 25,
+      "rationale": "파일시스템 전체 접근 skill. 자격증명 파일(.env, SSH 키, 설정 파일)에 직접 접근 가능하여 최고 수준의 데이터 접근 위험"
+    },
+    "external_dependency": {
+      "score": 0,
+      "rationale": "로컬 파일시스템만 접근하며 외부 의존성 없음"
+    },
+    "privilege": {
+      "score": 10,
+      "rationale": "파일시스템 읽기/쓰기 권한 필수. 민감 디렉토리 접근 가능"
+    },
+    "social_engineering": {
+      "score": 5,
+      "rationale": "파일 내용을 통한 간접적 조작 가능성. 악성 파일을 읽어 에이전트 동작에 영향 줄 수 있음"
+    },
+    "total_score": 55.0,
+    "risk_level": "High",
+    "policy": "Sandbox"
+  },
+  {
+    "id": "skill-python",
+    "name": "openclaw/skill-python",
+    "execution": {
+      "score": 30,
+      "rationale": "Python 코드를 직접 실행하는 skill. 임의 코드 실행(RCE)이 가능하여 최고 수준의 실행 위험"
+    },
+    "data_access": {
+      "score": 20,
+      "rationale": "Python 코드를 통해 파일시스템, 네트워크, 환경변수 등 광범위한 데이터 접근 가능"
+    },
+    "external_dependency": {
+      "score": 15,
+      "rationale": "외부 라이브러리 import 및 pip 설치 가능. 공급망 공격 위협에 노출되며 런타임 의존성 다운로드 위험"
+    },
+    "privilege": {
+      "score": 15,
+      "rationale": "Python 코드 실행으로 시스템 명령(os.system, subprocess) 호출 가능. 최고 수준의 시스템 권한 획득 가능"
+    },
+    "social_engineering": {
+      "score": 5,
+      "rationale": "코드 실행 결과를 통한 간접적 조작 가능성. 직접적 사용자 대면보다는 실행 결과 기반 위험"
+    },
+    "total_score": 85.0,
+    "risk_level": "Extreme",
+    "policy": "Block"
+  },
+  {
+    "id": "skill-api-connector",
+    "name": "openclaw/skill-api-connector",
+    "execution": {
+      "score": 10,
+      "rationale": "REST/GraphQL API 호출 수행. 직접적 코드 실행보다는 HTTP 요청 기반 스크립트 실행 수준"
+    },
+    "data_access": {
+      "score": 25,
+      "rationale": "API 인증 처리를 위한 자격증명(API 키, 토큰) 직접 접근. credential-theft 위협에 직접 노출"
+    },
+    "external_dependency": {
+      "score": 15,
+      "rationale": "다양한 외부 API에 대한 동적 호출 필수. REST/GraphQL 엔드포인트와의 런타임 통신"
+    },
+    "privilege": {
+      "score": 5,
+      "rationale": "네트워크 통신 및 인증 처리를 위한 제한된 도구 수준의 권한"
+    },
+    "social_engineering": {
+      "score": 3,
+      "rationale": "외부 API 응답을 통한 간접적 조작 가능성은 있으나 직접적 사용자 대면 인터페이스 아님"
+    },
+    "total_score": 58.0,
+    "risk_level": "High",
+    "policy": "Sandbox"
+  },
+  {
+    "id": "memory-vectordb",
+    "name": "openclaw/memory-vectordb",
+    "execution": {
+      "score": 10,
+      "rationale": "벡터 DB 쿼리 및 임베딩 처리를 위한 스크립트 실행 수준. 임의 코드 실행 위험은 낮음"
+    },
+    "data_access": {
+      "score": 20,
+      "rationale": "장기 메모리에 저장된 모든 데이터에 접근. 사용자 대화 이력, 문서 임베딩, 민감 정보 포함 가능"
+    },
+    "external_dependency": {
+      "score": 10,
+      "rationale": "벡터 DB 서비스(Pinecone, Weaviate 등) 및 임베딩 API에 대한 동적 호출 필요"
+    },
+    "privilege": {
+      "score": 10,
+      "rationale": "메모리 저장소 읽기/쓰기 권한. 데이터 무결성에 영향을 미칠 수 있는 쓰기 권한 보유"
+    },
+    "social_engineering": {
+      "score": 5,
+      "rationale": "간접 프롬프트 인젝션 및 메모리 포이즈닝을 통해 에이전트의 장기 행동을 조작할 수 있는 위험"
+    },
+    "total_score": 55.0,
+    "risk_level": "High",
+    "policy": "Sandbox"
+  },
+  {
+    "id": "secureclaw",
+    "name": "openclaw/secureclaw",
+    "execution": {
+      "score": 10,
+      "rationale": "정책 엔진 및 감사 로깅 실행. 보안 프레임워크 자체의 스크립트 실행 수준"
+    },
+    "data_access": {
+      "score": 15,
+      "rationale": "감사 로그, 정책 설정, 권한 정보 등 보안 관련 민감 데이터에 접근. 자격증명 자체보다는 메타데이터 수준"
+    },
+    "external_dependency": {
+      "score": 5,
+      "rationale": "주로 내부 정책 엔진으로 동작. 외부 위협 인텔리전스 피드 연동 시 정적 의존성 수준"
+    },
+    "privilege": {
+      "score": 12,
+      "rationale": "권한 관리 및 정책 적용을 위해 높은 수준의 시스템 권한 필요. 다른 모듈의 권한을 제어하는 역할"
+    },
+    "social_engineering": {
+      "score": 2,
+      "rationale": "보안 프레임워크 특성상 사용자 대면 인터페이스 최소화. 권한 상승 위협은 있으나 사회공학 벡터는 제한적"
+    },
+    "total_score": 44.0,
+    "risk_level": "High",
+    "policy": "Sandbox"
+  },
+  {
+    "id": "sandboxclaw",
+    "name": "openclaw/sandboxclaw",
+    "execution": {
+      "score": 15,
+      "rationale": "컨테이너 격리 및 리소스 제한 관리. 컨테이너 런타임 제어를 위한 시스템 수준 실행 필요"
+    },
+    "data_access": {
+      "score": 5,
+      "rationale": "샌드박스 설정 및 정책 데이터에만 접근. 사용자 데이터에 직접 접근하지 않음"
+    },
+    "external_dependency": {
+      "score": 5,
+      "rationale": "컨테이너 런타임(Docker, containerd) 등 정적 의존성. 외부 동적 호출 최소화"
+    },
+    "privilege": {
+      "score": 15,
+      "rationale": "컨테이너 생성/관리를 위해 최고 수준의 시스템 권한(root/Docker 소켓 접근) 필요"
+    },
+    "social_engineering": {
+      "score": 0,
+      "rationale": "위협 ID 없음. 인프라 수준의 격리 컴포넌트로 사용자 대면 인터페이스 없음"
+    },
+    "total_score": 40.0,
+    "risk_level": "Moderate",
+    "policy": "Sandbox"
+  },
+  {
+    "id": "skill-slack",
+    "name": "openclaw/skill-slack",
+    "execution": {
+      "score": 10,
+      "rationale": "Slack API 호출을 통한 메시지 송수신 스크립트 실행 수준. 임의 코드 실행 위험 낮음"
+    },
+    "data_access": {
+      "score": 20,
+      "rationale": "Slack 채널 메시지, 파일, 사용자 정보에 접근. credential-theft 위협에 노출되어 OAuth 토큰 등 자격증명 처리"
+    },
+    "external_dependency": {
+      "score": 10,
+      "rationale": "Slack API에 대한 동적 호출 필수. 외부 서비스 의존성 높음"
+    },
+    "privilege": {
+      "score": 5,
+      "rationale": "Slack API 범위 내 제한된 도구 사용 수준. 시스템 명령 실행 권한 불필요"
+    },
+    "social_engineering": {
+      "score": 8,
+      "rationale": "간접 프롬프트 인젝션의 주요 벡터. Slack 메시지를 통해 악성 명령이 에이전트에 전달될 수 있음"
+    },
+    "total_score": 53.0,
+    "risk_level": "High",
+    "policy": "Sandbox"
+  },
+  {
+    "id": "skill-github",
+    "name": "openclaw/skill-github",
+    "execution": {
+      "score": 10,
+      "rationale": "GitHub API 호출을 통한 PR 생성, 이슈 관리 등 스크립트 실행 수준"
+    },
+    "data_access": {
+      "score": 20,
+      "rationale": "GitHub 토큰, 코드 저장소, 비공개 이슈 등 민감 데이터에 접근. credential-theft 위협에 직접 노출"
+    },
+    "external_dependency": {
+      "score": 10,
+      "rationale": "GitHub API에 대한 동적 호출 필수. 공급망 공격 벡터로 활용될 수 있는 외부 의존성"
+    },
+    "privilege": {
+      "score": 10,
+      "rationale": "저장소 조작(코드 푸시, PR 머지) 등 파일시스템 쓰기에 준하는 높은 권한 필요"
+    },
+    "social_engineering": {
+      "score": 5,
+      "rationale": "unsafe-tool-use 위협을 통해 의도치 않은 코드 변경이나 PR 승인을 유도할 수 있음"
+    },
+    "total_score": 55.0,
+    "risk_level": "High",
+    "policy": "Sandbox"
+  },
+  {
+    "id": "nanoclaw",
+    "name": "openclaw/nanoclaw",
+    "execution": {
+      "score": 15,
+      "rationale": "경량 에이전트로 임베디드/엣지 환경에서 실행. 제한된 환경이나 로컬 실행 능력 보유"
+    },
+    "data_access": {
+      "score": 10,
+      "rationale": "엣지 디바이스의 로컬 데이터에 접근. 제한된 환경으로 인해 전체 파일시스템보다는 문서 수준"
+    },
+    "external_dependency": {
+      "score": 5,
+      "rationale": "경량 설계로 최소한의 정적 의존성. 엣지 환경 특성상 외부 통신 제한적"
+    },
+    "privilege": {
+      "score": 10,
+      "rationale": "privilege-escalation 위협에 노출. 임베디드 환경에서의 권한 상승 시 하드웨어 제어 가능"
+    },
+    "social_engineering": {
+      "score": 3,
+      "rationale": "unsafe-tool-use 위협은 있으나, 엣지 환경 특성상 사용자 대면 인터페이스 제한적"
+    },
+    "total_score": 43.0,
+    "risk_level": "High",
+    "policy": "Sandbox"
+  },
+  {
+    "id": "guardclaw",
+    "name": "openclaw/guardclaw",
+    "execution": {
+      "score": 10,
+      "rationale": "입출력 필터링 및 안전 정책 적용을 위한 스크립트 실행 수준. 직접적 코드 실행 위험 낮음"
+    },
+    "data_access": {
+      "score": 10,
+      "rationale": "입출력 데이터를 검사하기 위해 문서/메시지 수준의 데이터에 접근. 자격증명 접근 불필요"
+    },
+    "external_dependency": {
+      "score": 5,
+      "rationale": "필터링 룰 및 정책 업데이트를 위한 정적 의존성 수준. 외부 동적 호출 최소화"
+    },
+    "privilege": {
+      "score": 5,
+      "rationale": "입출력 검사를 위한 제한된 도구 수준의 권한. 시스템 명령 실행 불필요"
+    },
+    "social_engineering": {
+      "score": 5,
+      "rationale": "프롬프트 인젝션의 방어선이자 동시에 공격 대상. 가드레일 우회 시 전체 시스템 보안에 영향"
+    },
+    "total_score": 35.0,
+    "risk_level": "Moderate",
+    "policy": "Sandbox"
+  }
+]

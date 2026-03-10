@@ -1,0 +1,143 @@
+{
+  "stats": {
+    "total_releases": 45,
+    "latest_version": "2026.3.8",
+    "first_release": "2025-11-26",
+    "naming_changes": 4,
+    "supported_providers": 15,
+    "supported_channels": 12
+  },
+  "naming_evolution": [
+    { "name": "Warelay", "period": "2025-11 ~ 2025-12", "versions": "1.1.0 ~ 1.3.0", "note": "초기 WhatsApp 릴레이 프로젝트" },
+    { "name": "Clawdis", "period": "2025-12 ~ 2026-01", "versions": "2.0.0-beta1 ~ beta5", "note": "리브랜딩 — Discord/Gateway/macOS 앱 추가" },
+    { "name": "Clawdbot", "period": "2026-01-05 ~ 2026-01-27", "versions": "2026.1.5 ~ 2026.1.24", "note": "CalVer 전환, 플러그인 시스템 도입" },
+    { "name": "OpenClaw", "period": "2026-01-28 ~ 현재", "versions": "2026.2.6 ~ 2026.3.8", "note": "Anthropic 상표 이슈 → 오픈소스 정체성 강조" }
+  ],
+  "workspace_files": [
+    { "file": "AGENTS.md", "category": "config", "description": "에이전트 설정 — 역할, 행동 규칙, 도구 허용 범위 정의", "detail": "에이전트의 페르소나, 허용/금지 도구 목록, 응답 스타일, 자율 실행 범위를 선언적으로 정의. 세션마다 자동 로드되어 에이전트 행동의 기본 프레임 역할", "security_note": "에이전트 권한 범위 결정, 과도한 권한 부여 주의", "spec": "Markdown 형식, 최대 50KB 권장", "url": "https://github.com/openclaw/openclaw/blob/main/docs/reference/AGENTS.default.md" },
+    { "file": "BOOTSTRAP.md", "category": "config", "description": "초기화 프롬프트 — 세션 시작 시 자동 로드되는 지시사항", "detail": "세션 최초 시작 시 system prompt에 주입되는 부트스트랩 지시사항. 프로젝트별 컨텍스트, 코딩 컨벤션, API 키 위치 등을 사전 설정", "security_note": "프롬프트 인젝션 벡터 가능", "spec": "System prompt 앞부분에 삽입, 토큰 소비 주의", "url": "https://github.com/openclaw/openclaw/blob/main/docs/start/bootstrapping.md" },
+    { "file": "HEARTBEAT.md", "category": "config", "description": "주기적 체크 — 에이전트가 일정 간격으로 수행하는 자율 작업", "detail": "기본 10분 간격으로 에이전트가 자율적으로 실행하는 작업 정의. 모니터링, 알림 체크, 데이터 수집, 상태 보고 등에 활용. Proactive Monitoring의 핵심 메커니즘", "security_note": "무감독 실행, 의도하지 않은 행동 가능", "spec": "간격: heartbeatInterval (기본 600초), 도구 사용 가능", "url": "https://github.com/openclaw/openclaw/blob/main/docs/gateway/heartbeat.md" },
+    { "file": "IDENTITY.md", "category": "config", "description": "에이전트 정체성 — 이름, 성격, 응답 스타일 정의", "detail": "에이전트의 이름, 아바타, 성격 특성, 말투, 이모지 사용 여부 등 외부 표현을 정의. Control UI에서 시각적 아이덴티티에도 반영", "security_note": "", "spec": "name, avatar, personality 키 지원", "url": "https://github.com/openclaw/openclaw/blob/main/docs/concepts/agent.md" },
+    { "file": "MEMORY.md", "category": "memory", "description": "장기 기억 — 사용자 선호도, 결정사항, 프로젝트 컨텍스트 저장 (Layer 1)", "detail": "에이전트의 영속적 기억 저장소. 사용자 선호도, 프로젝트 결정사항, 학습된 패턴을 마크다운으로 저장. Auto Flush 시 자동 업데이트. 개인 DM에서만 로드 (그룹 채팅 비로드)", "security_note": "민감 정보 저장 금지 (API 키, 비밀번호 등)", "spec": "Layer 1, 파일 권한 600, 최대 200줄 권장", "url": "https://github.com/openclaw/openclaw/blob/main/docs/concepts/memory.md" },
+    { "file": "SOUL.md", "category": "config", "description": "성격 및 태도 — 에이전트의 행동 원칙과 가치관", "detail": "에이전트의 핵심 가치관, 윤리 원칙, 행동 가이드라인 정의. IDENTITY.md가 외적 표현이라면 SOUL.md는 내적 원칙을 담당. 거부/수락 정책, 톤 앤 매너 등 포함", "security_note": "", "spec": "Markdown 형식, system prompt에 반영", "url": "https://github.com/openclaw/openclaw/blob/main/docs/concepts/system-prompt.md" },
+    { "file": "TOOLS.md", "category": "config", "description": "도구 설정 — 사용 가능한 도구 목록과 제한사항", "detail": "에이전트가 사용할 수 있는 도구(exec, browser, filesystem 등)의 허용/금지 목록, 실행 정책(자동 승인/수동 확인), 타임아웃, 리소스 제한 정의", "security_note": "도구 권한이 공격 표면 결정", "spec": "도구별 allow/deny, autoApprove 설정 가능", "url": "https://github.com/openclaw/openclaw/blob/main/docs/tools/index.md" },
+    { "file": "USER.md", "category": "config", "description": "사용자 정보 — 이름, 직업, 선호 언어 등 사용자 프로필", "detail": "에이전트가 참조하는 사용자 프로필. 이름, 직업, 선호 언어, 시간대, 전문 분야 등을 정의. 개인화된 응답과 컨텍스트 이해에 활용", "security_note": "개인정보 노출 주의", "spec": "Markdown key-value 형식", "url": "https://github.com/openclaw/openclaw/blob/main/docs/concepts/agent-workspace.md" },
+    { "file": "memory/YYYY-MM-DD.md", "category": "memory", "description": "일일 로그 — 작업 기록, 임시 메모, 디버깅 히스토리 (Layer 2)", "detail": "날짜별 자동 생성되는 작업 로그. Auto Flush 시 해당일 파일에 기록. 오늘+어제 파일만 세션에 자동 로드되어 단기 기억 역할. TODO, 디버깅 메모, 작업 진행 상황 추적", "security_note": "오늘+어제 데이터만 자동 로드", "spec": "Layer 2, 자동 생성, 일별 파일 분리", "url": "https://github.com/openclaw/openclaw/blob/main/docs/concepts/memory.md" },
+    { "file": "canvas/", "category": "workspace", "description": "작업 디렉토리 — 에이전트가 파일을 생성/수정하는 공간", "detail": "에이전트의 파일 작업 공간. 코드 생성, 문서 작성, 데이터 처리 결과물이 저장되는 디렉토리. Control UI에서 호스트 서빙 가능. 샌드박스 내에서 격리 실행 시 마운트 대상", "security_note": "파일시스템 접근 범위 제한 필요", "spec": "디렉토리 권한 700, 샌드박스 마운트 대상", "url": "https://github.com/openclaw/openclaw/blob/main/docs/web/index.md" }
+  ],
+  "memory_system": {
+    "layers": [
+      { "layer": 1, "file": "MEMORY.md", "scope": "장기 기억", "load_timing": "개인 세션 시작 시", "content": "결정사항, 선호도, 프로젝트 컨텍스트", "detail": "영속적 기억 저장소. 세션 간 유지되는 사용자 선호도, 프로젝트 결정사항, 학습 패턴 저장. 최대 200줄 권장, 초과 시 truncation 경고", "url": "https://github.com/openclaw/openclaw/blob/main/docs/concepts/memory.md#layer-1" },
+      { "layer": 2, "file": "memory/YYYY-MM-DD.md", "scope": "일일 로그", "load_timing": "오늘+어제 자동 로드", "content": "작업 기록, 임시 메모, TODO", "detail": "날짜별 자동 생성 로그. 단기 기억 역할. Auto Flush 시 자동 기록. 오래된 로그는 메모리 검색으로만 접근 가능", "url": "https://github.com/openclaw/openclaw/blob/main/docs/concepts/memory.md#layer-2" }
+    ],
+    "search": {
+      "type": "hybrid",
+      "vector_weight": 0.7,
+      "text_weight": 0.3,
+      "engines": ["Vector Search (의미론적)", "BM25 (키워드 기반)"],
+      "embedding_providers": ["OpenAI text-embedding-3-small", "Local embeddinggemma-300M", "Voyage AI"],
+      "detail": "의미론적 벡터 검색(70%)과 BM25 키워드 검색(30%)을 결합한 하이브리드 검색. SQLite 임베딩 캐시로 반복 쿼리 최적화. 다국어 불용어 필터링(한국어 포함) 지원",
+      "url": "https://github.com/openclaw/openclaw/blob/main/docs/concepts/memory.md"
+    },
+    "flush": {
+      "trigger": "softThreshold 도달 (176k 토큰)",
+      "action": "Silent Agentic Turn → MEMORY.md/Daily Log에 자동 기록 → Auto-Compaction",
+      "detail": "컨텍스트 윈도우가 softThreshold(176K 토큰)에 도달하면 에이전트가 자동으로 중요 정보를 MEMORY.md와 Daily Log에 기록 후 Auto-Compaction 실행. Compaction은 적응형 청킹 + 점진적 폴백 전략 사용",
+      "url": "https://github.com/openclaw/openclaw/blob/main/docs/concepts/compaction.md"
+    },
+    "security_rules": [
+      "비밀번호, API 키, 토큰 저장 금지",
+      "신용카드, 계좌 정보 저장 금지",
+      "그룹 채팅에서 MEMORY.md 비로드 (보안)",
+      "파일 권한: workspace 700, MEMORY.md 600"
+    ],
+    "url": "https://github.com/openclaw/openclaw/blob/main/docs/concepts/memory.md"
+  },
+  "architecture": {
+    "components": [
+      { "name": "Gateway", "description": "WebSocket 기반 통신 허브 — 에이전트와 채널 연결, OpenAI 호환 /v1/chat/completions HTTP 엔드포인트", "introduced": "2025-12 (beta1)", "detail": "모든 채널 어댑터와 에이전트 런타임을 연결하는 중앙 통신 허브. WebSocket 실시간 통신 + OpenAI 호환 REST API 제공. DNS-SD 자동 디스커버리, 토큰 인증 프로필, 웹훅 지원. /tools/invoke HTTP 엔드포인트로 외부 시스템 연동", "spec": "WebSocket + REST, OpenAI 호환 /v1/chat/completions", "url": "https://github.com/openclaw/openclaw/blob/main/docs/gateway/index.md" },
+      { "name": "Agent Runtime", "description": "LLM 추론 엔진 — 멀티 프로바이더 지원, 컨텍스트 관리, 도구 실행", "introduced": "2025-11", "detail": "에이전트의 두뇌. 15개 LLM 프로바이더를 통합 지원하며 컨텍스트 윈도우 관리, 프롬프트 캐싱, 도구 실행 오케스트레이션을 담당. 세션별 모델 선택, 적응형 청킹, Auto-Compaction 지원", "spec": "멀티 프로바이더, 최대 1,050K 토큰 컨텍스트", "url": "https://github.com/openclaw/openclaw/blob/main/docs/concepts/agent-loop.md" },
+      { "name": "Plugin System", "description": "확장 기능 — 채널 통합, 도구, 스킬 런타임 로드", "introduced": "2026-01 (v2026.1.11)", "detail": "모듈러 플러그인 아키텍처. 채널 어댑터, 도구, 스킬을 런타임에 동적 로드/언로드. $include 설정으로 모듈러 구성, 선택적 플러그인 도구, 훅 시스템(allowPromptInjection 정책) 지원", "spec": "런타임 로드, $include 모듈러 설정", "url": "https://github.com/openclaw/openclaw/blob/main/docs/tools/plugin.md" },
+      { "name": "Sandbox", "description": "격리 실행 환경 — Docker/Podman 컨테이너, 에이전트별 워크스페이스 분리", "introduced": "2026-01 (v2026.1.8)", "detail": "에이전트 코드 실행을 Docker/Podman 컨테이너 내부에서 격리. 에이전트별 워크스페이스 분리, 네트워크 정책, 리소스 제한(CPU/메모리), 브라우저 샌드박스 호스트 제어, 마운트 설정 제공", "spec": "Docker/Podman, 에이전트별 격리, 네트워크 정책", "url": "https://github.com/openclaw/openclaw/blob/main/docs/gateway/sandboxing.md" },
+      { "name": "Memory Engine", "description": "하이브리드 검색 — BM25+Vector, SQLite 캐시, 자동 플러시", "introduced": "2026-01 (v2026.1.20)", "detail": "2-Layer 메모리 아키텍처(MEMORY.md + Daily Log)와 하이브리드 검색(Vector 70% + BM25 30%)을 결합. SQLite 임베딩 캐시, Auto Flush(176K 토큰 임계값), 적응형 Compaction 엔진 포함", "spec": "Vector+BM25 하이브리드, SQLite 캐시, 176K Flush", "url": "https://github.com/openclaw/openclaw/blob/main/docs/concepts/memory.md" },
+      { "name": "Control UI", "description": "웹 기반 관리 대시보드 — 에이전트 모니터링, 세션 관리, 설정", "introduced": "2025-12 (beta2)", "detail": "브라우저 기반 에이전트 관리 대시보드. 세션 상태 모니터링, 토큰 사용량 추적, 에이전트 설정/아이덴티티 수정, Canvas 호스트 서빙, 다국어 지원(스페인어 등). 커스텀 아바타/어시스턴트 아이덴티티 설정 가능", "spec": "웹 대시보드, 토큰 추적, Canvas 서빙", "url": "https://github.com/openclaw/openclaw/blob/main/docs/web/index.md" },
+      { "name": "TUI/CLI", "description": "터미널 인터페이스 — 상태 확인, 설정, 에이전트 관리 명령어", "introduced": "2025-11", "detail": "터미널 기반 에이전트 관리 도구. openclaw status/update/backup/memory/plugins 명령 지원. 테이블 기반 상태 표시, 하이브리드 메모리 검색, 로그 로컬 타임존 표시, 메시지 전송 등", "spec": "CLI, status/update/backup/memory 명령", "url": "https://github.com/openclaw/openclaw/blob/main/docs/cli/index.md" },
+      { "name": "Channel Adapters", "description": "메시징 플랫폼 통합 — Discord, Telegram, Slack, WhatsApp, Signal, Matrix, Teams, LINE 등", "introduced": "2025-11 (WhatsApp)", "detail": "12개 메시징 플랫폼을 플러그인 방식으로 통합. DM/그룹/포럼 지원, 음성 메시지, TTS, 투표, 리액션, E2EE(Matrix), 인라인 키보드(Telegram). DM 접근 제어(페어링 필수), 인바운드 DM 기본 잠금 보안 정책 적용", "spec": "12개 플랫폼, 플러그인 방식, DM 페어링 필수", "url": "https://github.com/openclaw/openclaw/blob/main/docs/channels/index.md" }
+    ],
+    "url": "https://github.com/openclaw/openclaw/blob/main/docs/concepts/architecture.md"
+  },
+  "releases": [
+    { "version": "2026.3.8", "date": "2026-03-09", "name": "OpenClaw", "highlights": ["CLI 백업 기능 (backup create/verify)", "Talk mode 무음 타임아웃 설정", "ACP provenance 메타데이터 추적", "Brave 웹 검색 LLM Context 모드", "GPT-5.4 컨텍스트 윈도우 호환 (1,050K 토큰)"], "category": "feature" },
+    { "version": "2026.3.7", "date": "2026-03-08", "name": "OpenClaw", "highlights": ["Context engine 플러그인 인터페이스", "ACP 영속 채널 바인딩 (Discord/Telegram)", "스페인어 Control UI 지원", "Perplexity Search API 마이그레이션", "Docker 확장 프리-베이킹", "플러그인 훅 정책 (allowPromptInjection)", "Compaction 라이프사이클 이벤트", "Gemini 3.1 Flash-Lite 지원"], "category": "major" },
+    { "version": "2026.2.24", "date": "2026-02-25", "name": "OpenClaw", "highlights": ["Android 네이티브 온보딩 (5탭 셸)", "다국어 자동 응답 중지 구문", "보안 감사 플래그 (멀티유저 감지)", "Docker 네임스페이스 조인 차단"], "category": "feature" },
+    { "version": "2026.2.23", "date": "2026-02-24", "name": "OpenClaw", "highlights": ["Kilo Gateway 프로바이더 지원", "프롬프트 캐싱 문서", "HTTP 보안 헤더", "세션 정리 디스크 예산 제어", "Moonshot/Kimi 웹 검색"], "category": "feature" },
+    { "version": "2026.2.22", "date": "2026-02-23", "name": "OpenClaw", "highlights": ["Mistral 프로바이더 지원", "자동 업데이터 (stable/beta)", "Synology Chat 플러그인", "다국어 FTS 불용어 필터링 (한국어 포함)"], "category": "major" },
+    { "version": "2026.2.14", "date": "2026-02-15", "name": "OpenClaw", "highlights": ["Telegram 투표 전송", "DM 접근 제어 별칭", "Discord 실행 승인 프롬프트", "샌드박스 브라우저 마운트 설정"], "category": "feature" },
+    { "version": "2026.2.13", "date": "2026-02-14", "name": "OpenClaw", "highlights": ["Discord 음성 메시지 (파형 프리뷰)", "Hugging Face Inference 프로바이더", "Write-ahead 전송 큐 (크래시 복구)"], "category": "feature" },
+    { "version": "2026.2.12", "date": "2026-02-13", "name": "OpenClaw", "highlights": ["SSRF deny 정책 (호스트네임 허용목록)", "브라우저/웹 콘텐츠 비신뢰 기본값", "Nostr 프로필 API 변조 방지", "루프백 브라우저 인증 필수"], "category": "security" },
+    { "version": "2026.2.9", "date": "2026-02-09", "name": "OpenClaw", "highlights": ["iOS 알파 앱 + 셋업 코드 온보딩", "Grok (xAI) 웹 검색 프로바이더", "에이전트 관리 RPC 메서드"], "category": "feature" },
+    { "version": "2026.2.6", "date": "2026-02-07", "name": "OpenClaw", "highlights": ["Anthropic Opus 4.6 지원", "OpenAI Codex gpt-5.3-codex 지원", "xAI (Grok) 프로바이더", "Web UI 토큰 사용량 대시보드", "Voyage AI 메모리 지원", "스킬/플러그인 코드 안전 스캐닝"], "category": "major" },
+    { "version": "2026.1.24", "date": "2026-01-25", "name": "Clawdbot", "highlights": ["LINE 플러그인 (메시징 API)", "Edge TTS 폴백", "인챗 승인 시스템 (/approve)", "Brave 검색 신선도 필터링"], "category": "feature" },
+    { "version": "2026.1.23", "date": "2026-01-24", "name": "Clawdbot", "highlights": ["Telegram TTS 코어 통합", "Gateway /tools/invoke HTTP 엔드포인트", "Fly.io 배포 가이드", "Tlon/Urbit 채널 플러그인"], "category": "feature" },
+    { "version": "2026.1.22", "date": "2026-01-23", "name": "Clawdbot", "highlights": ["Compaction 적응형 청킹 + 점진적 폴백", "Slack 채팅 유형 스레딩 오버라이드"], "category": "fix" },
+    { "version": "2026.1.21", "date": "2026-01-22", "name": "Clawdbot", "highlights": ["Lobster 선택적 플러그인 도구", "커스텀 어시스턴트 아이덴티티/아바타 (Control UI)", "캐시 TTL 프루닝 최적화"], "category": "feature" },
+    { "version": "2026.1.20", "date": "2026-01-21", "name": "Clawdbot", "highlights": ["ACP 프로토콜 (IDE 통합)", "하이브리드 메모리 검색 (BM25+Vector)", "SQLite 임베딩 캐시", "Nostr 채널 플러그인", "Matrix E2EE 지원", "Slack HTTP 웹훅 모드"], "category": "major" },
+    { "version": "2026.1.16", "date": "2026-01-17", "name": "Clawdbot", "highlights": ["Hooks 시스템 도입", "인바운드 미디어 이해 (이미지/오디오/비디오)", "Zalo Personal 플러그인", "세션 identityLinks 크로스 플랫폼"], "category": "major" },
+    { "version": "2026.1.11", "date": "2026-01-12", "name": "Clawdbot", "highlights": ["플러그인 시스템 first-class 도입", "Voice Call 플러그인 (Twilio)", "모듈러 설정 ($include)", "메모리 자동 플러시", "apply_patch 도구 (실험적)", "Bash→exec 도구 리네임"], "category": "major" },
+    { "version": "2026.1.10", "date": "2026-01-11", "name": "Clawdbot", "highlights": ["CLI status 테이블 기반 개편", "Gateway OpenAI 호환 HTTP 엔드포인트", "Z.AI (GLM) 프로바이더", "브라우저 샌드박스 호스트 제어"], "category": "feature" },
+    { "version": "2026.1.9", "date": "2026-01-10", "name": "Clawdbot", "highlights": ["Microsoft Teams 프로바이더", "토큰 인증 프로필", "Gateway DNS-SD 디스커버리", "WhatsApp 브로드캐스트 그룹", "Ansible 배포 가이드"], "category": "major" },
+    { "version": "2026.1.8", "date": "2026-01-08", "name": "Clawdbot", "highlights": ["🔒 인바운드 DM 기본 잠금 (Telegram/WhatsApp/Signal/iMessage/Discord/Slack)", "DM 페어링 필수 기본값", "에이전트별 샌드박스 격리", "auto-migration 무결성 검사"], "category": "security" },
+    { "version": "2026.1.5", "date": "2026-01-05", "name": "Clawdbot", "highlights": ["이미지 모델 설정 (agent.imageModel)", "모델 단축키 (opus, sonnet, gpt 등)", "마크다운 렌더링 (도구 결과 카드)"], "category": "feature" },
+    { "version": "2.0.0-beta5", "date": "2026-01-03", "name": "Clawdis", "highlights": ["Discord 도구 확장 (리액션/스티커/투표)", "Talk Mode (ElevenLabs TTS 연속 대화)", "Signal/iMessage JSON-RPC 지원", "Docker 컨테이너화"], "category": "major" },
+    { "version": "2.0.0-beta3", "date": "2025-12-27", "name": "Clawdis", "highlights": ["First-class 도구 (구 Skills 대체)", "세션별 모델 선택", "그룹 채팅 활성화 모드", "Discord 봇 트랜스포트", "Gateway 웹훅"], "category": "major" },
+    { "version": "2.0.0-beta2", "date": "2025-12-21", "name": "Clawdis", "highlights": ["번들 Gateway (bun 컴파일)", "관리형 스킬 플랫폼", "macOS 앱 리디자인 (QR 로그인)", "Canvas 호스트 서빙"], "category": "feature" },
+    { "version": "2.0.0-beta1", "date": "2025-12-19", "name": "Clawdis", "highlights": ["리브랜딩 첫 릴리즈", "macOS 앱", "WebSocket Gateway 아키텍처", "iOS node 지원", "WhatsApp Web 전용", "Heartbeat 시스템", "보안 강화"], "category": "major" },
+    { "version": "1.3.0", "date": "2025-12-02", "name": "Warelay", "highlights": ["플러거블 에이전트 (Claude/Pi/Codex/Opencode)", "안전 중지 단어 (stop/esc/abort)", "개선된 세션 안정성"], "category": "major" },
+    { "version": "1.2.0", "date": "2025-11-27", "name": "Warelay", "highlights": ["Heartbeat UX 개선 (10분 기본값)", "세션 유휴 만료 (7일)", "ultrathink 프롬프팅"], "category": "feature" },
+    { "version": "1.1.0", "date": "2025-11-26", "name": "Warelay", "highlights": ["최초 릴리즈", "웹 자동 응답", "미디어 리사이징", "음성 메모 트랜스크립션"], "category": "initial" }
+  ],
+  "cli_commands": [
+    { "command": "openclaw status", "description": "에이전트/세션/게이트웨이 상태 테이블 표시", "detail": "에이전트 실행 상태, 활성 세션 수, Gateway 연결 상태, 메모리 사용량, 업타임을 테이블 형태로 표시", "url": "https://github.com/openclaw/openclaw/blob/main/docs/cli/status.md" },
+    { "command": "openclaw status --all", "description": "전체 디버그 리포트 (로그, Tailscale 등)", "detail": "상세 진단 정보 출력. 시스템 로그, Tailscale VPN 상태, Docker 컨테이너 상태, 플러그인 목록, 네트워크 연결 정보 포함", "url": "https://github.com/openclaw/openclaw/blob/main/docs/cli/status.md#debug-report" },
+    { "command": "openclaw update", "description": "안전한 자동 업데이트 (--dry-run 미리보기)", "detail": "stable/beta 채널 선택 가능, --dry-run으로 변경사항 미리보기, 자동 백업 후 업데이트, 롤백 지원", "url": "https://github.com/openclaw/openclaw/blob/main/docs/cli/update.md" },
+    { "command": "openclaw backup create", "description": "로컬 상태 백업 아카이브 생성", "detail": "워크스페이스 파일, 메모리, 설정, 플러그인 상태를 tar.gz 아카이브로 백업. 타임스탬프 기반 파일명 자동 생성", "url": "https://github.com/openclaw/openclaw/blob/main/docs/cli/backup.md" },
+    { "command": "openclaw backup verify", "description": "백업 무결성 검증", "detail": "백업 아카이브의 체크섬 검증, 파일 무결성 확인, 복원 가능 여부 테스트", "url": "https://github.com/openclaw/openclaw/blob/main/docs/cli/backup.md#verify" },
+    { "command": "openclaw memory status --deep", "description": "메모리 상태 확인 (벡터/임베딩 포함)", "detail": "MEMORY.md 크기, Daily Log 수, 벡터 인덱스 상태, 임베딩 캐시 크기, 마지막 Flush 시각, 검색 엔진 상태 표시", "url": "https://github.com/openclaw/openclaw/blob/main/docs/cli/memory.md" },
+    { "command": "openclaw memory search \"쿼리\"", "description": "하이브리드 메모리 검색", "detail": "Vector(70%) + BM25(30%) 하이브리드 검색 실행. 결과를 관련성 스코어와 함께 표시. --vector-only, --text-only 옵션 지원", "url": "https://github.com/openclaw/openclaw/blob/main/docs/cli/memory.md#search" },
+    { "command": "openclaw memory index", "description": "메모리 인덱싱 실행", "detail": "모든 메모리 파일을 재인덱싱. 벡터 임베딩 재생성, BM25 인덱스 갱신. --provider 옵션으로 임베딩 프로바이더 선택", "url": "https://github.com/openclaw/openclaw/blob/main/docs/cli/memory.md#index" },
+    { "command": "openclaw plugins install <name>", "description": "플러그인 설치", "detail": "공식 레지스트리 또는 GitHub URL에서 플러그인 설치. 코드 안전 스캐닝 자동 실행, 의존성 해결, 설정 자동 생성", "url": "https://github.com/openclaw/openclaw/blob/main/docs/cli/plugins.md" },
+    { "command": "openclaw logs --local-time", "description": "로컬 타임존 로그 표시", "detail": "에이전트 실행 로그를 로컬 타임존으로 변환하여 표시. --tail, --level, --since 필터링 옵션 지원", "url": "https://github.com/openclaw/openclaw/blob/main/docs/cli/logs.md" },
+    { "command": "openclaw message send --provider <p>", "description": "메시지 전송", "detail": "CLI에서 직접 특정 채널/사용자에게 메시지 전송. --provider로 채널 선택, --to로 수신자 지정, 파일 첨부 지원", "url": "https://github.com/openclaw/openclaw/blob/main/docs/cli/message.md" }
+  ],
+  "supported_providers": [
+    { "name": "Anthropic", "models": "Claude Opus 4.6, Sonnet", "since": "1.1.0", "detail": "Anthropic의 Claude 모델 패밀리. Opus 4.6(최고 성능), Sonnet 4.6(균형), Haiku 4.5(경량). 프롬프트 캐싱, 확장된 사고(Extended Thinking) 지원", "url": "https://docs.anthropic.com/en/docs/about-claude/models" },
+    { "name": "OpenAI", "models": "GPT-5.4, GPT-5.3 Codex", "since": "1.3.0", "detail": "OpenAI의 GPT 모델. GPT-5.4(1,050K 컨텍스트), GPT-5.3 Codex(코딩 특화). Function Calling, JSON Mode, Vision 지원", "url": "https://developers.openai.com/api/docs/models" },
+    { "name": "Google", "models": "Gemini 3.1, Flash-Lite", "since": "2.0.0-beta3", "detail": "Google의 Gemini 모델. Gemini 3.1(대형), Flash-Lite(경량 고속). 멀티모달 입력, 긴 컨텍스트 윈도우, Grounding 지원", "url": "https://ai.google.dev/gemini-api/docs/models" },
+    { "name": "xAI", "models": "Grok", "since": "2026.2.6", "detail": "xAI의 Grok 모델. 실시간 웹 검색 내장, X(Twitter) 데이터 접근. 웹 검색 프로바이더로도 활용 가능", "url": "https://docs.x.ai/docs/models" },
+    { "name": "Mistral", "models": "Mistral Large", "since": "2026.2.22", "detail": "Mistral AI의 대형 모델. 유럽 기반, GDPR 호환, 다국어 지원 우수. Function Calling, JSON Mode 지원", "url": "https://docs.mistral.ai/getting-started/models/" },
+    { "name": "Hugging Face", "models": "Inference API", "since": "2026.2.13", "detail": "Hugging Face Inference API를 통한 오픈소스 모델 접근. Llama, Mixtral 등 수천 개 모델 선택 가능", "url": "https://huggingface.co/docs/api-inference/" },
+    { "name": "OpenRouter", "models": "멀티 프로바이더 게이트웨이", "since": "2026.1.10", "detail": "여러 AI 프로바이더를 단일 API로 통합하는 게이트웨이. 자동 폴백, 비용 최적화, 200+ 모델 접근", "url": "https://openrouter.ai/docs" },
+    { "name": "MiniMax", "models": "MiniMax", "since": "2026.1.11", "detail": "MiniMax의 대형 언어 모델. 중국어/영어 이중 언어 특화, 음성 합성·영상 생성 멀티모달 지원", "url": "https://www.minimax.io/platform" },
+    { "name": "Moonshot/Kimi", "models": "Moonshot", "since": "2026.2.23", "detail": "Moonshot AI의 Kimi 모델. 128K 초장문 컨텍스트, 웹 검색 내장, 중국어 최적화", "url": "https://platform.moonshot.cn/docs" },
+    { "name": "Z.AI (GLM)", "models": "GLM", "since": "2026.1.10", "detail": "Zhipu AI의 GLM(General Language Model). ChatGLM 시리즈, 코드 생성, 웹 에이전트(AutoGLM) 지원", "url": "https://open.bigmodel.cn/dev/api" },
+    { "name": "Cerebras", "models": "Cerebras", "since": "2026.1.11", "detail": "Cerebras의 추론 가속 서비스. 웨이퍼 스케일 칩 기반 초고속 추론, 오픈소스 모델(Llama) 지원", "url": "https://www.cerebras.net/inference" },
+    { "name": "Kilo Gateway", "models": "Kilo", "since": "2026.2.23", "detail": "Kilo 분산 추론 게이트웨이. 로드 밸런싱, 비용 최적화, 다중 프로바이더 폴백", "url": "https://kilo.ai/docs" },
+    { "name": "Perplexity", "models": "Search API", "since": "2026.3.7", "detail": "Perplexity의 검색 API. 웹 검색 + LLM 결합, 실시간 정보 접근, 출처 인용 제공", "url": "https://docs.perplexity.ai/reference/post_chat_completions" },
+    { "name": "Voyage AI", "models": "임베딩 전용", "since": "2026.2.6", "detail": "Voyage AI의 임베딩 모델. 메모리 벡터 검색 전용, 고품질 문서 임베딩, 다국어 지원", "url": "https://docs.voyageai.com/docs/embeddings" },
+    { "name": "Local", "models": "embeddinggemma-300M", "since": "2026.1.20", "detail": "로컬 실행 임베딩 모델. Google embeddinggemma-300M 기반, 외부 API 불필요, 오프라인 메모리 검색 가능", "url": "https://github.com/openclaw/openclaw/blob/main/docs/providers/index.md" }
+  ],
+  "supported_channels": [
+    { "name": "Discord", "since": "2.0.0-beta3", "features": "봇 DM/채널, 음성 메시지, 투표, 리액션", "detail": "Discord 봇 트랜스포트를 통한 완전 통합. DM/채널/스레드 지원, 음성 메시지(파형 프리뷰), 리액션/스티커/투표, 실행 승인 프롬프트, 인바운드 DM 잠금", "url": "https://github.com/openclaw/openclaw/blob/main/docs/channels/discord.md" },
+    { "name": "Telegram", "since": "2.0.0-beta1", "features": "DM, 그룹, 포럼 토픽, TTS, 투표, 인라인 키보드", "detail": "Telegram Bot API 기반. DM/그룹/포럼 토픽 지원, TTS(텍스트 음성 변환), 투표 전송, 인라인 키보드, 미디어 이해(이미지/오디오/비디오). ACP 영속 채널 바인딩", "url": "https://github.com/openclaw/openclaw/blob/main/docs/channels/telegram.md" },
+    { "name": "WhatsApp", "since": "1.1.0", "features": "DM, 브로드캐스트 그룹, 음성 메모", "detail": "WhatsApp Web 프로토콜 기반. 최초 지원 채널. DM, 브로드캐스트 그룹, 음성 메모 트랜스크립션. DM 페어링 필수 보안 정책 적용", "url": "https://github.com/openclaw/openclaw/blob/main/docs/channels/whatsapp.md" },
+    { "name": "Slack", "since": "2.0.0-beta3", "features": "DM, 채널, 스레딩, HTTP 웹훅", "detail": "Slack 앱 통합. DM/채널/스레딩 지원, HTTP 웹훅 모드(Socket Mode 대안), 채팅 유형 스레딩 오버라이드. 기업 환경 최적화", "url": "https://github.com/openclaw/openclaw/blob/main/docs/channels/slack.md" },
+    { "name": "Signal", "since": "2.0.0-beta5", "features": "DM, JSON-RPC, 리액션, 읽음 확인", "detail": "Signal JSON-RPC 프로토콜 기반. E2EE(종단간 암호화) 보장, DM, 리액션, 읽음 확인. 높은 보안성 요구 환경에 적합", "url": "https://github.com/openclaw/openclaw/blob/main/docs/channels/signal.md" },
+    { "name": "iMessage", "since": "2.0.0-beta5", "features": "DM, JSON-RPC", "detail": "iMessage JSON-RPC 프로토콜 기반. macOS 전용, Apple 생태계 통합. DM 지원", "url": "https://github.com/openclaw/openclaw/blob/main/docs/channels/imessage.md" },
+    { "name": "Matrix", "since": "2026.1.20", "features": "DM, E2EE 지원", "detail": "Matrix 프로토콜 기반 분산형 메시징. E2EE(종단간 암호화) 지원, 자체 호스팅 가능, Element 클라이언트 호환", "url": "https://github.com/openclaw/openclaw/blob/main/docs/channels/matrix.md" },
+    { "name": "Microsoft Teams", "since": "2026.1.9", "features": "폴링, 첨부파일, CLI 전송", "detail": "Microsoft Teams 폴링 방식 통합. 첨부파일 지원, CLI에서 직접 전송 가능. 기업 Microsoft 365 환경 통합", "url": "https://github.com/openclaw/openclaw/blob/main/docs/channels/msteams.md" },
+    { "name": "LINE", "since": "2026.1.24", "features": "메시징 API", "detail": "LINE Messaging API 기반. 일본/동남아 사용자 접근. 텍스트 메시지, 리치 메뉴 지원", "url": "https://github.com/openclaw/openclaw/blob/main/docs/channels/line.md" },
+    { "name": "Nostr", "since": "2026.1.20", "features": "DM", "detail": "Nostr 프로토콜 기반 분산형 소셜 메시징. DM 지원, 프로필 API 변조 방지 보안 적용", "url": "https://github.com/openclaw/openclaw/blob/main/docs/channels/nostr.md" },
+    { "name": "Synology Chat", "since": "2026.2.22", "features": "채널 플러그인", "detail": "Synology NAS Chat 서비스 통합. 자체 호스팅 NAS 환경에서 에이전트 운영 가능", "url": "https://github.com/openclaw/openclaw/blob/main/docs/channels/synology-chat.md" },
+    { "name": "Tlon/Urbit", "since": "2026.1.23", "features": "DM, 그룹", "detail": "Tlon(Urbit) 분산 네트워크 기반 메시징. 완전 자기 주권형 통신, DM/그룹 지원", "url": "https://github.com/openclaw/openclaw/blob/main/docs/channels/tlon.md" }
+  ]
+}

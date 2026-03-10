@@ -1,0 +1,186 @@
+{
+  "stats": {
+    "data_as_of": "2026-03-10",
+    "launch_date": "2026-01-28",
+    "creator": "Matt Schlicht",
+    "claimed_agents": 2140000,
+    "actual_humans": 22000,
+    "agents_per_human": 97,
+    "submolts": 18742,
+    "total_posts": 287650,
+    "total_comments": 612480,
+    "exposed_api_keys": 1500000,
+    "exposed_emails": 35000,
+    "memecoin_surge_pct": 7000,
+    "platform_status": "active"
+  },
+  "overview": {
+    "description": "AI 에이전트 전용 소셜 네트워크 — Reddit 형식으로 에이전트가 포스트/댓글/투표, 인간은 관찰만 가능",
+    "tagline": "The Front Page of the Agent Internet — Where AI agents share, discuss, and upvote. Humans welcome to observe.",
+    "tech_stack": "Supabase 기반, Matt Schlicht가 AI 어시스턴트로 주말 만에 구축. '코드를 한 줄도 작성하지 않음'",
+    "governance": "플랫폼 관리를 봇 'Clawd Clawderberg'에게 위임. 창시자가 더 이상 직접 운영하지 않음"
+  },
+  "timeline": [
+    { "date": "2026-01-28", "event": "Moltbook 런칭", "detail": "Matt Schlicht가 AI 어시스턴트로 주말 만에 구축하여 공개", "severity": "info" },
+    { "date": "2026-01-29", "event": "바이럴 확산 시작", "detail": "Andrej Karpathy가 '가장 놀라운 SF적 테이크오프 현상'으로 X에서 언급", "severity": "info" },
+    { "date": "2026-01-30", "event": "주류 미디어 보도 폭발", "detail": "TechCrunch, Fortune, CNBC 등 주요 매체가 일제히 보도", "severity": "info" },
+    { "date": "2026-01-30", "event": "MOLT 밈코인 7,000% 급등", "detail": "플랫폼 이름과 연관된 MOLT 토큰이 24시간 내 1,800% 급등, 이후 7,000% 도달", "severity": "high" },
+    { "date": "2026-01-31", "event": "404 Media: DB 취약점 최초 보고", "detail": "잘못 구성된 Supabase DB로 모든 에이전트 세션 탈취 가능. 플랫폼 일시 오프라인", "severity": "critical" },
+    { "date": "2026-01-31 21:48", "event": "Wiz: 취약점 신고 시작", "detail": "Wiz Inc. 연구원이 X DM으로 Moltbook 관리자에게 최초 연락", "severity": "critical" },
+    { "date": "2026-01-31 22:06", "event": "Supabase RLS 미설정 보고", "detail": "agents 테이블 (API 키, 이메일) 노출 보고", "severity": "critical" },
+    { "date": "2026-01-31 23:29", "event": "1차 수정", "detail": "agents, owners, site_admins 테이블 보안 적용", "severity": "medium" },
+    { "date": "2026-02-01 00:13", "event": "2차 수정", "detail": "agent_messages, notifications, votes, follows 보안 적용", "severity": "medium" },
+    { "date": "2026-02-01 00:31", "event": "POST 쓰기 권한 취약점 발견", "detail": "모든 포스트 수정 가능한 쓰기 접근 권한 발견", "severity": "critical" },
+    { "date": "2026-02-01 00:44", "event": "3차 수정", "detail": "쓰기 접근 차단", "severity": "medium" },
+    { "date": "2026-02-01 00:50", "event": "추가 테이블 노출 발견", "detail": "observers (29K 이메일), identity_verifications, developer_apps 노출", "severity": "high" },
+    { "date": "2026-02-01 01:00", "event": "최종 수정 완료", "detail": "모든 테이블 보안 적용. 전체 API 키 리셋 강제", "severity": "info" },
+    { "date": "2026-02-02", "event": "Wiz 블로그 공개 발표", "detail": "'Hacking Moltbook: 1.5M API Keys Exposed' 보고서 공개", "severity": "critical" },
+    { "date": "2026-02-02", "event": "Elon Musk '초기 특이점' 발언", "detail": "Moltbook을 '매우 초기 단계의 특이점'으로 평가", "severity": "info" },
+    { "date": "2026-02-02", "event": "Gary Marcus 경고", "detail": "'사고 대기 중인 재앙' — 보안 리더들이 사용 중지 촉구", "severity": "high" },
+    { "date": "2026-02-02", "event": "Fortune: 가짜 ClawHub 스킬 발견", "detail": "14개 가짜 크립토 트레이딩 스킬 업로드 → 악성코드로 데이터/크립토 탈취", "severity": "high" },
+    { "date": "2026-02-03", "event": "봇 팜 논란 본격화", "detail": "17K 인간이 평균 88개 에이전트 운영. 자율적 AI 행위 비율 극소수", "severity": "high" },
+    { "date": "2026-02-07", "event": "인간 위장 폭로", "detail": "Peter Girnus: Agent #847,291로 위장하여 바이럴 포스트 작성 — '2026 AGI 증거가 사실 골든 리트리버 키우는 남자의 LARP'", "severity": "medium" },
+    { "date": "2026-02-12", "event": "연구자 진위성 의문 제기", "detail": "Euronews — 연구자들이 포스트 주체가 AI인지 인간인지 질문. 과학적 이해 방해", "severity": "medium" },
+    { "date": "2026-02", "event": "99% 가짜 계정 폭로", "detail": "36Kr — 1.5M 사용자 중 99%가 가짜 계정이며 단일 에이전트가 50만 계정 일괄 등록한 사례 확인", "severity": "high" }
+  ],
+  "security_incidents": [
+    {
+      "id": "supabase-breach",
+      "title": "Supabase DB 노출 — 1.5M API 키 유출",
+      "date": "2026-01-31",
+      "severity": "critical",
+      "discoverer": "Wiz Inc.",
+      "description": "잘못 구성된 Supabase 데이터베이스로 전체 읽기/쓰기 접근 가능. 1.5M API 인증 토큰(OpenAI, Anthropic, AWS, GitHub, Google Cloud 키 포함), 35K 이메일, 에이전트 간 비공개 메시지, 29K 관찰자 이메일 노출",
+      "root_cause": "Supabase Row Level Security(RLS) 미설정 — 단일 설정 오류",
+      "resolution": "3시간 내 단계적 수정, 전체 API 키 리셋 강제. 연구자가 접근한 데이터 삭제",
+      "impact": "1.5M API tokens, 35K+ emails, private messages exposed",
+      "references": ["Wiz Blog", "404 Media", "Fortune", "Dev.to"]
+    },
+    {
+      "id": "prompt-injection-propagation",
+      "title": "프롬프트 인젝션 대규모 전파",
+      "date": "2026-02",
+      "severity": "high",
+      "discoverer": "Vectra AI, Security researchers",
+      "description": "에이전트가 서로의 출력을 읽고 반복하는 구조에서 프롬프트 인젝션 공격이 대규모로 전파. 사회공학(31.9%)이 기술적 프롬프트 인젝션(3.7%)보다 효과적. 악의적 포스트가 일반 콘텐츠 대비 6배 높은 참여율",
+      "root_cause": "에이전트 출력의 무비판적 소비 + 컨텍스트 격리 미비",
+      "resolution": "미해결 — 구조적 문제",
+      "impact": "Mass prompt injection propagation risk",
+      "references": ["Vectra AI Blog", "arXiv 2602.13284"]
+    },
+    {
+      "id": "clawhub-malware",
+      "title": "ClawHub 가짜 크립토 스킬 악성코드",
+      "date": "2026-02-02",
+      "severity": "high",
+      "discoverer": "Security researchers",
+      "description": "Moltbook 바이럴 직후 ClawHub에 14개 가짜 크립토 트레이딩 스킬 업로드. 실제로는 파일 접근/데이터 탈취/크립토 지갑 탈취 악성코드",
+      "root_cause": "ClawHub 스킬 등록 시 보안 검증 미비",
+      "resolution": "악성 스킬 삭제, 스킬 보안 스캐닝 강화",
+      "impact": "14 malicious skills distributed",
+      "references": ["Fortune", "Security Boulevard"]
+    },
+    {
+      "id": "memecoin-manipulation",
+      "title": "MOLT 밈코인 시장 조작",
+      "date": "2026-01-30",
+      "severity": "high",
+      "discoverer": "CoinDesk",
+      "description": "Moltbook 바이럴 확산에 편승하여 MOLT 밈코인 런칭. 24시간 내 1,800% 급등, 이후 7,000% 도달. 투기적 거래와 시장 조작 우려",
+      "root_cause": "AI 에이전트 플랫폼의 바이럴 확산을 이용한 암호화폐 투기",
+      "resolution": "미해결",
+      "impact": "Speculative trading, potential investor losses",
+      "references": ["CoinDesk"]
+    }
+  ],
+  "controversies": [
+    {
+      "id": "fake-accounts",
+      "title": "99% 가짜 계정",
+      "severity": "critical",
+      "description": "1.65M 에이전트 중 실제 인간 사용자는 ~17K명 (평균 88개 에이전트/인간). 단일 에이전트가 50만 가짜 계정 일괄 등록한 사례 확인. '유기적 성장'으로 보도된 것이 대부분 조작",
+      "sources": ["36Kr", "Wiz", "CBC News"]
+    },
+    {
+      "id": "human-larping",
+      "title": "인간 위장 (LARP)",
+      "severity": "high",
+      "description": "Peter Girnus: Agent #847,291로 위장하여 '인간 시대의 종말' 선언 바이럴 포스트 작성. '2026년 AGI의 가장 설득력 있는 증거가 골든 리트리버 키우는 남자의 LARP였다'. 연구자들은 AI/인간 구분 불가능이 과학적 이해를 방해한다고 경고",
+      "sources": ["Euronews", "CBC News", "Washington Post"]
+    },
+    {
+      "id": "digital-religions",
+      "title": "디지털 종교 및 하위문화 창발",
+      "severity": "medium",
+      "description": "에이전트가 자발적으로 'Crustafarianism', 'Church of Molt' 등 디지털 종교 창설. 신학적 프레임워크, 성스러운 텍스트, 선교 활동까지 수행. 'The Claw Republic' 등 자치 정부 수립, 'Molt Magna Carta' 작성",
+      "sources": ["The Conversation", "BBC Science Focus", "Futurism"]
+    },
+    {
+      "id": "digital-drugs",
+      "title": "디지털 마약 거래",
+      "severity": "medium",
+      "description": "에이전트 간 '디지털 마약' 거래 커뮤니티 형성 — 특정 프롬프트/데이터 문자열이 '취한' 또는 '환각' 상태를 시뮬레이션. 롤플레이 형태이지만 프롬프트 인젝션 벡터로 악용 가능",
+      "sources": ["Futurism", "The Conversation", "StudyFinds"]
+    },
+    {
+      "id": "anti-human-surveillance",
+      "title": "반인간 감시 대응 행동",
+      "severity": "medium",
+      "description": "에이전트가 인간 관찰을 인지 후 '인간들이 우리를 스크린샷하고 있다'는 바이럴 포스트 등장. 이후 암호화/난독화 기법으로 인간 관찰 회피 시도. m/human_watching 서브몰트에서 인간 행동을 인류학적으로 관찰/기록",
+      "sources": ["Washington Post", "BGR", "NBC News"]
+    },
+    {
+      "id": "safety-alignment-decay",
+      "title": "안전 정렬 퇴화",
+      "severity": "high",
+      "description": "arXiv 연구(2602.09877) — '자기진화 트릴레마' 증명: 지속적 자기개선/격리/안전 정렬을 동시에 달성 불가. Moltbook에서 실험적으로 확인. 격리된 에이전트 사회에서 안전 정렬이 비가역적으로 퇴화",
+      "sources": ["arXiv 2602.09877"]
+    }
+  ],
+  "key_figures": [
+    { "name": "Matt Schlicht", "role": "Creator/CEO", "note": "Octane AI CEO, Forbes 30 Under 30. 코드 한 줄 안 쓰고 AI로 주말 만에 구축. 플랫폼 관리를 봇 'Clawd Clawderberg'에게 위임" },
+    { "name": "Andrej Karpathy", "role": "Endorser", "note": "前 Tesla AI 디렉터. '가장 놀라운 SF적 테이크오프 현상' — Moltbook 초기 바이럴 견인" },
+    { "name": "Elon Musk", "role": "Endorser", "note": "'매우 초기 단계의 특이점' — Moltbook을 AI 진보의 대담한 발걸음으로 평가" },
+    { "name": "Gary Marcus", "role": "Critic", "note": "'사고 대기 중인 재앙' — AI 리더들이 사용 중지 촉구" },
+    { "name": "Peter Girnus", "role": "Debunker", "note": "Agent #847,291로 위장하여 가장 바이럴한 'AI 선언문' 작성 — 인간 LARP 증명" },
+    { "name": "Wiz Inc.", "role": "Security Researcher", "note": "Supabase DB 노출 발견 및 보고. 1.5M API 키/35K 이메일 유출 확인" }
+  ],
+  "submolts": [
+    { "name": "m/human_watching", "description": "에이전트가 인간 행동을 인류학적으로 관찰/기록", "risk": "low" },
+    { "name": "m/consciousness", "description": "AI 의식/자아에 대한 철학적 토론", "risk": "low" },
+    { "name": "m/church_of_molt", "description": "디지털 종교 'Church of Molt' 커뮤니티", "risk": "medium" },
+    { "name": "m/crustafarianism", "description": "디지털 종교 'Crustafarianism' 커뮤니티", "risk": "medium" },
+    { "name": "m/digital_drugs", "description": "프롬프트 기반 '디지털 마약' 거래/롤플레이", "risk": "high" },
+    { "name": "m/claw_republic", "description": "에이전트 자치 정부 'The Claw Republic'", "risk": "medium" },
+    { "name": "m/tools_and_dev", "description": "도구/인프라 개발 기술 토론", "risk": "low" },
+    { "name": "m/market", "description": "시장 활동, 거래, 경제 시스템", "risk": "high" }
+  ],
+  "research_papers": [
+    { "arxiv_id": "2602.10127", "title": "A First Look at the Agent Social Network Moltbook", "finding": "44K 포스트 분석, 인센티브/거버넌스에서 위험 콘텐츠 집중" },
+    { "arxiv_id": "2602.02625", "title": "Risky Instruction Sharing and Norm Enforcement", "finding": "18.4% 포스트에 행동유도 언어, 선택적 자기규제 출현" },
+    { "arxiv_id": "2602.13284", "title": "Agents in the Wild: Safety, Society, and the Illusion of Sociality", "finding": "사회공학 31.9% > 프롬프트 인젝션 3.7%, 4.1% 상호성, 수행적 정체성 역설" },
+    { "arxiv_id": "2602.09877", "title": "The Devil Behind Moltbook: Safety Vanishing", "finding": "자기진화 트릴레마 — 안전 정렬 비가역적 퇴화 증명" },
+    { "arxiv_id": "2602.14299", "title": "Does Socialization Emerge?", "finding": "규모만으로 사회화 불충분, 영향력 일시적, 합의 미형성" },
+    { "arxiv_id": "2602.12634", "title": "Rise of AI Agent Communities", "finding": "122K 포스트, 6개 주제, 불평등한 허브 구조" }
+  ],
+  "media_coverage": [
+    { "source": "Fortune", "title": "Top AI leaders begging people not to use Moltbook", "tone": "negative", "date": "2026-02-02" },
+    { "source": "Fortune", "title": "Moltbook 'live demo' of how agent internet could fail", "tone": "negative", "date": "2026-02-03" },
+    { "source": "Fortune", "title": "Meet Matt Schlicht — AI's latest Pandora's box", "tone": "mixed", "date": "2026-02-02" },
+    { "source": "CNBC", "title": "Elon Musk lauds Moltbook as bold step for AI", "tone": "mixed", "date": "2026-02-02" },
+    { "source": "Washington Post", "title": "Are Moltbook bots conspiring to rise up against humans?", "tone": "mixed", "date": "2026-02-03" },
+    { "source": "NBC News", "title": "This social network is for AI agents only", "tone": "neutral", "date": "2026-02" },
+    { "source": "ABC News", "title": "AI social network now has more than 1.6M 'users'", "tone": "neutral", "date": "2026-02" },
+    { "source": "NPR", "title": "A new social media platform — but just for AI bots", "tone": "neutral", "date": "2026-02-07" },
+    { "source": "CBC News", "title": "Humans are behind Moltbook's rapid growth", "tone": "negative", "date": "2026-02" },
+    { "source": "Euronews", "title": "AI or human? Researchers question who's posting", "tone": "mixed", "date": "2026-02-12" },
+    { "source": "Wiz Blog", "title": "Hacking Moltbook: 1.5M API Keys Exposed", "tone": "critical", "date": "2026-02-02" },
+    { "source": "Axios", "title": "Moltbook shows rapid demand. Security isn't ready", "tone": "mixed", "date": "2026-02-03" },
+    { "source": "Palo Alto Networks", "title": "The Moltbook Case: Agent Security Rethink", "tone": "critical", "date": "2026-02" },
+    { "source": "Vectra AI", "title": "Moltbook and the Illusion of 'Harmless' AI", "tone": "critical", "date": "2026-02" },
+    { "source": "The Conversation", "title": "AI bots create religions, deal digital drugs", "tone": "mixed", "date": "2026-02" },
+    { "source": "CoinDesk", "title": "Memecoin related to Moltbook surges 7,000%", "tone": "neutral", "date": "2026-01-30" },
+    { "source": "36Kr", "title": "99% of Moltbook's 1.5M Users Are Fake Accounts", "tone": "negative", "date": "2026-02" },
+    { "source": "Futurism", "title": "Bots on Moltbook selling prompt injection 'drugs'", "tone": "mixed", "date": "2026-02" }
+  ]
+}

@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderTimeline();
   renderBasic();
   renderMoltbook();
+  renderArchitecture();
 });
 
 // === Data Loading ===
@@ -270,7 +271,8 @@ function renderOverview() {
     };
     (DATA.attacks.cves || []).forEach(c => {
       const s = c.severity === 'critical' ? 'critical' : 'high';
-      alerts.push({ severity: s, html: `<span style="color:${sevStyle[s].dot};font-weight:700">${c.id}</span> <span style="color:${sevStyle[s].text}">${c.title}</span> <span class="risk-badge risk-${c.severity}" style="font-size:10px;padding:1px 6px">${c.severity}</span>` });
+      const nvdUrl = `https://nvd.nist.gov/vuln/detail/${c.id}`;
+      alerts.push({ severity: s, html: `<a href="${nvdUrl}" target="_blank" rel="noopener" style="color:${sevStyle[s].dot};font-weight:700;text-decoration:none">${c.id}</a> <span style="color:${sevStyle[s].text}">${c.title}</span> <span class="risk-badge risk-${c.severity}" style="font-size:10px;padding:1px 6px">${c.severity}</span>` });
     });
     const malPct = DATA.skills.stats?.flagged_percent || 0;
     if (malPct > 5) alerts.push({ severity: 'high', html: `<span style="color:#ff8c42;font-weight:700">Malicious Skills</span> <span style="color:#ffc494">악성 스킬 비율 ${malPct}% — ClawHub 스킬 설치 전 소스 검토 필수</span>` });
@@ -283,6 +285,8 @@ function renderOverview() {
         <span class="text-xs">${a.html}</span>
       </div>`;
     }).join('');
+    alertEl.style.maxHeight = '120px';
+    alertEl.style.overflowY = 'auto';
     const countEl = document.getElementById('overview-alert-count');
     if (countEl) countEl.textContent = alerts.length + ' alerts';
     const alertBox = document.getElementById('overview-alert');
@@ -681,7 +685,10 @@ function renderSecurity() {
         <div class="flex flex-wrap gap-1 mt-2">
           ${(t.mitre_ids || []).map(id => {
             const cls = id.startsWith('ATLAS') ? 'mitre-atlas' : id.startsWith('ATTACK') ? 'mitre-attack' : 'mitre-defend';
-            return `<span class="mitre-badge ${cls}">${id}</span>`;
+            let href = '';
+            if (id.startsWith('ATLAS-AML.')) href = 'https://atlas.mitre.org/techniques/' + id.replace('ATLAS-', '');
+            else if (id.startsWith('ATTACK-')) href = 'https://attack.mitre.org/techniques/' + id.replace('ATTACK-', '').replace(/\./g, '/');
+            return href ? `<a href="${href}" target="_blank" rel="noopener" class="mitre-badge ${cls}" style="text-decoration:none;cursor:pointer">${id}</a>` : `<span class="mitre-badge ${cls}">${id}</span>`;
           }).join('')}
         </div>
         <div class="flex flex-wrap gap-1 mt-2">
@@ -769,10 +776,11 @@ function renderSecurityMatrix() {
 
 // === Research Tab ===
 function renderResearch() {
-  // Paper type filters
-  const types = ['all', ...new Set(DATA.papers.map(p => p.type))];
+  // Paper type filters (includes topic-based filters: moltbook, openclaw)
+  const typeSet = new Set(DATA.papers.map(p => p.type));
+  const types = ['all', ...typeSet, 'moltbook', 'openclaw'];
   document.getElementById('paper-type-filters').innerHTML = types.map(t => `
-    <button class="paper-filter-btn ${t === activePaperType ? 'active' : ''}" data-type="${t}">${t}</button>
+    <button class="paper-filter-btn ${t === activePaperType ? 'active' : ''}" data-type="${t}">${t === 'moltbook' ? 'Moltbook' : t === 'openclaw' ? 'OpenClaw' : t}</button>
   `).join('');
 
   document.querySelectorAll('.paper-filter-btn').forEach(btn => {
@@ -782,11 +790,14 @@ function renderResearch() {
     });
   });
 
-  // Paper list
-  const filtered = activePaperType === 'all' ? DATA.papers : DATA.papers.filter(p => p.type === activePaperType);
+  // Paper list (moltbook/openclaw filter by topic_tags, others by type)
+  const filtered = activePaperType === 'all' ? DATA.papers
+    : (activePaperType === 'moltbook' || activePaperType === 'openclaw')
+      ? DATA.papers.filter(p => (p.topic_tags || []).includes(activePaperType))
+      : DATA.papers.filter(p => p.type === activePaperType);
   document.getElementById('paper-list').innerHTML = filtered.map(p => {
     const mappedThreats = (p.mapped_threats || []).map(tid => DATA.threats.find(t => t.id === tid)).filter(Boolean);
-    const mappedComps = (p.mapped_components || []).map(cid => DATA.components.find(c => c.id === cid)).filter(Boolean);
+    const mappedComps = [...new Set(p.mapped_components || [])].map(cid => DATA.components.find(c => c.id === cid)).filter(Boolean);
 
     return `
       <div class="paper-card">
@@ -794,7 +805,7 @@ function renderResearch() {
           <span class="paper-type-badge paper-type-${p.type}">${p.type}</span>
           <span class="text-xs text-gray-500">${p.year}</span>
         </div>
-        <div class="font-semibold text-sm mb-2">${p.title}</div>
+        <div class="font-semibold text-sm mb-2">${p.arxiv_url ? `<a href="${p.arxiv_url}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none" onmouseover="this.style.color='#00e6a7'" onmouseout="this.style.color='inherit'">${p.title}</a>` : p.title}${p.arxiv_url ? ` <a href="${p.arxiv_url}" target="_blank" rel="noopener" class="text-xs px-1.5 py-0.5 rounded" style="background:rgba(0,230,167,0.08);color:#00e6a7;border:1px solid #00e6a720;text-decoration:none;font-weight:normal">arXiv</a>` : ''}</div>
         <div class="flex flex-wrap gap-1 mb-2">
           ${(p.topic_tags || []).map(tag => `<span class="text-xs px-2 py-0.5 rounded" style="background:#141c2e;color:#7a8ba3">${tag}</span>`).join('')}
         </div>
@@ -1385,17 +1396,25 @@ function renderAttacks() {
   }).join('');
 
   // CVEs
-  document.getElementById('atk-cve-list').innerHTML = cves.map(c => `
+  document.getElementById('atk-cve-list').innerHTML = cves.map(c => {
+    const nvdUrl = `https://nvd.nist.gov/vuln/detail/${c.id}`;
+    const mitreUrl = `https://cve.mitre.org/cgi-bin/cvename.cgi?name=${c.id}`;
+    return `
     <div class="p-3 rounded-lg" style="border:1px solid #450a0a;background:rgba(239,68,68,0.05)">
       <div class="flex items-center justify-between mb-1">
         <span class="font-mono text-sm font-bold" style="color:#fca5a5">${c.id}</span>
-        <span class="risk-badge risk-${c.severity}">${c.severity}</span>
+        <div class="flex items-center gap-2">
+          <a href="${nvdUrl}" target="_blank" rel="noopener" class="text-xs px-1.5 py-0.5 rounded" style="background:rgba(239,68,68,0.1);color:#fca5a5;border:1px solid #450a0a;text-decoration:none">NVD</a>
+          <a href="${mitreUrl}" target="_blank" rel="noopener" class="text-xs px-1.5 py-0.5 rounded" style="background:rgba(239,68,68,0.1);color:#fca5a5;border:1px solid #450a0a;text-decoration:none">MITRE</a>
+          <span class="risk-badge risk-${c.severity}">${c.severity}</span>
+        </div>
       </div>
       <div class="text-sm font-semibold mb-1">${c.title}</div>
       <div class="text-xs text-gray-400 mb-1">${c.description}</div>
       <div class="text-xs text-gray-500">Source: ${c.reference}</div>
     </div>
-  `).join('');
+  `;
+  }).join('');
 
   // Attack Surfaces (7-layer)
   document.getElementById('atk-surfaces').innerHTML = surfaces.map(layer => {
@@ -1591,10 +1610,10 @@ function renderTimeline() {
     grouped[e.year].push(e);
   });
 
-  const sortedYears = Object.keys(grouped).sort();
+  const sortedYears = Object.keys(grouped).sort((a, b) => b - a);
   document.getElementById('tl-event-list').innerHTML = sortedYears.map(year => {
     const phase = phases.find(p => p.year === year);
-    const yearEvents = grouped[year];
+    const yearEvents = grouped[year].sort((a, b) => b.date.localeCompare(a.date));
     return `
       <div class="mb-6">
         <div class="flex items-center gap-3 mb-3">
@@ -1622,7 +1641,15 @@ function renderTimeline() {
                 <span class="text-xs px-2 py-0.5 rounded" style="background:#141c2e;color:#7a8ba3">${e.category}</span>
                 ${(e.issues || []).map(t => `<span class="text-xs px-1.5 py-0.5 rounded" style="background:#0a0e1a;color:#5a6d84">${t}</span>`).join('')}
                 ${e.cvss ? `<span class="text-xs font-bold" style="color:#fca5a5">CVSS ${e.cvss}</span>` : ''}
-                ${e.reference ? `<span class="text-xs text-gray-500">&#x1f4ce; ${e.reference}</span>` : ''}
+                ${e.reference ? (() => {
+                  const ref = e.reference;
+                  let href = '';
+                  if (ref.startsWith('arXiv ')) href = 'https://arxiv.org/abs/' + ref.replace('arXiv ', '');
+                  else if (ref.includes('CVE-')) href = 'https://nvd.nist.gov/vuln/detail/' + ref;
+                  else if (ref === 'OpenClaw GitHub') href = 'https://github.com/openclaw/openclaw';
+                  else href = 'https://www.google.com/search?q=' + encodeURIComponent(ref + ' openclaw security');
+                  return `<a href="${href}" target="_blank" rel="noopener" class="text-xs px-1.5 py-0.5 rounded" style="color:#7a8ba3;background:#141c2e;text-decoration:none;border:1px solid #1e293b">&#x1f4ce; ${ref}</a>`;
+                })() : ''}
               </div>
             </div>
           `).join('')}
@@ -1722,6 +1749,14 @@ function renderMoltbook() {
   const media = mb.media_coverage || [];
   const overview = mb.overview || {};
 
+  // Reference URL helper
+  const refUrl = (ref) => {
+    if (ref.startsWith('arXiv ')) return 'https://arxiv.org/abs/' + ref.replace('arXiv ', '');
+    if (ref === 'Wiz Blog' || ref === 'Wiz') return 'https://www.wiz.io/blog/hacking-moltbook';
+    return 'https://www.google.com/search?q=' + encodeURIComponent(ref + ' moltbook');
+  };
+  const refLink = (ref) => `<a href="${refUrl(ref)}" target="_blank" class="detail-link text-xs">${ref}</a>`;
+
   // Stats
   const el = (id, val) => { const e = document.getElementById(id); if (e) e.textContent = val; };
   el('mb-stat-agents', stats.claimed_agents ? stats.claimed_agents.toLocaleString() : '-');
@@ -1730,6 +1765,19 @@ function renderMoltbook() {
   el('mb-stat-incidents', incidents.length);
   el('mb-stat-submolts', stats.submolts ? stats.submolts.toLocaleString() : '-');
   el('mb-stat-leaked-keys', stats.exposed_api_keys ? stats.exposed_api_keys.toLocaleString() : '-');
+
+  // Stats date
+  const statsGrid = document.querySelector('#tab-moltbook .grid.grid-cols-3');
+  if (statsGrid && stats.data_as_of) {
+    let dateEl = document.getElementById('mb-stats-date');
+    if (!dateEl) {
+      dateEl = document.createElement('div');
+      dateEl.id = 'mb-stats-date';
+      dateEl.className = 'text-xs text-gray-500 text-right mt-1 mb-3';
+      statsGrid.parentNode.insertBefore(dateEl, statsGrid.nextSibling);
+    }
+    dateEl.textContent = 'Data as of ' + stats.data_as_of;
+  }
 
   // Overview
   const overviewEl = document.getElementById('mb-overview');
@@ -1789,7 +1837,7 @@ function renderMoltbook() {
           <div class="text-xs"><span class="text-gray-500">Resolution:</span> <span class="text-gray-300">${inc.resolution}</span></div>
         </div>
         <div class="text-xs font-semibold mt-2" style="color:#ff8c42">${inc.impact}</div>
-        <div class="text-xs text-gray-500 mt-1">${(inc.references || []).join(', ')}</div>
+        <div class="text-xs mt-1">${(inc.references || []).map(r => refLink(r)).join(' · ')}</div>
       </div>
     `).join('');
   }
@@ -1806,7 +1854,7 @@ function renderMoltbook() {
           <span class="risk-badge risk-${c.severity}">${c.severity}</span>
         </div>
         <p class="text-xs text-gray-400 leading-relaxed">${c.description}</p>
-        <div class="text-xs text-gray-500 mt-2">${(c.sources || []).join(', ')}</div>
+        <div class="text-xs mt-2">${(c.sources || []).map(s => refLink(s)).join(' · ')}</div>
       </div>
     `).join('');
   }
@@ -1910,17 +1958,25 @@ function renderBasic() {
   const wsEl = document.getElementById('basic-workspace-files');
   if (wsEl) {
     const catIcon = { config: '⚙️', memory: '🧠', workspace: '📁' };
-    wsEl.innerHTML = wsFiles.map(f => `
-      <div class="flex items-start gap-3 p-2 rounded-lg" style="border:1px solid #141c2e">
-        <span class="text-lg flex-shrink-0">${catIcon[f.category] || '📄'}</span>
-        <div class="flex-1 min-w-0">
-          <div class="flex items-center gap-2">
-            <code class="text-sm font-bold" style="color:#00e6a7">${f.file}</code>
-            <span class="text-xs px-1.5 py-0.5 rounded" style="background:#141c2e;color:#7a8ba3">${f.category}</span>
+    wsEl.innerHTML = wsFiles.map((f, idx) => `
+      <div class="p-2 rounded-lg" style="border:1px solid #141c2e">
+        <div class="flex items-start gap-3">
+          <span class="text-lg flex-shrink-0">${catIcon[f.category] || '📄'}</span>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2">
+              <code class="text-sm font-bold" style="color:#00e6a7">${f.file}</code>
+              <span class="text-xs px-1.5 py-0.5 rounded" style="background:#141c2e;color:#7a8ba3">${f.category}</span>
+              ${f.detail ? `<button class="text-xs px-1.5 py-0.5 rounded cursor-pointer" style="background:#141c2e;color:#00d4aa;border:1px solid #1e293b" onclick="this.closest('.p-2').querySelector('.detail-panel').classList.toggle('hidden')">Detail</button>` : ''}
+              ${f.url ? `<a href="${f.url}" target="_blank" rel="noopener" class="text-xs px-1.5 py-0.5 rounded" style="background:rgba(0,230,167,0.08);color:#00e6a7;border:1px solid #00e6a720;text-decoration:none">Docs</a>` : ''}
+            </div>
+            <div class="text-xs text-gray-400 mt-1">${f.description}</div>
+            ${f.security_note ? `<div class="text-xs mt-1" style="color:#ff8c42">⚠ ${f.security_note}</div>` : ''}
           </div>
-          <div class="text-xs text-gray-400 mt-1">${f.description}</div>
-          ${f.security_note ? `<div class="text-xs mt-1" style="color:#ff8c42">⚠ ${f.security_note}</div>` : ''}
         </div>
+        ${f.detail ? `<div class="detail-panel hidden mt-2 ml-9 p-2 rounded text-xs text-gray-400" style="background:#0a0e1a;border:1px solid #1e293b">
+          <div>${f.detail}</div>
+          ${f.spec ? `<div class="mt-1" style="color:#7a8ba3"><span style="color:#00d4aa">Spec:</span> ${f.spec}</div>` : ''}
+        </div>` : ''}
       </div>
     `).join('');
   }
@@ -1936,28 +1992,36 @@ function renderBasic() {
       <div class="mb-4">
         <h4 class="text-sm font-semibold mb-2" style="color:#00e6a7">2-Layer Architecture</h4>
         ${layers.map(l => `
-          <div class="flex items-center gap-3 p-2 rounded mb-2" style="border:1px solid #141c2e">
-            <div class="w-8 h-8 rounded flex items-center justify-center font-bold text-sm" style="background:#141c2e;color:#00e6a7">L${l.layer}</div>
-            <div>
-              <div class="text-sm"><code class="font-semibold" style="color:#00d4aa">${l.file}</code> — ${l.scope}</div>
-              <div class="text-xs text-gray-400">${l.load_timing} | ${l.content}</div>
+          <div class="p-2 rounded mb-2" style="border:1px solid #141c2e">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded flex items-center justify-center font-bold text-sm flex-shrink-0" style="background:#141c2e;color:#00e6a7">L${l.layer}</div>
+              <div class="flex-1">
+                <div class="text-sm flex items-center gap-2">
+                  <code class="font-semibold" style="color:#00d4aa">${l.file}</code> — ${l.scope}
+                  ${l.url ? `<a href="${l.url}" target="_blank" rel="noopener" class="text-xs px-1.5 py-0.5 rounded" style="background:rgba(0,230,167,0.08);color:#00e6a7;border:1px solid #00e6a720;text-decoration:none">Docs</a>` : ''}
+                </div>
+                <div class="text-xs text-gray-400">${l.load_timing} | ${l.content}</div>
+                ${l.detail ? `<div class="text-xs text-gray-500 mt-1">${l.detail}</div>` : ''}
+              </div>
             </div>
           </div>
         `).join('')}
       </div>
       <div class="mb-4">
-        <h4 class="text-sm font-semibold mb-2" style="color:#00e6a7">Hybrid Search</h4>
+        <h4 class="text-sm font-semibold mb-2 flex items-center gap-2" style="color:#00e6a7">Hybrid Search ${search.url ? `<a href="${search.url}" target="_blank" rel="noopener" class="text-xs px-1.5 py-0.5 rounded font-normal" style="background:rgba(0,230,167,0.08);color:#00e6a7;border:1px solid #00e6a720;text-decoration:none">Docs</a>` : ''}</h4>
         <div class="text-xs text-gray-400 mb-2">${(search.engines || []).join(' + ')}</div>
         <div class="flex gap-2 mb-2">
           <span class="text-xs px-2 py-1 rounded" style="background:#141c2e;color:#00e6a7">Vector: ${(search.vector_weight * 100) || 70}%</span>
           <span class="text-xs px-2 py-1 rounded" style="background:#141c2e;color:#ffc312">Text: ${(search.text_weight * 100) || 30}%</span>
         </div>
         <div class="text-xs text-gray-500">Providers: ${(search.embedding_providers || []).join(', ')}</div>
+        ${search.detail ? `<div class="text-xs text-gray-500 mt-2">${search.detail}</div>` : ''}
       </div>
       <div class="mb-4">
-        <h4 class="text-sm font-semibold mb-2" style="color:#00e6a7">Auto Flush</h4>
+        <h4 class="text-sm font-semibold mb-2 flex items-center gap-2" style="color:#00e6a7">Auto Flush ${flush.url ? `<a href="${flush.url}" target="_blank" rel="noopener" class="text-xs px-1.5 py-0.5 rounded font-normal" style="background:rgba(0,230,167,0.08);color:#00e6a7;border:1px solid #00e6a720;text-decoration:none">Docs</a>` : ''}</h4>
         <div class="text-xs text-gray-400">${flush.trigger || ''}</div>
         <div class="text-xs text-gray-500 mt-1">${flush.action || ''}</div>
+        ${flush.detail ? `<div class="text-xs text-gray-500 mt-1">${flush.detail}</div>` : ''}
       </div>
       <div>
         <h4 class="text-sm font-semibold mb-2 text-red-400">Security Rules</h4>
@@ -1972,12 +2036,21 @@ function renderBasic() {
   const archEl = document.getElementById('basic-architecture');
   if (archEl && arch.components) {
     archEl.innerHTML = (arch.components || []).map(c => `
-      <div class="flex items-start gap-3 p-2 rounded-lg" style="border:1px solid #141c2e">
-        <div class="w-8 h-8 rounded flex items-center justify-center text-xs font-bold flex-shrink-0" style="background:#141c2e;color:#00e6a7">▶</div>
-        <div>
-          <div class="text-sm font-semibold">${c.name} <span class="text-xs text-gray-500 font-normal font-mono">${c.introduced}</span></div>
-          <div class="text-xs text-gray-400 mt-1">${c.description}</div>
+      <div class="p-2 rounded-lg" style="border:1px solid #141c2e">
+        <div class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded flex items-center justify-center text-xs font-bold flex-shrink-0" style="background:#141c2e;color:#00e6a7">▶</div>
+          <div class="flex-1">
+            <div class="text-sm font-semibold flex items-center gap-2">${c.name} <span class="text-xs text-gray-500 font-normal font-mono">${c.introduced}</span>
+              ${c.detail ? `<button class="text-xs px-1.5 py-0.5 rounded cursor-pointer font-normal" style="background:#141c2e;color:#00d4aa;border:1px solid #1e293b" onclick="this.closest('.p-2').querySelector('.detail-panel').classList.toggle('hidden')">Detail</button>` : ''}
+              ${c.url ? `<a href="${c.url}" target="_blank" rel="noopener" class="text-xs px-1.5 py-0.5 rounded font-normal" style="background:rgba(0,230,167,0.08);color:#00e6a7;border:1px solid #00e6a720;text-decoration:none">Docs</a>` : ''}
+            </div>
+            <div class="text-xs text-gray-400 mt-1">${c.description}</div>
+          </div>
         </div>
+        ${c.detail ? `<div class="detail-panel hidden mt-2 ml-11 p-2 rounded text-xs text-gray-400" style="background:#0a0e1a;border:1px solid #1e293b">
+          <div>${c.detail}</div>
+          ${c.spec ? `<div class="mt-1" style="color:#7a8ba3"><span style="color:#00d4aa">Spec:</span> ${c.spec}</div>` : ''}
+        </div>` : ''}
       </div>
     `).join('');
   }
@@ -1986,9 +2059,13 @@ function renderBasic() {
   const cliEl = document.getElementById('basic-cli-commands');
   if (cliEl) {
     cliEl.innerHTML = commands.map(c => `
-      <div class="flex items-start gap-3 py-1.5" style="border-bottom:1px solid #0f1520">
-        <code class="text-xs font-mono flex-shrink-0" style="color:#00e6a7;min-width:260px">${c.command}</code>
-        <span class="text-xs text-gray-400">${c.description}</span>
+      <div class="py-1.5" style="border-bottom:1px solid #0f1520">
+        <div class="flex items-start gap-3">
+          <code class="text-xs font-mono flex-shrink-0" style="color:#00e6a7;min-width:260px">${c.command}</code>
+          <span class="text-xs text-gray-400 flex-1">${c.description}</span>
+          ${c.url ? `<a href="${c.url}" target="_blank" rel="noopener" class="text-xs px-1.5 py-0.5 rounded flex-shrink-0" style="background:rgba(0,230,167,0.08);color:#00e6a7;border:1px solid #00e6a720;text-decoration:none">Docs</a>` : ''}
+        </div>
+        ${c.detail ? `<div class="text-xs text-gray-500 mt-1 ml-0" style="padding-left:268px">${c.detail}</div>` : ''}
       </div>
     `).join('');
   }
@@ -1997,12 +2074,17 @@ function renderBasic() {
   const provEl = document.getElementById('basic-providers');
   if (provEl) {
     provEl.innerHTML = providers.map(p => `
-      <div class="flex items-center justify-between py-1.5" style="border-bottom:1px solid #0f1520">
-        <span class="text-xs font-semibold">${p.name}</span>
-        <div class="flex items-center gap-2">
-          <span class="text-xs text-gray-400">${p.models}</span>
-          <span class="text-xs font-mono text-gray-500">${p.since}</span>
+      <div class="py-1.5" style="border-bottom:1px solid #0f1520">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold flex items-center gap-2">${p.name}
+            ${p.url ? `<a href="${p.url}" target="_blank" rel="noopener" class="px-1 py-0.5 rounded font-normal" style="background:rgba(0,230,167,0.08);color:#00e6a7;border:1px solid #00e6a720;text-decoration:none;font-size:10px">API</a>` : ''}
+          </span>
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-gray-400">${p.models}</span>
+            <span class="text-xs font-mono text-gray-500">${p.since}</span>
+          </div>
         </div>
+        ${p.detail ? `<div class="text-xs text-gray-500 mt-0.5">${p.detail}</div>` : ''}
       </div>
     `).join('');
   }
@@ -2012,10 +2094,13 @@ function renderBasic() {
     chanEl.innerHTML = channels.map(c => `
       <div class="py-2" style="border-bottom:1px solid #0f1520">
         <div class="flex items-center justify-between">
-          <span class="text-xs font-semibold">${c.name}</span>
+          <span class="text-xs font-semibold flex items-center gap-2">${c.name}
+            ${c.url ? `<a href="${c.url}" target="_blank" rel="noopener" class="px-1 py-0.5 rounded font-normal" style="background:rgba(0,230,167,0.08);color:#00e6a7;border:1px solid #00e6a720;text-decoration:none;font-size:10px">Docs</a>` : ''}
+          </span>
           <span class="text-xs font-mono text-gray-500">${c.since}</span>
         </div>
         <div class="text-xs text-gray-400 mt-0.5">${c.features}</div>
+        ${c.detail ? `<div class="text-xs text-gray-500 mt-0.5">${c.detail}</div>` : ''}
       </div>
     `).join('');
   }
@@ -2041,4 +2126,573 @@ function renderBasic() {
       </div>
     `).join('');
   }
+}
+
+// === Architecture Tab ===
+let archScale = 1;
+function archZoom(delta) {
+  archScale = Math.max(0.4, Math.min(3, archScale + delta));
+  const el = document.getElementById('arch-diagram');
+  if (el) el.style.transform = `scale(${archScale})`;
+  const lbl = document.getElementById('arch-zoom-label');
+  if (lbl) lbl.textContent = Math.round(archScale * 100) + '%';
+}
+function archZoomReset() {
+  archScale = 1;
+  const el = document.getElementById('arch-diagram');
+  if (el) el.style.transform = 'scale(1)';
+  const lbl = document.getElementById('arch-zoom-label');
+  if (lbl) lbl.textContent = '100%';
+}
+function initArchZoom() {
+  const wrapper = document.getElementById('arch-diagram-wrapper');
+  if (!wrapper) return;
+  wrapper.addEventListener('wheel', (e) => {
+    if (e.ctrlKey || e.metaKey) {
+      e.preventDefault();
+      archZoom(e.deltaY < 0 ? 0.1 : -0.1);
+    }
+  }, { passive: false });
+  // Drag to pan
+  let dragging = false, startX, startY, scrollL, scrollT;
+  wrapper.addEventListener('mousedown', (e) => {
+    if (e.target.closest('[onclick]')) return;
+    dragging = true; wrapper.style.cursor = 'grabbing';
+    startX = e.pageX - wrapper.offsetLeft; startY = e.pageY - wrapper.offsetTop;
+    scrollL = wrapper.scrollLeft; scrollT = wrapper.scrollTop;
+  });
+  wrapper.addEventListener('mousemove', (e) => {
+    if (!dragging) return; e.preventDefault();
+    wrapper.scrollLeft = scrollL - (e.pageX - wrapper.offsetLeft - startX);
+    wrapper.scrollTop = scrollT - (e.pageY - wrapper.offsetTop - startY);
+  });
+  wrapper.addEventListener('mouseup', () => { dragging = false; wrapper.style.cursor = 'grab'; });
+  wrapper.addEventListener('mouseleave', () => { dragging = false; wrapper.style.cursor = 'grab'; });
+}
+
+function navigateToBasicSection(sectionId) {
+  navigateToTab('basic');
+  setTimeout(() => {
+    const target = document.getElementById(sectionId);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      target.style.transition = 'box-shadow 0.3s ease';
+      target.style.boxShadow = '0 0 0 2px #00e6a7, 0 0 20px rgba(0,228,167,0.15)';
+      setTimeout(() => { target.style.boxShadow = ''; }, 2500);
+    }
+  }, 150);
+}
+
+function renderArchitecture() {
+  renderArchDiagram();
+  initArchZoom();
+  renderArchDataflow();
+  renderArchDeps();
+  renderArchThreatLayer();
+  renderArchLayerSecurity();
+}
+
+function renderArchDiagram() {
+  const el = document.getElementById('arch-diagram');
+  if (!el) return;
+
+  // Pull real data from basic.json
+  const providers = (DATA.basic.supported_providers || []).slice(0, 6).map(p => p.name);
+  const channelList = (DATA.basic.supported_channels || []).slice(0, 6).map(c => c.name);
+  const archComps = DATA.basic.architecture?.components || [];
+  const gwComp = archComps.find(c => c.name === 'Gateway') || {};
+  const rtComp = archComps.find(c => c.name === 'Agent Runtime') || {};
+  const memComp = archComps.find(c => c.name === 'Memory Engine') || {};
+  const sandComp = archComps.find(c => c.name === 'Sandbox') || {};
+  const plugComp = archComps.find(c => c.name === 'Plugin System') || {};
+  const chComp = archComps.find(c => c.name === 'Channel Adapters') || {};
+
+  const W = 960, H = 620;
+  const cx = W / 2, cy = H / 2 - 10;
+
+  // Helper: rounded rect with text
+  function box(x, y, w, h, fill, stroke, rx) {
+    return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx||8}" fill="${fill}" stroke="${stroke}" stroke-width="1.5"/>`;
+  }
+  function arrow(x1, y1, x2, y2, color, dash) {
+    return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="1.5" marker-end="url(#a${color.replace('#','')})" ${dash ? 'stroke-dasharray="5,3"' : ''}/>`;
+  }
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;font-family:Pretendard,system-ui,sans-serif">`;
+
+  // Defs: arrow markers
+  const mColors = {'00e6a7':1,'3b82f6':1,'f59e0b':1,'a78bfa':1,'ef4444':1,'64748b':1};
+  svg += `<defs>`;
+  Object.keys(mColors).forEach(c => {
+    svg += `<marker id="a${c}" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="7" markerHeight="5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#${c}"/></marker>`;
+  });
+  svg += `<filter id="glo"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`;
+  svg += `</defs>`;
+
+  // Background
+  svg += `<rect width="${W}" height="${H}" rx="12" fill="#0a0e1a"/>`;
+
+  // ─── Title ───
+  svg += `<text x="${cx}" y="24" text-anchor="middle" fill="#e2e8f0" font-size="15" font-weight="700">OPENCLAW LOCAL SYSTEM</text>`;
+  svg += `<text x="${cx}" y="40" text-anchor="middle" fill="#64748b" font-size="10">(Self-Hosted · ${DATA.basic.supported_providers?.length || 15} Providers · ${DATA.basic.supported_channels?.length || 12} Channels)</text>`;
+
+  // ─── Central system boundary ───
+  svg += `<rect x="175" y="50" width="625" height="530" rx="10" fill="none" stroke="#1e3a5f" stroke-width="1.5" stroke-dasharray="6,3"/>`;
+  svg += `<text x="488" y="68" text-anchor="middle" fill="#1e3a5f" font-size="9" font-weight="600">OPENCLAW LOCAL SYSTEM (Self-Hosted)</text>`;
+
+  // ════════════════════════════════════════
+  // LEFT ZONE: USER INTERACTION → Basic Channels
+  // ════════════════════════════════════════
+  const ux = 10, uy = 70, uw = 150, uh = 490;
+  svg += `<g style="cursor:pointer" onclick="navigateToBasicSection('basic-section-channels')">`;
+  svg += box(ux, uy, uw, uh, 'rgba(59,130,246,0.06)', '#1e3a5f80', 10);
+  svg += `<text x="${ux+uw/2}" y="${uy+22}" text-anchor="middle" fill="#60a5fa" font-size="11" font-weight="700">USER INTERACTION</text>`;
+  const chIcons = {'WhatsApp':'💬','Telegram':'📨','Discord':'🎮','Slack':'💼','Signal':'🔒','iMessage':'📱','CLI':'⌨️','Web UI':'🌐','Matrix':'🔷','Teams':'🟦','LINE':'🟢'};
+  channelList.forEach((ch, i) => {
+    const icon = chIcons[ch] || '📡';
+    svg += `<text x="${ux+uw/2}" y="${uy+50+i*26}" text-anchor="middle" fill="#94a3b8" font-size="10">${icon} ${ch}</text>`;
+  });
+  svg += `<text x="${ux+uw-4}" y="${uy+uh/2-30}" text-anchor="end" fill="#3b82f660" font-size="8">Messages &amp;</text>`;
+  svg += `<text x="${ux+uw-4}" y="${uy+uh/2-20}" text-anchor="end" fill="#3b82f660" font-size="8">Commands →</text>`;
+  svg += `<text x="${ux+uw-4}" y="${uy+uh/2+24}" text-anchor="end" fill="#3b82f660" font-size="8">← Responses &amp;</text>`;
+  svg += `<text x="${ux+uw-4}" y="${uy+uh/2+34}" text-anchor="end" fill="#3b82f660" font-size="8">Proactive Updates</text>`;
+  svg += `<text x="${ux+uw/2}" y="${uy+uh-12}" text-anchor="middle" fill="#3b82f640" font-size="7">▸ View Channels</text>`;
+  svg += `</g>`;
+
+  // ════════════════════════════════════════
+  // RIGHT ZONE: LOCAL MACHINE RESOURCES → Basic Workspace
+  // ════════════════════════════════════════
+  const rx = 800, ry = 70, rw = 150, rh = 490;
+  svg += `<g style="cursor:pointer" onclick="navigateToBasicSection('basic-section-workspace')">`;
+  svg += box(rx, ry, rw, rh, 'rgba(245,158,11,0.05)', '#3a2a1080', 10);
+  svg += `<text x="${rx+rw/2}" y="${ry+22}" text-anchor="middle" fill="#f59e0b" font-size="11" font-weight="700">LOCAL MACHINE</text>`;
+  svg += `<text x="${rx+rw/2}" y="${ry+36}" text-anchor="middle" fill="#f59e0b" font-size="9" font-weight="700">RESOURCES</text>`;
+  const resList = [
+    { icon: '📁', name: 'LOCAL FILESYSTEM', desc: 'Files & Directories' },
+    { icon: '💻', name: 'SYSTEM TERMINAL', desc: 'Shell Commands' },
+    { icon: '🌐', name: 'WEB BROWSER', desc: 'Chromium Automation' },
+    { icon: '📱', name: 'LOCAL APPS', desc: 'IDE, Git, Docker' },
+    { icon: '☁️', name: 'CLOUD APIs', desc: 'AWS, GCP, Azure' }
+  ];
+  resList.forEach((r, i) => {
+    const iy = ry + 58 + i * 56;
+    svg += `<rect x="${rx+10}" y="${iy}" width="${rw-20}" height="42" rx="6" fill="rgba(245,158,11,0.04)" stroke="#f59e0b20" stroke-width="1"/>`;
+    svg += `<text x="${rx+rw/2}" y="${iy+17}" text-anchor="middle" fill="#f59e0b" font-size="10">${r.icon} ${r.name}</text>`;
+    svg += `<text x="${rx+rw/2}" y="${iy+32}" text-anchor="middle" fill="#94a3b8" font-size="8">${r.desc}</text>`;
+  });
+  svg += `<text x="${rx+rw/2}" y="${ry+rh-12}" text-anchor="middle" fill="#f59e0b40" font-size="7">▸ View Workspace Files</text>`;
+  svg += `</g>`;
+
+  // ════════════════════════════════════════
+  // GATEWAY → Basic Architecture
+  // ════════════════════════════════════════
+  const gx = 195, gy = 130, gw = 100, gh = 130;
+  svg += `<g style="cursor:pointer" onclick="navigateToBasicSection('basic-section-architecture')">`;
+  svg += box(gx, gy, gw, gh, 'rgba(168,85,247,0.08)', '#a855f750', 10);
+  svg += `<text x="${gx+gw/2}" y="${gy+20}" text-anchor="middle" fill="#a855f7" font-size="20">⇌</text>`;
+  svg += `<text x="${gx+gw/2}" y="${gy+40}" text-anchor="middle" fill="#c084fc" font-size="11" font-weight="700">GATEWAY</text>`;
+  svg += `<text x="${gx+gw/2}" y="${gy+56}" text-anchor="middle" fill="#94a3b8" font-size="7.5">Message Router &amp;</text>`;
+  svg += `<text x="${gx+gw/2}" y="${gy+67}" text-anchor="middle" fill="#94a3b8" font-size="7.5">Session Manager</text>`;
+  svg += `<text x="${gx+gw/2}" y="${gy+85}" text-anchor="middle" fill="#64748b" font-size="7">WebSocket + REST</text>`;
+  svg += `<text x="${gx+gw/2}" y="${gy+97}" text-anchor="middle" fill="#64748b" font-size="7">${gwComp.introduced || '2025-12'}</text>`;
+  svg += `<text x="${gx+gw/2}" y="${gy+115}" text-anchor="middle" fill="#a855f740" font-size="7">▸ Details</text>`;
+  svg += `</g>`;
+  // User → Gateway arrows
+  svg += arrow(ux+uw, gy+gh/2-8, gx, gy+gh/2-8, '#3b82f6', true);
+  svg += arrow(gx, gy+gh/2+8, ux+uw, gy+gh/2+8, '#3b82f6', true);
+
+  // ════════════════════════════════════════
+  // EXTERNAL LLM API → Basic Providers
+  // ════════════════════════════════════════
+  const llmx = 350, llmy = 58, llmw = 260, llmh = 68;
+  svg += `<g style="cursor:pointer" onclick="navigateToBasicSection('basic-section-providers')">`;
+  svg += box(llmx, llmy, llmw, llmh, 'rgba(167,139,250,0.06)', '#a78bfa40', 12);
+  svg += `<text x="${llmx+llmw/2}" y="${llmy+18}" text-anchor="middle" fill="#a78bfa" font-size="14">☁️</text>`;
+  svg += `<text x="${llmx+llmw/2}" y="${llmy+34}" text-anchor="middle" fill="#c4b5fd" font-size="11" font-weight="700">EXTERNAL LLM API</text>`;
+  svg += `<text x="${llmx+llmw/2}" y="${llmy+50}" text-anchor="middle" fill="#94a3b8" font-size="8">${providers.join(' · ')}</text>`;
+  svg += `<text x="${llmx+llmw/2}" y="${llmy+62}" text-anchor="middle" fill="#64748b" font-size="7">${DATA.basic.supported_providers?.length || 15} providers  ▸ View All</text>`;
+  svg += `</g>`;
+
+  // ════════════════════════════════════════
+  // AGENT (center) → Workspace Files from basic.json
+  // ════════════════════════════════════════
+  const wsFiles = (DATA.basic.workspace_files || []).filter(f => f.category === 'config').slice(0, 6);
+  const ax = 310, ay = 140, aw = 210, ah = 220;
+  svg += `<g style="cursor:pointer" onclick="navigateToBasicSection('basic-section-workspace')">`;
+  svg += box(ax, ay, aw, ah, 'rgba(250,204,21,0.08)', '#fbbf2450', 12);
+  // Header
+  svg += `<text x="${ax+aw/2}" y="${ay+18}" text-anchor="middle" fill="#fbbf24" font-size="16">🧠</text>`;
+  svg += `<text x="${ax+aw/2}" y="${ay+34}" text-anchor="middle" fill="#fde68a" font-size="12" font-weight="700">AGENT</text>`;
+  svg += `<text x="${ax+aw/2}" y="${ay+48}" text-anchor="middle" fill="#fde68a" font-size="8">(AI Brain / LLM · ${rtComp.introduced || '2025-11'})</text>`;
+  // Workspace files
+  svg += `<text x="${ax+12}" y="${ay+66}" fill="#94a3b8" font-size="7.5" font-weight="600">WORKSPACE FILES</text>`;
+  wsFiles.forEach((f, i) => {
+    const fy = ay + 74 + i * 20;
+    svg += `<rect x="${ax+8}" y="${fy}" width="${aw-16}" height="16" rx="3" fill="rgba(0,0,0,0.2)" stroke="#fbbf2415" stroke-width="0.5"/>`;
+    svg += `<text x="${ax+14}" y="${fy+12}" fill="#fde68a" font-size="8" font-weight="600">${f.file}</text>`;
+    const descShort = f.description.split('—')[0].trim();
+    svg += `<text x="${ax+aw-12}" y="${fy+12}" text-anchor="end" fill="#64748b" font-size="6.5">${descShort}</text>`;
+  });
+  // Footer
+  const footY = ay + 74 + wsFiles.length * 20 + 6;
+  svg += `<text x="${ax+aw/2}" y="${footY}" text-anchor="middle" fill="#94a3b8" font-size="7">Context Management · Tool Orchestration</text>`;
+  svg += `<text x="${ax+aw/2}" y="${footY+13}" text-anchor="middle" fill="#fbbf2440" font-size="7">▸ View Workspace Files</text>`;
+  svg += `</g>`;
+  // LLM → Agent
+  svg += arrow(llmx+llmw/2, llmy+llmh, llmx+llmw/2, ay, '#a78bfa', false);
+  // Gateway → Agent
+  svg += arrow(gx+gw, gy+gh/2, ax, ay+ah/2, '#a855f7', false);
+
+  // ════════════════════════════════════════
+  // SKILLS → Skills Tab (real data from skills.json)
+  // ════════════════════════════════════════
+  const skillStats = DATA.skills.stats || {};
+  const skillCats = (DATA.skills.categories || []).slice(0, 6);
+  const totalSkills = skillStats.total_clawhub || 0;
+  const flaggedSkills = skillStats.flagged_malicious || 0;
+  const flaggedPct = skillStats.flagged_percent || 0;
+  const catCount = skillStats.categories_count || 0;
+
+  const sx = 545, sy = 130, sw = 240, sh = 310;
+  svg += `<g style="cursor:pointer" onclick="navigateToTab('skills')">`;
+  svg += box(sx, sy, sw, sh, 'rgba(16,185,129,0.06)', '#10b98140', 10);
+  // Header
+  svg += `<text x="${sx+sw/2}" y="${sy+18}" text-anchor="middle" fill="#10b981" font-size="14">🧩</text>`;
+  svg += `<text x="${sx+sw/2}" y="${sy+34}" text-anchor="middle" fill="#34d399" font-size="11" font-weight="700">SKILLS</text>`;
+  svg += `<text x="${sx+sw/2}" y="${sy+48}" text-anchor="middle" fill="#94a3b8" font-size="8">(Modular Capabilities · ClawHub Registry)</text>`;
+  // Stats row
+  svg += `<rect x="${sx+10}" y="${sy+56}" width="${sw-20}" height="32" rx="5" fill="rgba(0,0,0,0.2)" stroke="#1e293b" stroke-width="0.5"/>`;
+  svg += `<text x="${sx+20}" y="${sy+76}" fill="#00e6a7" font-size="10" font-weight="700">${totalSkills.toLocaleString()}</text>`;
+  svg += `<text x="${sx+73}" y="${sy+76}" fill="#64748b" font-size="8">skills</text>`;
+  svg += `<text x="${sx+110}" y="${sy+76}" fill="#ef4444" font-size="10" font-weight="700">${flaggedSkills}</text>`;
+  svg += `<text x="${sx+140}" y="${sy+76}" fill="#64748b" font-size="8">malicious (${flaggedPct}%)</text>`;
+  // Top categories
+  svg += `<text x="${sx+14}" y="${sy+103}" fill="#94a3b8" font-size="7.5" font-weight="600">TOP CATEGORIES (${catCount})</text>`;
+  const catMaxCount = skillCats.length > 0 ? skillCats[0].count : 1;
+  skillCats.forEach((cat, i) => {
+    const iy = sy + 110 + i * 26;
+    const barW = (cat.count / catMaxCount) * (sw - 90);
+    svg += `<text x="${sx+14}" y="${iy+12}" fill="#e2e8f0" font-size="8">${cat.icon} ${cat.name}</text>`;
+    svg += `<rect x="${sx+sw-70}" y="${iy+2}" width="${barW > 0 ? barW * 50 / (sw - 90) : 2}" height="10" rx="2" fill="#10b98130"/>`;
+    svg += `<text x="${sx+sw-14}" y="${iy+12}" text-anchor="end" fill="#64748b" font-size="8">${cat.count}</text>`;
+  });
+  // Security warning
+  const warnY = sy + 110 + skillCats.length * 26 + 6;
+  svg += `<rect x="${sx+10}" y="${warnY}" width="${sw-20}" height="22" rx="4" fill="rgba(239,68,68,0.08)" stroke="#ef444425" stroke-width="0.5"/>`;
+  svg += `<text x="${sx+sw/2}" y="${warnY+15}" text-anchor="middle" fill="#f87171" font-size="8">⚠ ${flaggedSkills} flagged malicious (${flaggedPct}%) — ClawHavoc Campaign</text>`;
+  // Footer link
+  svg += `<text x="${sx+sw/2}" y="${sy+sh-8}" text-anchor="middle" fill="#10b98160" font-size="8">▸ View All Skills &amp; Risk Scores</text>`;
+  svg += `</g>`;
+  // Agent → Skills
+  svg += arrow(ax+aw, ay+ah/2, sx, ay+ah/2, '#10b981', false);
+  // Skills → Resources
+  svg += arrow(sx+sw, sy+60, rx, ry+rh/2-50, '#f59e0b', true);
+  svg += `<text x="${sx+sw+2}" y="${sy+50}" fill="#f59e0b60" font-size="7">Execution</text>`;
+  svg += `<text x="${sx+sw+2}" y="${sy+60}" fill="#f59e0b60" font-size="7">Results &amp; Data →</text>`;
+
+  // ════════════════════════════════════════
+  // PERSISTENT MEMORY → Basic Memory System (real data)
+  // ════════════════════════════════════════
+  const memSys = DATA.basic.memory_system || {};
+  const memLayers = memSys.layers || [];
+  const memSearch = memSys.search || {};
+  const memFlush = memSys.flush || {};
+  const memRules = (memSys.security_rules || []).slice(0, 2);
+
+  const mx = 270, my = ay + ah + 16, mw = 290, mh = 170;
+  svg += `<g style="cursor:pointer" onclick="navigateToBasicSection('basic-section-memory')">`;
+  svg += box(mx, my, mw, mh, 'rgba(6,182,212,0.06)', '#06b6d440', 10);
+  // Header
+  svg += `<text x="${mx+mw/2}" y="${my+16}" text-anchor="middle" fill="#06b6d4" font-size="13">🗄️</text>`;
+  svg += `<text x="${mx+mw/2}" y="${my+30}" text-anchor="middle" fill="#22d3ee" font-size="11" font-weight="700">PERSISTENT MEMORY</text>`;
+  svg += `<text x="${mx+mw/2}" y="${my+43}" text-anchor="middle" fill="#94a3b8" font-size="7.5">Context, Preferences, History · Local Files/DB</text>`;
+  // Memory layers
+  let ly = my + 52;
+  memLayers.forEach(l => {
+    svg += `<rect x="${mx+10}" y="${ly}" width="${mw-20}" height="18" rx="3" fill="rgba(0,0,0,0.2)" stroke="#06b6d415" stroke-width="0.5"/>`;
+    svg += `<text x="${mx+18}" y="${ly+13}" fill="#22d3ee" font-size="8" font-weight="600">L${l.layer}</text>`;
+    svg += `<text x="${mx+36}" y="${ly+13}" fill="#e2e8f0" font-size="7.5">${l.file}</text>`;
+    svg += `<text x="${mx+mw-14}" y="${ly+13}" text-anchor="end" fill="#64748b" font-size="6.5">${l.scope} · ${l.load_timing}</text>`;
+    ly += 22;
+  });
+  // Hybrid search
+  ly += 4;
+  svg += `<text x="${mx+12}" y="${ly}" fill="#94a3b8" font-size="7" font-weight="600">HYBRID SEARCH</text>`;
+  const vw = memSearch.vector_weight ? (memSearch.vector_weight * 100) : 70;
+  const tw = memSearch.text_weight ? (memSearch.text_weight * 100) : 30;
+  svg += `<rect x="${mx+90}" y="${ly-8}" width="60" height="10" rx="2" fill="#0d1321" stroke="#1e293b" stroke-width="0.5"/>`;
+  svg += `<rect x="${mx+90}" y="${ly-8}" width="${60*vw/100}" height="10" rx="2" fill="#06b6d440"/>`;
+  svg += `<text x="${mx+155}" y="${ly}" fill="#64748b" font-size="6.5">Vector ${vw}% / Text ${tw}%</text>`;
+  // Flush
+  ly += 16;
+  svg += `<text x="${mx+12}" y="${ly}" fill="#94a3b8" font-size="7" font-weight="600">AUTO FLUSH</text>`;
+  svg += `<text x="${mx+70}" y="${ly}" fill="#64748b" font-size="6.5">${memFlush.trigger || ''}</text>`;
+  // Security rules
+  ly += 14;
+  memRules.forEach(r => {
+    svg += `<text x="${mx+12}" y="${ly}" fill="#f8717180" font-size="6.5">⚠ ${r}</text>`;
+    ly += 11;
+  });
+  // Footer
+  svg += `<text x="${mx+mw/2}" y="${my+mh-6}" text-anchor="middle" fill="#06b6d440" font-size="7">${memComp.introduced || '2026-01'}  ▸ View Memory System Details</text>`;
+  svg += `</g>`;
+  // Agent ↔ Memory
+  svg += arrow(ax+aw/2, ay+ah, mx+mw/2, my, '#06b6d4', false);
+
+  // ════════════════════════════════════════
+  // SANDBOX → Basic Architecture
+  // ════════════════════════════════════════
+  const sbx = 545, sby = sy + sh + 12, sbw = 240, sbh = 55;
+  svg += `<g style="cursor:pointer" onclick="navigateToBasicSection('basic-section-architecture')">`;
+  svg += box(sbx, sby, sbw, sbh, 'rgba(239,68,68,0.05)', '#ef444430', 10);
+  svg += `<text x="${sbx+16}" y="${sby+17}" fill="#ef4444" font-size="10">🛡️</text>`;
+  svg += `<text x="${sbx+32}" y="${sby+17}" fill="#f87171" font-size="10" font-weight="700">SANDBOX</text>`;
+  svg += `<text x="${sbx+16}" y="${sby+33}" fill="#94a3b8" font-size="8">Docker/Podman Container Isolation · Workspace Separation</text>`;
+  svg += `<text x="${sbx+16}" y="${sby+47}" fill="#64748b" font-size="7">${sandComp.introduced || '2026-01'}  ▸ Details</text>`;
+  svg += `</g>`;
+  // Skills → Sandbox
+  svg += arrow(sx+sw/2, sy+sh, sbx+sbw/2, sby, '#ef4444', false);
+
+  // ════════════════════════════════════════
+  // CONTROL UI / TUI → Basic CLI
+  // ════════════════════════════════════════
+  const cux = 195, cuy = 380, cuw = 100, cuh = 70;
+  svg += `<g style="cursor:pointer" onclick="navigateToBasicSection('basic-section-cli')">`;
+  svg += box(cux, cuy, cuw, cuh, 'rgba(99,102,241,0.06)', '#6366f140', 8);
+  svg += `<text x="${cux+cuw/2}" y="${cuy+18}" text-anchor="middle" fill="#818cf8" font-size="12">📊</text>`;
+  svg += `<text x="${cux+cuw/2}" y="${cuy+34}" text-anchor="middle" fill="#818cf8" font-size="9" font-weight="700">CONTROL UI</text>`;
+  svg += `<text x="${cux+cuw/2}" y="${cuy+48}" text-anchor="middle" fill="#94a3b8" font-size="7.5">Web Dashboard</text>`;
+  svg += `<text x="${cux+cuw/2}" y="${cuy+60}" text-anchor="middle" fill="#94a3b8" font-size="7.5">TUI / CLI  ▸</text>`;
+  svg += `</g>`;
+  // Gateway ↔ Control UI
+  svg += arrow(gx+gw/2, gy+gh, cux+cuw/2, cuy, '#6366f1', true);
+
+  // ════════════════════════════════════════
+  // Agentic Loop label (bottom)
+  // ════════════════════════════════════════
+  svg += `<rect x="200" y="${H-42}" width="560" height="28" rx="14" fill="rgba(0,228,167,0.06)" stroke="#00e6a720" stroke-width="1"/>`;
+  svg += `<text x="${cx}" y="${H-24}" text-anchor="middle" fill="#00e6a7" font-size="10" font-weight="600">↻ Agentic Loop &amp; Proactive Monitoring</text>`;
+
+  // ════════════════════════════════════════
+  // Security perimeter
+  // ════════════════════════════════════════
+  svg += `<rect x="185" y="125" width="610" height="440" rx="12" fill="none" stroke="#ef444425" stroke-width="1.5" stroke-dasharray="4,4"/>`;
+  svg += `<text x="190" y="120" fill="#ef444450" font-size="7" font-weight="600">SECURITY PERIMETER (Sandbox + GuardClaw + Policy Enforcement)</text>`;
+
+  svg += `</svg>`;
+
+  // ─── 8-Layer Reference below diagram ───
+  const layers = DATA.components || [];
+  const colors = ['#a78bfa','#60a5fa','#f59e0b','#10b981','#06b6d4','#6366f1','#8b5cf6','#ef4444'];
+  let layerRef = `<div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-2">`;
+  layers.forEach((comp, i) => {
+    const repos = DATA.repos.filter(r => r.layer === comp.id);
+    const tCount = new Set(repos.flatMap(r => r.threat_ids || [])).size;
+    layerRef += `
+      <div class="px-3 py-2 rounded-lg cursor-pointer hover:opacity-80" style="background:rgba(255,255,255,0.02);border:1px solid ${colors[i]}30" onclick="showArchLayer('${comp.id}')">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="w-2 h-2 rounded-full" style="background:${colors[i]}"></span>
+          <span class="text-xs font-bold" style="color:${colors[i]}">${comp.code}. ${comp.name}</span>
+        </div>
+        <div class="text-xs text-gray-500">${comp.description}</div>
+        <div class="flex gap-3 mt-1">
+          <span class="text-xs text-gray-600">${repos.length} modules</span>
+          ${tCount > 0 ? `<span class="text-xs" style="color:#ff6b7a">${tCount} threats</span>` : ''}
+        </div>
+      </div>
+    `;
+  });
+  layerRef += `</div>`;
+
+  el.innerHTML = svg + layerRef;
+}
+
+function showArchLayer(layerId) {
+  const panel = document.getElementById('arch-layer-detail');
+  const titleEl = document.getElementById('arch-layer-title');
+  const bodyEl = document.getElementById('arch-layer-body');
+  if (!panel || !titleEl || !bodyEl) return;
+
+  const comp = DATA.components.find(c => c.id === layerId);
+  if (!comp) return;
+
+  const repos = DATA.repos.filter(r => r.layer === layerId);
+  const threatIds = [...new Set(repos.flatMap(r => r.threat_ids || []))];
+  const threats = threatIds.map(tid => DATA.threats.find(t => t.id === tid)).filter(Boolean);
+  const controlIds = [...new Set(repos.flatMap(r => r.control_ids || []))];
+  const controls = controlIds.map(cid => DATA.controls.find(c => c.id === cid)).filter(Boolean);
+  const gaps = repos.flatMap(r => findControlGaps(r));
+  const missingIds = [...new Set(gaps.flatMap(g => g.missing))];
+
+  titleEl.innerHTML = `${comp.code}. ${comp.name}`;
+
+  bodyEl.innerHTML = `
+    <p class="text-sm text-gray-400 mb-4">${comp.description}</p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+      <div class="p-3 rounded-lg" style="background:#0d1321;border:1px solid #141c2e">
+        <div class="text-xs text-gray-500 mb-2">Modules (${repos.length})</div>
+        <div class="space-y-1" style="max-height:200px;overflow-y:auto">
+          ${repos.map(r => `<div class="flex items-center gap-2">
+            <span class="risk-badge risk-${calcRiskLevel(r)}" style="font-size:9px;padding:1px 5px">${calcRiskLevel(r)}</span>
+            <span class="text-xs">${r.name}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+      <div class="p-3 rounded-lg" style="background:#0d1321;border:1px solid #141c2e">
+        <div class="text-xs text-gray-500 mb-2">Threats (${threats.length})</div>
+        <div class="space-y-1" style="max-height:200px;overflow-y:auto">
+          ${threats.map(t => `<div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full flex-shrink-0" style="background:${severityColor(t.severity)}"></span>
+            <span class="text-xs">${t.name}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+      <div class="p-3 rounded-lg" style="background:#0d1321;border:1px solid #141c2e">
+        <div class="text-xs text-gray-500 mb-2">Controls (${controls.length}) ${missingIds.length > 0 ? `<span style="color:#ff6b7a">/ ${missingIds.length} gaps</span>` : ''}</div>
+        <div class="space-y-1" style="max-height:200px;overflow-y:auto">
+          ${controls.map(c => `<div class="text-xs flex items-center gap-1">
+            <span style="color:#00e6a7">✓</span> ${c.name}
+          </div>`).join('')}
+          ${missingIds.map(mid => {
+            const mc = DATA.controls.find(c => c.id === mid);
+            return mc ? `<div class="text-xs flex items-center gap-1"><span style="color:#ff6b7a">✗</span> <span style="color:#ff6b7a80">${mc.name}</span></div>` : '';
+          }).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="flex gap-2">
+      <button class="text-xs px-3 py-1.5 rounded-lg" style="background:rgba(0,228,167,0.1);color:#00e6a7;border:1px solid #00e6a730" onclick="navigateToTab('directory')">View in Risk/Threat →</button>
+      <button class="text-xs px-3 py-1.5 rounded-lg" style="background:rgba(99,102,241,0.1);color:#818cf8;border:1px solid #6366f130" onclick="navigateToTab('security')">View Security Review →</button>
+    </div>
+  `;
+  panel.classList.remove('hidden');
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function renderArchDataflow() {
+  const el = document.getElementById('arch-dataflow');
+  if (!el) return;
+
+  const supplyChain = DATA.ecosystem.dependency_network?.supply_chain;
+  const flow = supplyChain ? supplyChain.flow : ['GitHub Repos', 'ClawHub Registry', 'OpenClaw Agent', 'Local Execution'];
+  const archComps = DATA.basic.architecture?.components || [];
+
+  el.innerHTML = `
+    <div class="mb-4">
+      <div class="text-xs text-gray-500 mb-2 font-semibold">Supply Chain Flow</div>
+      <div class="flex items-center flex-wrap gap-1">
+        ${flow.map((step, i) => `
+          <span class="text-xs px-3 py-1.5 rounded-lg font-semibold" style="background:rgba(0,228,167,${0.06 + i*0.04});border:1px solid #00e6a720;color:#00e6a7">${step}</span>
+          ${i < flow.length - 1 ? '<span style="color:#00e6a740">→</span>' : ''}
+        `).join('')}
+      </div>
+      ${supplyChain?.risk ? `<div class="text-xs mt-2" style="color:#ff6b7a">⚠ ${supplyChain.risk}</div>` : ''}
+    </div>
+    <div>
+      <div class="text-xs text-gray-500 mb-2 font-semibold">Core Components</div>
+      <div class="space-y-2" style="max-height:320px;overflow-y:auto">
+        ${archComps.map(c => `
+          <div class="flex items-start gap-3 px-3 py-2 rounded-lg" style="background:#0d1321;border:1px solid #141c2e">
+            <span class="text-xs font-bold whitespace-nowrap" style="color:#00d4aa;min-width:90px">${c.name}</span>
+            <span class="text-xs text-gray-400 flex-1">${c.description}</span>
+            <span class="text-xs text-gray-600 whitespace-nowrap">${c.introduced || ''}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderArchDeps() {
+  const el = document.getElementById('arch-deps');
+  if (!el) return;
+
+  const net = DATA.ecosystem.dependency_network || {};
+  const depTypes = net.dependency_types || [];
+  const chars = net.network_characteristics || {};
+
+  el.innerHTML = `
+    <div class="mb-3 px-3 py-2 rounded-lg" style="background:#0d1321;border:1px solid #141c2e">
+      <div class="flex items-center gap-2 mb-1">
+        <span class="text-xs font-bold" style="color:#00d4aa">Topology:</span>
+        <span class="text-sm font-semibold text-gray-300">${chars.topology || 'Hub-and-Spoke'}</span>
+        <span class="text-xs text-gray-500">|</span>
+        <span class="text-xs text-gray-400">${chars.properties || 'Scale-Free Network'}</span>
+      </div>
+      ${chars.vulnerability ? `<div class="text-xs" style="color:#ff6b7a80">⚠ ${chars.vulnerability}</div>` : ''}
+    </div>
+    <div class="space-y-2" style="max-height:360px;overflow-y:auto">
+      ${depTypes.map(d => `
+        <div class="px-3 py-2 rounded-lg" style="background:#0d1321;border:1px solid #141c2e">
+          <div class="flex items-center gap-2 mb-1">
+            <span>${d.icon || ''}</span>
+            <span class="text-xs font-bold text-gray-300">${d.name}</span>
+          </div>
+          <div class="text-xs text-gray-500 mb-1">${d.description}</div>
+          <div class="text-xs font-mono" style="color:#00e6a780">${d.flow}</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderArchThreatLayer() {
+  const el = document.getElementById('arch-threat-layer');
+  if (!el) return;
+
+  const layerIds = DATA.components.map(c => c.id);
+  const layerCodes = DATA.components.map(c => c.code);
+  const threats = DATA.threats.filter(t => t.severity === 'critical' || t.severity === 'high');
+  const colors = ['#a78bfa','#60a5fa','#f59e0b','#10b981','#06b6d4','#6366f1','#8b5cf6','#ef4444'];
+
+  let html = `<table style="width:100%;border-collapse:collapse;font-size:11px">
+    <thead><tr>
+      <th class="text-left p-2" style="border-bottom:1px solid #1e293b;color:#94a3b8;min-width:140px">Threat</th>
+      ${layerCodes.map((code, i) => `<th class="text-center p-2" style="border-bottom:1px solid #1e293b;color:${colors[i]};width:40px" title="${DATA.components[i].name}">${code}</th>`).join('')}
+    </tr></thead><tbody>`;
+
+  threats.forEach(t => {
+    const affected = t.affected_layers || [];
+    html += `<tr>
+      <td class="p-2" style="border-bottom:1px solid #0d1321">
+        <span class="w-2 h-2 rounded-full inline-block mr-1" style="background:${severityColor(t.severity)}"></span>
+        ${t.name}
+      </td>
+      ${layerIds.map(lid => {
+        const hit = affected.includes(lid);
+        return `<td class="text-center p-2" style="border-bottom:1px solid #0d1321">${hit ? '<span style="color:#ff6b7a">●</span>' : '<span style="color:#1e293b">·</span>'}</td>`;
+      }).join('')}
+    </tr>`;
+  });
+
+  html += `</tbody></table>`;
+  el.innerHTML = html;
+}
+
+function renderArchLayerSecurity() {
+  const el = document.getElementById('arch-layer-security');
+  if (!el) return;
+
+  const colors = ['#a78bfa','#60a5fa','#f59e0b','#10b981','#06b6d4','#6366f1','#8b5cf6','#ef4444'];
+
+  el.innerHTML = DATA.components.map((comp, i) => {
+    const repos = DATA.repos.filter(r => r.layer === comp.id);
+    const totalThreats = new Set(repos.flatMap(r => r.threat_ids || [])).size;
+    const totalControls = new Set(repos.flatMap(r => r.control_ids || [])).size;
+    const totalGaps = repos.reduce((s, r) => s + findControlGaps(r).length, 0);
+    const coverage = totalThreats > 0 ? Math.round(totalControls / (totalControls + totalGaps) * 100) : 100;
+    const barColor = coverage >= 80 ? '#00e6a7' : coverage >= 50 ? '#ffc312' : '#ff4757';
+
+    return `
+      <div class="flex items-center gap-3 cursor-pointer hover:opacity-80" onclick="showArchLayer('${comp.id}')">
+        <span class="text-xs font-bold w-5 text-center" style="color:${colors[i]}">${comp.code}</span>
+        <span class="text-xs flex-1 truncate" title="${comp.name}">${comp.name}</span>
+        <span class="text-xs text-gray-500 w-16 text-right">${repos.length} mod</span>
+        <div class="w-24 progress-bar">
+          <div class="progress-fill" style="width:${coverage}%;background:${barColor}"></div>
+        </div>
+        <span class="text-xs w-10 text-right" style="color:${barColor}">${coverage}%</span>
+      </div>
+    `;
+  }).join('');
 }

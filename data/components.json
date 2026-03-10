@@ -1,0 +1,58 @@
+[
+  {
+    "id": "gateway",
+    "name": "Gateway",
+    "code": "A",
+    "description": "WebSocket 기반 통신 허브 — 에이전트와 채널 연결, OpenAI 호환 HTTP 엔드포인트, DNS-SD 디스커버리",
+    "sub": ["websocket-hub", "rest-api", "dns-sd", "token-auth", "webhook"]
+  },
+  {
+    "id": "agent-runtime",
+    "name": "Agent Runtime",
+    "code": "B",
+    "description": "LLM 추론 엔진 — 멀티 프로바이더 지원, 컨텍스트 관리, 태스크 스케줄링, 도구 실행 오케스트레이션",
+    "sub": ["llm-providers", "context-manager", "task-engine", "scheduler", "orchestration"]
+  },
+  {
+    "id": "plugin-system",
+    "name": "Plugin System",
+    "code": "C",
+    "description": "확장 기능 시스템 — 도구/스킬 런타임 로드, ClawHub 레지스트리, Shell/Browser/Filesystem/Python/API 도구",
+    "sub": ["skill-runtime", "clawhub-registry", "shell", "browser", "filesystem", "python", "api-tools"]
+  },
+  {
+    "id": "sandbox",
+    "name": "Sandbox",
+    "code": "D",
+    "description": "격리 실행 환경 — Docker/Podman 컨테이너, 보안 정책, 가드레일, 감사 로깅, 위협 탐지",
+    "sub": ["container-isolation", "policy-enforcement", "guardclaw", "secureclaw", "network-policy", "audit-logging"]
+  },
+  {
+    "id": "memory-engine",
+    "name": "Memory Engine",
+    "code": "E",
+    "description": "하이브리드 검색 메모리 — BM25+Vector, 2-Layer 기억, SQLite 캐시, Auto Flush, RAG 지원",
+    "sub": ["vector-db", "bm25-search", "long-term-memory", "daily-log", "auto-flush", "sqlite-cache"]
+  },
+  {
+    "id": "control-ui",
+    "name": "Control UI",
+    "code": "F",
+    "description": "웹 기반 관리 대시보드 — 에이전트 모니터링, 세션 관리, 토큰 추적, Canvas 호스트 서빙",
+    "sub": ["web-dashboard", "session-monitor", "token-tracking", "canvas-serving", "identity-config"]
+  },
+  {
+    "id": "tui-cli",
+    "name": "TUI/CLI",
+    "code": "G",
+    "description": "터미널 인터페이스 — status/update/backup/memory 명령, 하이브리드 검색, 로그 관리",
+    "sub": ["cli-commands", "status-table", "memory-search", "backup", "plugin-management"]
+  },
+  {
+    "id": "channel-adapters",
+    "name": "Channel Adapters",
+    "code": "H",
+    "description": "메시징 플랫폼 통합 — Discord, Telegram, Slack, WhatsApp, Signal, Matrix, Teams, LINE 등 12개 채널",
+    "sub": ["discord", "telegram", "slack", "whatsapp", "signal", "matrix", "teams", "line"]
+  }
+]
