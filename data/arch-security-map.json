@@ -1,0 +1,301 @@
+{
+  "data_as_of": "2026-03-11",
+  "zone_summary": {
+    "A": {
+      "name": "Gateway",
+      "threat_count": 4,
+      "cve_count": 8,
+      "control_count": 8,
+      "risk_score": 55.0
+    },
+    "B": {
+      "name": "Agent Runtime",
+      "threat_count": 12,
+      "cve_count": 13,
+      "control_count": 15,
+      "risk_score": 70.0
+    },
+    "C": {
+      "name": "Plugin System / Skills",
+      "threat_count": 8,
+      "cve_count": 9,
+      "control_count": 12,
+      "risk_score": 90.0
+    },
+    "D": {
+      "name": "Sandbox",
+      "threat_count": 3,
+      "cve_count": 4,
+      "control_count": 6,
+      "risk_score": 52.0
+    },
+    "E": {
+      "name": "Memory Engine",
+      "threat_count": 5,
+      "cve_count": 3,
+      "control_count": 5,
+      "risk_score": 55.0
+    },
+    "F": {
+      "name": "Control UI",
+      "threat_count": 1,
+      "cve_count": 1,
+      "control_count": 3,
+      "risk_score": 0
+    },
+    "G": {
+      "name": "TUI/CLI",
+      "threat_count": 1,
+      "cve_count": 1,
+      "control_count": 3,
+      "risk_score": 0
+    },
+    "H": {
+      "name": "Channel Adapters",
+      "threat_count": 0,
+      "cve_count": 6,
+      "control_count": 3,
+      "risk_score": 58.0
+    }
+  },
+  "zone_cves": {
+    "A": [
+      "CVE-2026-25253",
+      "CVE-2026-28446",
+      "CVE-2026-28478",
+      "CVE-2026-28394",
+      "CVE-2026-28465",
+      "CVE-2026-28458",
+      "CVE-2026-28466",
+      "CVE-2026-26377"
+    ],
+    "B": [
+      "CVE-2026-25253",
+      "CVE-2026-25157",
+      "CVE-2026-24763",
+      "CVE-2026-29610",
+      "CVE-2026-28462",
+      "CVE-2026-28485",
+      "CVE-2026-28394",
+      "CVE-2026-25254",
+      "CVE-2026-25688",
+      "CVE-2026-26377",
+      "CVE-2026-27113",
+      "CVE-2026-27324",
+      "CVE-2026-27455"
+    ],
+    "C": [
+      "CVE-2026-25157",
+      "CVE-2026-24763",
+      "CVE-2026-28484",
+      "CVE-2026-29610",
+      "CVE-2026-28479",
+      "CVE-2026-25254",
+      "CVE-2026-25255",
+      "CVE-2026-25256",
+      "CVE-2026-27113"
+    ],
+    "D": [
+      "CVE-2026-28462",
+      "CVE-2026-28485",
+      "CVE-2026-28468",
+      "CVE-2026-26376"
+    ],
+    "E": [
+      "CVE-2026-28479",
+      "CVE-2026-25688",
+      "CVE-2026-27324"
+    ],
+    "F": [
+      "CVE-2026-28466"
+    ],
+    "G": [
+      "CVE-2026-28484"
+    ],
+    "H": [
+      "CVE-2026-28446",
+      "CVE-2026-28478",
+      "CVE-2026-28450",
+      "CVE-2026-28465",
+      "CVE-2026-28458",
+      "CVE-2026-27661"
+    ]
+  },
+  "zone_threats": {
+    "A": [
+      "credential-theft",
+      "data-exfiltration",
+      "indirect-prompt-injection",
+      "prompt-injection"
+    ],
+    "B": [
+      "credential-theft",
+      "data-exfiltration",
+      "data-poisoning",
+      "indirect-prompt-injection",
+      "knowledge-manipulation",
+      "memory-poisoning",
+      "privilege-escalation",
+      "prompt-injection",
+      "remote-code-execution",
+      "supply-chain-attack",
+      "unsafe-tool-use",
+      "user-manipulation"
+    ],
+    "C": [
+      "credential-theft",
+      "data-exfiltration",
+      "indirect-prompt-injection",
+      "privilege-escalation",
+      "prompt-injection",
+      "remote-code-execution",
+      "supply-chain-attack",
+      "unsafe-tool-use"
+    ],
+    "D": [
+      "privilege-escalation",
+      "remote-code-execution",
+      "unsafe-tool-use"
+    ],
+    "E": [
+      "data-poisoning",
+      "indirect-prompt-injection",
+      "knowledge-manipulation",
+      "memory-poisoning",
+      "prompt-injection"
+    ],
+    "F": [
+      "user-manipulation"
+    ],
+    "G": [
+      "user-manipulation"
+    ],
+    "H": []
+  },
+  "zone_controls": {
+    "A": [
+      "content-filtering",
+      "credential-rotation",
+      "data-loss-prevention",
+      "input-validation",
+      "mcp-auth-enforcement",
+      "network-egress-control",
+      "policy-enforcement",
+      "prompt-filtering"
+    ],
+    "B": [
+      "capability-scoping",
+      "content-filtering",
+      "credential-rotation",
+      "filesystem-restrictions",
+      "input-validation",
+      "least-privilege",
+      "periodic-audit",
+      "policy-enforcement",
+      "prompt-filtering",
+      "runtime-monitoring",
+      "sandboxing",
+      "secrets-isolation",
+      "transparency-logging",
+      "vault-integration",
+      "workflow-constraints"
+    ],
+    "C": [
+      "capability-scoping",
+      "dependency-scanning",
+      "least-privilege",
+      "oidc-publishing",
+      "provenance-verification",
+      "registry-integrity",
+      "runtime-monitoring",
+      "sandboxing",
+      "secrets-isolation",
+      "signed-skill-packages",
+      "vault-integration",
+      "workflow-constraints"
+    ],
+    "D": [
+      "container-isolation",
+      "filesystem-restrictions",
+      "least-privilege",
+      "policy-enforcement",
+      "runtime-monitoring",
+      "sandboxing"
+    ],
+    "E": [
+      "data-integrity-checks",
+      "memory-access-control",
+      "memory-integrity-checks",
+      "periodic-audit",
+      "secrets-isolation"
+    ],
+    "F": [
+      "action-explanation",
+      "human-approval",
+      "transparency-logging"
+    ],
+    "G": [
+      "action-explanation",
+      "human-approval",
+      "transparency-logging"
+    ],
+    "H": [
+      "data-loss-prevention",
+      "mcp-auth-enforcement",
+      "network-egress-control"
+    ]
+  },
+  "coverage_gaps": {
+    "A": {
+      "threats": 4,
+      "controls": 8,
+      "coverage_pct": 100.0,
+      "gaps": []
+    },
+    "B": {
+      "threats": 12,
+      "controls": 15,
+      "coverage_pct": 100.0,
+      "gaps": []
+    },
+    "C": {
+      "threats": 8,
+      "controls": 12,
+      "coverage_pct": 100.0,
+      "gaps": []
+    },
+    "D": {
+      "threats": 3,
+      "controls": 6,
+      "coverage_pct": 100.0,
+      "gaps": []
+    },
+    "E": {
+      "threats": 5,
+      "controls": 5,
+      "coverage_pct": 71.4,
+      "gaps": [
+        "indirect-prompt-injection",
+        "prompt-injection"
+      ]
+    },
+    "F": {
+      "threats": 1,
+      "controls": 3,
+      "coverage_pct": 100.0,
+      "gaps": []
+    },
+    "G": {
+      "threats": 1,
+      "controls": 3,
+      "coverage_pct": 100.0,
+      "gaps": []
+    },
+    "H": {
+      "threats": 0,
+      "controls": 3,
+      "coverage_pct": 100.0,
+      "gaps": []
+    }
+  }
+}

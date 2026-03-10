@@ -13,6 +13,20 @@ let DATA = {
   moltbook: { stats: {}, overview: {}, timeline: [], security_incidents: [], controversies: [], key_figures: [], submolts: [], research_papers: [], media_coverage: [] },
 };
 
+// === State (consolidated global variables) ===
+const STATE = {
+  selectedResource: null,
+  activeFilters: {},
+  currentSort: 'risk',
+  papers: { type: 'all' },
+  eco: { category: 'all', sort: 'stars' },
+  skills: { category: 'all', sort: 'downloads' },
+  attacks: { category: 'all', phase: 'all' },
+  timeline: { year: 'all', scope: 'all' },
+  arch: { viewMode: 'structure' }
+};
+
+// Legacy aliases for backward compatibility during migration
 let selectedResource = null;
 let activeFilters = {};
 let currentSort = 'risk';
@@ -25,6 +39,25 @@ let activeAttackCategory = 'all';
 let activeAttackPhase = 'all';
 let activeTimelineYear = 'all';
 let activeTimelineScope = 'all';
+let archViewMode = 'structure';
+
+// === Utilities ===
+
+// 7.1: XSS Prevention — escape HTML entities in user/data strings
+function escapeHtml(str) {
+  if (str == null) return '';
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+// 7.4: Debounce — delay execution until input pauses
+function debounce(fn, delay) {
+  let timer;
+  return function(...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(this, args), delay);
+  };
+}
 
 // === Init ===
 document.addEventListener('DOMContentLoaded', async () => {
@@ -78,17 +111,14 @@ async function loadData() {
 function initTabs() {
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-      btn.classList.add('active');
-      document.getElementById(`tab-${btn.dataset.tab}`).classList.remove('hidden');
+      switchTab(btn.dataset.tab);
     });
   });
 }
 
 // === Risk Calculation ===
-function calcRiskLevel(repo, useControlGap = true) {
-  // Use quantitative risk score if available
+function calcRiskLevel(repo) {
+  // If repo has risk_score.level, use it directly
   if (repo.risk_score && repo.risk_score.level) {
     const l = repo.risk_score.level.toLowerCase();
     if (l === 'extreme') return 'critical';
@@ -97,6 +127,7 @@ function calcRiskLevel(repo, useControlGap = true) {
     if (l === 'moderate') return 'medium';
     return 'low';
   }
+
   if (!repo.threat_ids || repo.threat_ids.length === 0) return 'none';
   const threatSeverities = repo.threat_ids.map(tid => {
     const t = DATA.threats.find(th => th.id === tid);
@@ -105,12 +136,14 @@ function calcRiskLevel(repo, useControlGap = true) {
   const hasCritical = threatSeverities.includes('critical');
   const hasHigh = threatSeverities.includes('high');
 
-  if (!useControlGap || !repo.control_ids) {
+  if (!repo.control_ids || repo.control_ids.length === 0) {
+    // No control info (ecosystem repos)
     if (hasCritical) return 'high';
     if (hasHigh) return 'medium';
     return 'low';
   }
 
+  // With control gap analysis
   const controlCount = (repo.control_ids || []).length;
   const threatCount = repo.threat_ids.length;
   const coverageRatio = threatCount > 0 ? controlCount / threatCount : 1;
@@ -144,23 +177,54 @@ function severityColor(severity) {
 }
 
 function renderThreatTag(threat) {
-  return `<span class="threat-tag"><span class="severity-indicator" style="width:6px;height:6px;border-radius:50%;background:${severityColor(threat.severity)}"></span>${threat.name}</span>`;
+  return `<span class="threat-tag"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${severityColor(threat.severity)}"></span> ${threat.name}</span>`;
 }
 
 function renderThreatTags(threatIds) {
-  const threats = (threatIds || []).map(tid => DATA.threats.find(t => t.id === tid)).filter(Boolean);
-  return threats.map(renderThreatTag).join('');
+  return (threatIds || []).map(tid => DATA.threats.find(t => t.id === tid)).filter(Boolean).map(renderThreatTag).join('');
+}
+
+var ecoPageSize = 60;
+var ecoCurrentPage = 0;
+
+function paginatedRender(containerId, items, renderItemFn, pageSize) {
+  pageSize = pageSize || 60;
+  var container = document.getElementById(containerId);
+  if (!container) return;
+  var total = items.length;
+  var pages = Math.ceil(total / pageSize);
+  var page = Math.min(ecoCurrentPage, pages - 1);
+  if (page < 0) page = 0;
+  ecoCurrentPage = page;
+  var start = page * pageSize;
+  var end = Math.min(start + pageSize, total);
+  container.innerHTML = items.slice(start, end).map(renderItemFn).join('');
+  // Pagination controls
+  if (pages > 1) {
+    var nav = '<div class="flex items-center justify-center gap-2 mt-4">';
+    nav += '<button onclick="ecoCurrentPage=0;renderEcosystem()" class="text-xs px-2 py-1 rounded" style="background:var(--bg-card,#141c2e);color:var(--text-muted,#7a8ba3);cursor:pointer" ' + (page === 0 ? 'disabled style="opacity:0.4;background:var(--bg-card,#141c2e);color:var(--text-muted,#7a8ba3);cursor:default"' : '') + '>«</button>';
+    nav += '<button onclick="ecoCurrentPage=Math.max(0,ecoCurrentPage-1);renderEcosystem()" class="text-xs px-2 py-1 rounded" style="background:var(--bg-card,#141c2e);color:var(--text-muted,#7a8ba3);cursor:pointer" ' + (page === 0 ? 'disabled style="opacity:0.4;background:var(--bg-card,#141c2e);color:var(--text-muted,#7a8ba3);cursor:default"' : '') + '>‹</button>';
+    nav += '<span class="text-xs text-gray-400">' + (page + 1) + ' / ' + pages + ' (' + total + ' repos)</span>';
+    nav += '<button onclick="ecoCurrentPage=Math.min(' + (pages-1) + ',ecoCurrentPage+1);renderEcosystem()" class="text-xs px-2 py-1 rounded" style="background:var(--bg-card,#141c2e);color:var(--text-muted,#7a8ba3);cursor:pointer" ' + (page >= pages - 1 ? 'disabled style="opacity:0.4;background:var(--bg-card,#141c2e);color:var(--text-muted,#7a8ba3);cursor:default"' : '') + '>›</button>';
+    nav += '<button onclick="ecoCurrentPage=' + (pages-1) + ';renderEcosystem()" class="text-xs px-2 py-1 rounded" style="background:var(--bg-card,#141c2e);color:var(--text-muted,#7a8ba3);cursor:pointer" ' + (page >= pages - 1 ? 'disabled style="opacity:0.4;background:var(--bg-card,#141c2e);color:var(--text-muted,#7a8ba3);cursor:default"' : '') + '>»</button>';
+    nav += '</div>';
+    container.insertAdjacentHTML('afterend', '<div id="' + containerId + '-pagination">' + nav + '</div>');
+    var oldPag = document.getElementById(containerId + '-pagination');
+    if (oldPag && oldPag.previousElementSibling !== container) oldPag.remove();
+  }
+  var existingPag = document.getElementById(containerId + '-pagination');
+  if (existingPag && pages <= 1) existingPag.remove();
 }
 
 function fuzzySearch(items, query, fields) {
-  if (!query) return items;
+  if (!query || !query.trim()) return items;
   const q = query.toLowerCase().trim();
   return items.filter(item => {
-    const searchable = fields.map(f => {
+    return fields.some(f => {
       const v = item[f];
-      return Array.isArray(v) ? v.join(' ') : (v || '');
-    }).join(' ').toLowerCase();
-    return searchable.includes(q);
+      const str = Array.isArray(v) ? v.join(' ') : String(v || '');
+      return str.toLowerCase().includes(q);
+    });
   });
 }
 
@@ -180,189 +244,406 @@ function findControlGaps(repo) {
   return gaps;
 }
 
+// === Filter Bar Helper (Task 3) ===
+function renderFilterBar(containerId, filters, activeFilter, onFilterChange, options) {
+  options = options || {};
+  const el = document.getElementById(containerId);
+  if (!el) return;
+
+  let html = '<div class="filter-bar">';
+  filters.forEach(function(f) {
+    var id = typeof f === 'string' ? f : f.id;
+    var label = typeof f === 'string' ? f : (f.label || f.id);
+    var count = typeof f === 'object' ? f.count : null;
+    var isActive = id === activeFilter;
+    html += '<button class="filter-btn' + (isActive ? ' active' : '') + '" data-filter="' + id + '">';
+    html += label;
+    if (count !== null && count !== undefined) {
+      html += '<span class="filter-count">' + count + '</span>';
+    }
+    html += '</button>';
+  });
+  if (options.searchHint) {
+    html += '<span class="search-hint">' + options.searchHint + '</span>';
+  }
+  html += '</div>';
+  el.innerHTML = html;
+
+  el.querySelectorAll('[data-filter]').forEach(function(btn) {
+    btn.onclick = function() {
+      onFilterChange(btn.dataset.filter);
+    };
+  });
+}
+
 // === Overview ===
 function renderOverview() {
-  const ecoRepos = (DATA.ecosystem.repos || []).length;
-  const skillCount = DATA.skills.stats?.total_clawhub || 0;
-  document.getElementById('stat-repos').textContent = ecoRepos;
-  document.getElementById('stat-skills').textContent = skillCount.toLocaleString();
-  document.getElementById('stat-threats').textContent = DATA.threats.length;
-  document.getElementById('stat-papers').textContent = DATA.papers.length;
+  var container = document.getElementById('tab-overview');
+  if (!container) return;
 
-  const scenarioEl = document.getElementById('stat-scenarios');
-  if (scenarioEl) scenarioEl.textContent = (DATA.attacks.scenarios || []).length;
-  const cveEl = document.getElementById('stat-cves');
-  if (cveEl) cveEl.textContent = (DATA.attacks.cves || []).length;
-  const malEl = document.getElementById('stat-malicious');
-  if (malEl) malEl.textContent = (DATA.skills.stats?.flagged_malicious || 0).toLocaleString();
-  const ctrlEl = document.getElementById('stat-controls');
-  if (ctrlEl) ctrlEl.textContent = DATA.controls.length;
+  var ecoRepos = (DATA.ecosystem.repos || []).length;
+  var skillCount = DATA.skills.stats?.total_clawhub || 0;
+  var cveCount = (DATA.attacks.cves || []).length;
+  var scenarioCount = (DATA.attacks.scenarios || []).length;
+  var eventCount = (DATA.timeline.events || DATA.timeline || []).length;
+  var malicious = DATA.skills.stats?.flagged_malicious || 0;
+  var malPct = DATA.skills.stats?.flagged_percent || 0;
+  var controlCount = DATA.controls.length;
+  var threatCount = DATA.threats.length;
 
-  // Risk distribution
-  const riskCounts = { critical: 0, high: 0, medium: 0, low: 0, none: 0 };
-  DATA.repos.forEach(r => { riskCounts[calcRiskLevel(r)]++; });
-  const total = DATA.repos.length;
-  const distEl = document.getElementById('risk-distribution');
-  distEl.innerHTML = Object.entries(riskCounts).map(([level, count]) => `
-    <div class="flex items-center gap-3">
-      <span class="risk-badge risk-${level}" style="width:70px; justify-content:center">${level}</span>
-      <div class="flex-1 progress-bar">
-        <div class="progress-fill" style="width:${(count/total*100)}%; background:${severityColor(level)}"></div>
-      </div>
-      <span class="text-sm text-gray-400" style="width:30px; text-align:right">${count}</span>
-    </div>
-  `).join('');
+  // Risk distribution calc
+  var riskCounts = { critical: 0, high: 0, medium: 0, low: 0, none: 0 };
+  DATA.repos.forEach(function(r) { riskCounts[calcRiskLevel(r)]++; });
+  var total = DATA.repos.length;
 
   // Top threats
-  const threatCounts = DATA.threats.map(t => ({
-    threat: t,
-    count: DATA.repos.filter(r => (r.threat_ids || []).includes(t.id)).length
-  })).sort((a, b) => b.count - a.count).slice(0, 6);
+  var threatRanked = DATA.threats.map(function(t) {
+    return { threat: t, count: DATA.repos.filter(function(r) { return (r.threat_ids || []).includes(t.id); }).length };
+  }).sort(function(a, b) { return b.count - a.count; }).slice(0, 6);
 
-  document.getElementById('top-threats').innerHTML = threatCounts.map(({ threat, count }) => `
-    <div class="flex items-center gap-3">
-      <span class="severity-indicator" style="width:8px;height:8px;border-radius:50%;background:${severityColor(threat.severity)};flex-shrink:0"></span>
-      <span class="text-sm flex-1">${threat.name}</span>
-      <span class="text-sm text-gray-400">${count} items</span>
-    </div>
-  `).join('');
+  // Recent events
+  var recentEvents = (DATA.timeline.events || DATA.timeline || [])
+    .slice().sort(function(a, b) { return (b.date || '').localeCompare(a.date || ''); })
+    .slice(0, 7);
 
-  // Layer overview
-  document.getElementById('layer-overview').innerHTML = DATA.components.map(comp => {
-    const layerRepos = DATA.repos.filter(r => r.layer === comp.id);
-    const maxRisk = layerRepos.reduce((max, r) => {
-      const rl = calcRiskLevel(r);
-      return riskOrder(rl) < riskOrder(max) ? rl : max;
-    }, 'none');
-    return `
-      <div class="layer-card" onclick="navigateToLayer('${comp.id}')">
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-xs font-bold text-gray-500">${comp.code}</span>
-          <span class="risk-badge risk-${maxRisk}">${maxRisk}</span>
-        </div>
-        <div class="font-semibold text-sm mb-1">${comp.name}</div>
-        <div class="text-xs text-gray-500">${layerRepos.length} items</div>
-      </div>
-    `;
-  }).join('');
+  // Top risks from repos
+  var topRisks = (DATA.repos || [])
+    .filter(function(r) { return r.risk_score; })
+    .sort(function(a, b) { return (b.risk_score.total || 0) - (a.risk_score.total || 0); })
+    .slice(0, 5);
 
-  // === Phase 5: Enhanced Overview ===
+  // Control coverage
+  var totalGaps = DATA.repos.reduce(function(sum, r) { return sum + findControlGaps(r).length; }, 0);
+  var coveredRepos = DATA.repos.filter(function(r) { return findControlGaps(r).length === 0; }).length;
+  var coveragePct = total > 0 ? Math.round(coveredRepos / total * 100) : 100;
 
-  // 5.3.6 Executive Summary
-  const execEl = document.getElementById('executive-summary');
-  if (execEl) {
-    const criticals = DATA.threats.filter(t => t.severity === 'critical').length;
-    const events2026 = (DATA.timeline.events || []).filter(e => e.year >= 2026).length;
-    const malicious = DATA.skills.stats?.flagged_malicious || 0;
-    const cveCount = (DATA.attacks.cves || []).length;
-    const gaps = DATA.repos.reduce((sum, r) => sum + findControlGaps(r).length, 0);
-    const summary = `OpenClaw 생태계 현황: ${(DATA.ecosystem.repos || []).length}개 프로젝트, ${(DATA.skills.stats?.total_clawhub || 0).toLocaleString()}개 ClawHub 스킬이 운영 중이며, 이 중 ${malicious}개(${DATA.skills.stats?.flagged_percent || 0}%)가 악성으로 플래그됨. ${criticals}개 Critical 위협, ${cveCount}개 CVE가 식별되었고, 2026년에만 ${events2026}건의 보안 사건 발생. ${gaps > 0 ? `현재 ${gaps}개 컨트롤 갭이 미해결 상태.` : `모든 핵심 컴포넌트의 컨트롤 갭이 해소됨.`}`;
-    execEl.textContent = summary;
+  // Skill safety
+  var totalS = skillCount;
+  var flaggedS = malicious;
+  var safeP = totalS > 0 ? ((totalS - flaggedS) / totalS * 100).toFixed(1) : '100.0';
+
+  // CVE severity breakdown
+  var cveCritical = (DATA.attacks.cves || []).filter(function(c) { return c.severity === 'critical'; }).length;
+  var cveHigh = (DATA.attacks.cves || []).filter(function(c) { return c.severity === 'high'; }).length;
+
+  // Zone threat count for nav
+  var zoneThreatCount = new Set(DATA.repos.flatMap(function(r) { return r.threat_ids || []; })).size;
+
+  // Build HTML
+  var html = '';
+
+  // === 1a. Executive Summary Banner ===
+  html += '<div class="dash-card" style="border-left: 4px solid var(--risk-critical, #f97316); margin-bottom: 1.5rem;">';
+  html += '<div style="display: flex; justify-content: space-between; align-items: center;">';
+  html += '<div>';
+  html += '<div style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary, #e2e8f0);">';
+  html += '&#x26a0;&#xfe0f; OpenClaw Ecosystem Security Status: <span style="color: #f97316;">HIGH RISK</span>';
+  html += '</div>';
+  html += '<div style="font-size: 0.8rem; color: var(--text-secondary, #94a3b8); margin-top: 0.25rem;">';
+  html += 'Last updated: ' + (DATA.moltbook?.stats?.data_as_of || '2026-03-10') + ' &middot; ';
+  html += cveCount + ' Active CVEs &middot; ';
+  html += scenarioCount + ' Attack Scenarios &middot; ';
+  html += eventCount + ' Security Events';
+  html += '</div>';
+  html += '</div>';
+  html += '<div style="text-align: right;">';
+  html += '<div style="font-size: 2rem; font-weight: 800; color: #ef4444;">' + cveCount + '</div>';
+  html += '<div style="font-size: 0.7rem; color: var(--text-muted, #64748b);">Active CVEs</div>';
+  html += '</div>';
+  html += '</div>';
+  html += '</div>';
+
+  // === Security Alert Banner ===
+  html += '<div id="overview-alert" class="mb-6 rounded-xl overflow-hidden" style="background:linear-gradient(135deg, #1a0a12 0%, #2a0a1a 40%, #1a0f20 100%);border:1px solid #4a1525;box-shadow:0 4px 24px rgba(255,50,80,0.08)">';
+  html += '<div class="px-5 py-3 flex items-center gap-3" style="background:linear-gradient(90deg, rgba(255,75,100,0.12) 0%, rgba(255,75,100,0.04) 100%);border-bottom:1px solid #3a1020">';
+  html += '<span class="flex items-center justify-center w-7 h-7 rounded-lg" style="background:rgba(255,75,100,0.15);color:#ff5a72;font-size:14px">&#x26a0;</span>';
+  html += '<span class="font-bold text-sm tracking-wide" style="color:#ff8a9a">Security Alerts</span>';
+  html += '<span id="overview-alert-count" class="text-xs font-bold px-2 py-0.5 rounded-full" style="background:rgba(255,75,100,0.2);color:#ff7a8e;margin-left:auto"></span>';
+  html += '</div>';
+  html += '<div id="overview-alert-content" class="px-5 py-3 space-y-2"></div>';
+  html += '</div>';
+
+  // === 1b. Key Metrics Grid ===
+  var metrics = [
+    { label: 'Ecosystem Repos', value: ecoRepos, color: '#00e6a7', tab: 'ecosystem', trend: ecoRepos + '+ projects' },
+    { label: 'ClawHub Skills', value: skillCount.toLocaleString(), color: malicious > 0 ? '#ff8c42' : '#00e6a7', tab: 'skills', trend: malicious > 0 ? '&#x26a0; ' + malicious + ' malicious' : 'All verified' },
+    { label: 'Active CVEs', value: cveCount, color: '#ef4444', tab: 'attacks', trend: cveCritical + ' critical, ' + cveHigh + ' high' },
+    { label: 'Attack Scenarios', value: scenarioCount, color: '#ff6b7a', tab: 'attacks', trend: scenarioCount + ' documented' },
+    { label: 'Security Controls', value: controlCount, color: '#00e6a7', tab: 'security', trend: coveragePct + '% coverage' },
+    { label: 'Known Threats', value: threatCount, color: '#ffc312', tab: 'security', trend: riskCounts.critical + ' critical threats' }
+  ];
+
+  html += '<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">';
+  metrics.forEach(function(m) {
+    html += '<div class="dash-card clickable" style="text-align:center;" onclick="navigateToTab(\'' + m.tab + '\')">';
+    html += '<div style="font-size:1.8rem;font-weight:700;color:' + m.color + '">' + m.value + '</div>';
+    html += '<div class="text-xs text-gray-400" style="margin-top:4px">' + m.label + '</div>';
+    html += '<div style="font-size:0.7rem;color:var(--text-secondary,#5a6d84);margin-top:6px">' + m.trend + '</div>';
+    html += '</div>';
+  });
+  html += '</div>';
+
+  // === Risk + Recent Events row ===
+  html += '<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">';
+
+  // Risk Distribution
+  html += '<div class="dash-card">';
+  html += '<h3 class="card-title">Risk Distribution</h3>';
+  html += '<div id="risk-distribution" class="space-y-3"></div>';
+  html += '</div>';
+
+  // 1c. Recent Activity Feed
+  html += '<div class="dash-card">';
+  html += '<div class="flex items-center justify-between mb-4">';
+  html += '<h3 class="card-title mb-0">Recent Security Events</h3>';
+  html += '<a href="#timeline" onclick="navigateToTab(\'timeline\')" class="detail-link text-xs">View All &#x2192;</a>';
+  html += '</div>';
+  html += '<div class="space-y-3">';
+  recentEvents.forEach(function(e) {
+    var sevClass = e.severity === 'critical' ? 'critical' : e.severity === 'high' ? 'high' : 'medium';
+    html += '<div class="flex items-center gap-3">';
+    html += '<span class="risk-dot risk-' + sevClass + '"></span>';
+    html += '<span class="text-xs text-gray-500 w-20 flex-shrink-0">' + (e.date || '') + '</span>';
+    html += '<span class="text-sm flex-1">' + (e.title || '') + '</span>';
+    if (e.severity && e.severity !== 'info') {
+      html += '<span class="risk-badge risk-' + e.severity + '" style="font-size:0.65rem;padding:2px 6px">' + e.severity + '</span>';
+    }
+    html += '</div>';
+  });
+  html += '</div>';
+  html += '</div>';
+
+  html += '</div>'; // end grid
+
+  // === Threats + Attack Distribution row ===
+  html += '<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">';
+
+  html += '<div class="dash-card">';
+  html += '<h3 class="card-title">Top Threats by Affected Items</h3>';
+  html += '<div id="top-threats" class="space-y-3"></div>';
+  html += '</div>';
+
+  html += '<div class="dash-card">';
+  html += '<div class="flex items-center justify-between mb-4">';
+  html += '<h3 class="card-title mb-0">Attack Distribution</h3>';
+  html += '<a href="#attacks" onclick="navigateToTab(\'attacks\')" class="detail-link text-xs">Full Analysis &#x2192;</a>';
+  html += '</div>';
+  html += '<div id="overview-attack-dist" class="space-y-3"></div>';
+  html += '</div>';
+
+  html += '</div>';
+
+  // === 1e. Top Risks Summary ===
+  if (topRisks.length > 0) {
+    html += '<div class="dash-card mb-6">';
+    html += '<h3 class="card-title">Top Risk Modules</h3>';
+    html += '<div class="space-y-3">';
+    topRisks.forEach(function(r) {
+      var score = r.risk_score.total || 0;
+      var barColor = score >= 80 ? '#ef4444' : score >= 60 ? '#f97316' : score >= 40 ? '#eab308' : '#22c55e';
+      html += '<div class="flex items-center gap-3">';
+      html += '<span class="text-sm flex-1">' + r.name + '</span>';
+      html += '<div class="w-32 progress-bar">';
+      html += '<div class="progress-fill" style="width:' + score + '%;background:' + barColor + '"></div>';
+      html += '</div>';
+      html += '<span class="text-xs font-bold" style="color:' + barColor + ';width:40px;text-align:right">' + score + '/100</span>';
+      html += r.risk_score.policy ? policyBadgeHtml(r.risk_score.policy) : '';
+      html += '</div>';
+    });
+    html += '</div>';
+    html += '</div>';
   }
 
-  // 5.3.1 Security Alert Banner
-  const alertEl = document.getElementById('overview-alert-content');
+  // === Architecture Layers ===
+  html += '<div class="dash-card mb-6">';
+  html += '<h3 class="card-title">Architecture Layers</h3>';
+  html += '<div id="layer-overview" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"></div>';
+  html += '</div>';
+
+  // === 1d. Quick Navigation Cards ===
+  var navCards = [
+    { tab: 'architecture', icon: '&#x1f3d7;', title: 'Architecture', preview: (DATA.components?.length || 8) + ' Components &middot; ' + zoneThreatCount + ' Threats' },
+    { tab: 'ecosystem', icon: '&#x1f310;', title: 'Ecosystem', preview: ecoRepos + '+ Repos' },
+    { tab: 'skills', icon: '&#x1f9e9;', title: 'Skills', preview: skillCount.toLocaleString() + ' Skills &middot; ' + malicious + ' Flagged' },
+    { tab: 'attacks', icon: '&#x1f4a5;', title: 'Attacks', preview: cveCount + ' CVEs &middot; ' + scenarioCount + ' Scenarios' },
+    { tab: 'timeline', icon: '&#x1f4c5;', title: 'Timeline', preview: eventCount + ' Events' },
+    { tab: 'security', icon: '&#x1f6e1;', title: 'Security', preview: threatCount + ' Threats &middot; ' + controlCount + ' Controls' },
+    { tab: 'research', icon: '&#x1f4c4;', title: 'Research', preview: DATA.papers.length + ' Papers' },
+    { tab: 'moltbook', icon: '&#x1f4f1;', title: 'MoltBook', preview: 'Social Platform Analysis' }
+  ];
+
+  html += '<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">';
+  navCards.forEach(function(nc) {
+    html += '<div class="dash-card clickable" onclick="navigateToTab(\'' + nc.tab + '\')">';
+    html += '<div class="flex items-center gap-2 mb-2">';
+    html += '<span style="font-size:1.2rem">' + nc.icon + '</span>';
+    html += '<span class="font-semibold text-sm">' + nc.title + '</span>';
+    html += '</div>';
+    html += '<div class="text-xs text-gray-500">' + nc.preview + '</div>';
+    html += '</div>';
+  });
+  html += '</div>';
+
+  // === Ecosystem Health row ===
+  html += '<div class="grid grid-cols-1 md:grid-cols-3 gap-6">';
+
+  html += '<div class="dash-card">';
+  html += '<h3 class="card-title">Dependency Network</h3>';
+  html += '<div id="overview-dep-network"></div>';
+  html += '<a href="#ecosystem" onclick="navigateToTab(\'ecosystem\')" class="detail-link text-xs mt-3 inline-block">Details &#x2192;</a>';
+  html += '</div>';
+
+  html += '<div class="dash-card">';
+  html += '<h3 class="card-title">Skill Security Status</h3>';
+  html += '<div id="overview-skill-security"></div>';
+  html += '<a href="#skills" onclick="navigateToTab(\'skills\')" class="detail-link text-xs mt-3 inline-block">Details &#x2192;</a>';
+  html += '</div>';
+
+  html += '<div class="dash-card">';
+  html += '<h3 class="card-title">Control Coverage</h3>';
+  html += '<div id="overview-control-coverage"></div>';
+  html += '<a href="#security" onclick="navigateToTab(\'security\')" class="detail-link text-xs mt-3 inline-block">Details &#x2192;</a>';
+  html += '</div>';
+
+  html += '</div>';
+
+  // Inject the rebuilt overview
+  container.innerHTML = html;
+
+  // Now populate dynamic sub-sections that need DOM elements
+
+  // Risk distribution
+  var distEl = document.getElementById('risk-distribution');
+  if (distEl) {
+    distEl.innerHTML = Object.entries(riskCounts).map(function(entry) {
+      var level = entry[0], count = entry[1];
+      return '<div class="flex items-center gap-3">' +
+        '<span class="risk-badge risk-' + level + '" style="width:70px; justify-content:center">' + level + '</span>' +
+        '<div class="flex-1 progress-bar">' +
+        '<div class="progress-fill" style="width:' + (count/total*100) + '%; background:' + severityColor(level) + '"></div>' +
+        '</div>' +
+        '<span class="text-sm text-gray-400" style="width:30px; text-align:right">' + count + '</span>' +
+        '</div>';
+    }).join('');
+  }
+
+  // Top threats
+  var topThreatsEl = document.getElementById('top-threats');
+  if (topThreatsEl) {
+    topThreatsEl.innerHTML = threatRanked.map(function(item) {
+      return '<div class="flex items-center gap-3">' +
+        '<span class="severity-indicator" style="width:8px;height:8px;border-radius:50%;background:' + severityColor(item.threat.severity) + ';flex-shrink:0"></span>' +
+        '<span class="text-sm flex-1">' + item.threat.name + '</span>' +
+        '<span class="text-sm text-gray-400">' + item.count + ' items</span>' +
+        '</div>';
+    }).join('');
+  }
+
+  // Layer overview
+  var layerEl = document.getElementById('layer-overview');
+  if (layerEl) {
+    layerEl.innerHTML = DATA.components.map(function(comp) {
+      var layerRepos = DATA.repos.filter(function(r) { return r.layer === comp.id; });
+      var maxRisk = layerRepos.reduce(function(max, r) {
+        var rl = calcRiskLevel(r);
+        return riskOrder(rl) < riskOrder(max) ? rl : max;
+      }, 'none');
+      return '<div class="dash-card clickable" onclick="navigateToLayer(\'' + comp.id + '\')">' +
+        '<div class="flex items-center justify-between mb-2">' +
+        '<span class="text-xs font-bold text-gray-500">' + comp.code + '</span>' +
+        '<span class="risk-badge risk-' + maxRisk + '">' + maxRisk + '</span>' +
+        '</div>' +
+        '<div class="font-semibold text-sm mb-1">' + comp.name + '</div>' +
+        '<div class="text-xs text-gray-500">' + layerRepos.length + ' items</div>' +
+        '</div>';
+    }).join('');
+  }
+
+  // Alert banner
+  var alertEl = document.getElementById('overview-alert-content');
   if (alertEl) {
-    const alerts = [];
-    const sevStyle = {
+    var alerts = [];
+    var sevStyle = {
       critical: { bg: 'rgba(255,60,80,0.1)', border: '#5a1525', dot: '#ff4d6a', text: '#ffa0b0' },
       high:     { bg: 'rgba(255,140,66,0.08)', border: '#4a2a10', dot: '#ff8c42', text: '#ffc494' },
       medium:   { bg: 'rgba(255,195,18,0.06)', border: '#3a3010', dot: '#ffc312', text: '#ffe08a' }
     };
-    (DATA.attacks.cves || []).forEach(c => {
-      const s = c.severity === 'critical' ? 'critical' : 'high';
-      const nvdUrl = `https://nvd.nist.gov/vuln/detail/${c.id}`;
-      alerts.push({ severity: s, html: `<a href="${nvdUrl}" target="_blank" rel="noopener" style="color:${sevStyle[s].dot};font-weight:700;text-decoration:none">${c.id}</a> <span style="color:${sevStyle[s].text}">${c.title}</span> <span class="risk-badge risk-${c.severity}" style="font-size:10px;padding:1px 6px">${c.severity}</span>` });
+    (DATA.attacks.cves || []).forEach(function(c) {
+      var s = c.severity === 'critical' ? 'critical' : 'high';
+      var nvdUrl = 'https://nvd.nist.gov/vuln/detail/' + c.id;
+      alerts.push({ severity: s, html: '<a href="' + nvdUrl + '" target="_blank" rel="noopener" style="color:' + sevStyle[s].dot + ';font-weight:700;text-decoration:none">' + c.id + '</a> <span style="color:' + sevStyle[s].text + '">' + c.title + '</span> <span class="risk-badge risk-' + c.severity + '" style="font-size:10px;padding:1px 6px">' + c.severity + '</span>' });
     });
-    const malPct = DATA.skills.stats?.flagged_percent || 0;
-    if (malPct > 5) alerts.push({ severity: 'high', html: `<span style="color:#ff8c42;font-weight:700">Malicious Skills</span> <span style="color:#ffc494">악성 스킬 비율 ${malPct}% — ClawHub 스킬 설치 전 소스 검토 필수</span>` });
-    const recentCritical = (DATA.timeline.events || []).filter(e => e.severity === 'critical' && e.year >= 2026).slice(0, 3);
-    recentCritical.forEach(e => alerts.push({ severity: 'critical', html: `<span style="color:#ff4d6a;font-weight:700">${e.date}</span> <span style="color:#ffa0b0">${e.title}</span>` }));
-    alertEl.innerHTML = alerts.map(a => {
-      const s = sevStyle[a.severity] || sevStyle.medium;
-      return `<div class="flex items-center gap-2 px-3 py-1.5 rounded-lg" style="background:${s.bg};border:1px solid ${s.border}">
-        <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:${s.dot};box-shadow:0 0 6px ${s.dot}40"></span>
-        <span class="text-xs">${a.html}</span>
-      </div>`;
+    if (malPct > 5) alerts.push({ severity: 'high', html: '<span style="color:#ff8c42;font-weight:700">Malicious Skills</span> <span style="color:#ffc494">' + malPct + '% flagged malicious</span>' });
+    var recentCritical = (DATA.timeline.events || []).filter(function(e) { return e.severity === 'critical' && e.year >= 2026; }).slice(0, 3);
+    recentCritical.forEach(function(e) { alerts.push({ severity: 'critical', html: '<span style="color:#ff4d6a;font-weight:700">' + e.date + '</span> <span style="color:#ffa0b0">' + e.title + '</span>' }); });
+    alertEl.innerHTML = alerts.map(function(a) {
+      var s = sevStyle[a.severity] || sevStyle.medium;
+      return '<div class="flex items-center gap-2 px-3 py-1.5 rounded-lg" style="background:' + s.bg + ';border:1px solid ' + s.border + '">' +
+        '<span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:' + s.dot + ';box-shadow:0 0 6px ' + s.dot + '40"></span>' +
+        '<span class="text-xs">' + a.html + '</span>' +
+        '</div>';
     }).join('');
     alertEl.style.maxHeight = '120px';
     alertEl.style.overflowY = 'auto';
-    const countEl = document.getElementById('overview-alert-count');
+    var countEl = document.getElementById('overview-alert-count');
     if (countEl) countEl.textContent = alerts.length + ' alerts';
-    const alertBox = document.getElementById('overview-alert');
+    var alertBox = document.getElementById('overview-alert');
     if (alertBox) alertBox.classList.toggle('hidden', alerts.length === 0);
   }
 
-  // 5.3.3 Recent Security Events
-  const recentEl = document.getElementById('overview-recent-events');
-  if (recentEl) {
-    const recentEvents = [...(DATA.timeline.events || [])].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5);
-    recentEl.innerHTML = recentEvents.map(e => `
-      <div class="flex items-center gap-3">
-        <span class="risk-dot risk-${e.severity === 'critical' ? 'critical' : e.severity === 'high' ? 'high' : 'medium'}"></span>
-        <span class="text-xs text-gray-500 w-20 flex-shrink-0">${e.date}</span>
-        <span class="text-sm flex-1">${e.title}</span>
-      </div>
-    `).join('');
-  }
-
-  // 5.3.4 Attack Distribution
-  const atkDistEl = document.getElementById('overview-attack-dist');
+  // Attack Distribution
+  var atkDistEl = document.getElementById('overview-attack-dist');
   if (atkDistEl) {
-    const dist = DATA.attacks.distribution || [];
-    const maxPct = Math.max(...dist.map(d => d.percent || 0), 1);
-    atkDistEl.innerHTML = dist.map(d => `
-      <div class="flex items-center gap-3">
-        <span class="text-sm flex-1">${d.category}</span>
-        <div class="w-32 progress-bar">
-          <div class="progress-fill" style="width:${((d.percent||0)/maxPct*100)}%;background:${d.color || '#ff6b7a'}"></div>
-        </div>
-        <span class="text-sm text-gray-400 w-10 text-right">${d.percent}%</span>
-      </div>
-    `).join('');
+    var dist = DATA.attacks.distribution || [];
+    var maxPct = Math.max.apply(null, dist.map(function(d) { return d.percent || 0; }).concat([1]));
+    atkDistEl.innerHTML = dist.map(function(d) {
+      return '<div class="flex items-center gap-3">' +
+        '<span class="text-sm flex-1">' + d.category + '</span>' +
+        '<div class="w-32 progress-bar">' +
+        '<div class="progress-fill" style="width:' + ((d.percent||0)/maxPct*100) + '%;background:' + (d.color || '#ff6b7a') + '"></div>' +
+        '</div>' +
+        '<span class="text-sm text-gray-400 w-10 text-right">' + d.percent + '%</span>' +
+        '</div>';
+    }).join('');
   }
 
-  // 5.3.5 Ecosystem Health
-  const depNetEl = document.getElementById('overview-dep-network');
+  // Dependency Network
+  var depNetEl = document.getElementById('overview-dep-network');
   if (depNetEl) {
-    const net = DATA.ecosystem.dependency_network || {};
-    depNetEl.innerHTML = `
-      <div class="text-xs text-gray-400 space-y-2">
-        <div>모델: <span class="text-sm font-semibold text-gray-300">${net.network_characteristics?.topology || 'Hub-and-Spoke'}</span></div>
-        <div>의존성 유형: ${(net.dependency_types || []).length}개</div>
-        <div>공급망 단계: ${net.supply_chain ? net.supply_chain.flow.length : 0}개</div>
-      </div>`;
+    var net = DATA.ecosystem.dependency_network || {};
+    depNetEl.innerHTML = '<div class="text-xs text-gray-400 space-y-2">' +
+      '<div>Topology: <span class="text-sm font-semibold text-gray-300">' + (net.network_characteristics?.topology || 'Hub-and-Spoke') + '</span></div>' +
+      '<div>Dependency types: ' + (net.dependency_types || []).length + '</div>' +
+      '<div>Supply chain stages: ' + (net.supply_chain ? net.supply_chain.flow.length : 0) + '</div>' +
+      '</div>';
   }
 
-  const skillSecEl = document.getElementById('overview-skill-security');
+  // Skill Security
+  var skillSecEl = document.getElementById('overview-skill-security');
   if (skillSecEl) {
-    const ss = DATA.skills.stats || {};
-    const totalS = ss.total_clawhub || 0;
-    const flaggedS = ss.flagged_malicious || 0;
-    const safeP = totalS > 0 ? ((totalS - flaggedS) / totalS * 100).toFixed(1) : 100;
-    skillSecEl.innerHTML = `
-      <div class="text-2xl font-bold mb-2" style="color:${safeP > 95 ? '#00e6a7' : safeP > 90 ? '#ffc312' : '#ff4757'}">${safeP}%</div>
-      <div class="text-xs text-gray-400">안전 스킬 비율 (${(totalS - flaggedS).toLocaleString()} / ${totalS.toLocaleString()})</div>
-      <div class="progress-bar mt-3"><div class="progress-fill" style="width:${safeP}%;background:#00e6a7"></div></div>`;
+    skillSecEl.innerHTML = '<div class="text-2xl font-bold mb-2" style="color:' + (safeP > 95 ? '#00e6a7' : safeP > 90 ? '#ffc312' : '#ff4757') + '">' + safeP + '%</div>' +
+      '<div class="text-xs text-gray-400">Safe skills (' + (totalS - flaggedS).toLocaleString() + ' / ' + totalS.toLocaleString() + ')</div>' +
+      '<div class="progress-bar mt-3"><div class="progress-fill" style="width:' + safeP + '%;background:#00e6a7"></div></div>';
   }
 
-  const ctrlCovEl = document.getElementById('overview-control-coverage');
+  // Control Coverage
+  var ctrlCovEl = document.getElementById('overview-control-coverage');
   if (ctrlCovEl) {
-    const totalGaps = DATA.repos.reduce((sum, r) => sum + findControlGaps(r).length, 0);
-    const coveredRepos = DATA.repos.filter(r => findControlGaps(r).length === 0).length;
-    ctrlCovEl.innerHTML = `
-      <div class="text-2xl font-bold mb-2" style="color:${totalGaps === 0 ? '#00e6a7' : '#ff8c42'}">${coveredRepos}/${DATA.repos.length}</div>
-      <div class="text-xs text-gray-400">완전 방어 컴포넌트</div>
-      ${totalGaps > 0 ? `<div class="text-xs mt-2 font-semibold" style="color:#ff8c42">⚠ ${totalGaps}개 컨트롤 갭 미해결</div>` : ''}`;
+    ctrlCovEl.innerHTML = '<div class="text-2xl font-bold mb-2" style="color:' + (totalGaps === 0 ? '#00e6a7' : '#ff8c42') + '">' + coveredRepos + '/' + total + '</div>' +
+      '<div class="text-xs text-gray-400">Fully covered components</div>' +
+      (totalGaps > 0 ? '<div class="text-xs mt-2 font-semibold" style="color:#ff8c42">&#x26a0; ' + totalGaps + ' control gaps unresolved</div>' : '');
   }
+
+  // Charts (deferred to allow DOM updates)
+  setTimeout(function() {
+    renderAttackDonutChart();
+    renderTimelineChart();
+  }, 0);
 }
 
 function navigateToLayer(layerId) {
   // Switch to directory tab and filter by layer
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-  document.querySelector('[data-tab="directory"]').classList.add('active');
-  document.getElementById('tab-directory').classList.remove('hidden');
+  switchTab('directory');
 
   // Uncheck all layers, check target
   document.querySelectorAll('#filter-layer input').forEach(cb => {
@@ -529,8 +810,8 @@ function renderResourceCard(r) {
       </div>
       <div class="resource-desc">${r.description}</div>
       <div class="resource-meta">
-        <span class="px-2 py-0.5 rounded text-xs" style="background:#141c2e;color:#7a8ba3">${r.type}</span>
-        <span class="px-2 py-0.5 rounded text-xs" style="background:#141c2e;color:#7a8ba3">${r.language}</span>
+        <span class="px-2 py-0.5 rounded text-xs" style="background:var(--bg-card,#141c2e);color:var(--text-muted,#7a8ba3)">${r.type}</span>
+        <span class="px-2 py-0.5 rounded text-xs" style="background:var(--bg-card,#141c2e);color:var(--text-muted,#7a8ba3)">${r.language}</span>
         <span class="text-gray-500">&#x2b50; ${(r.stars || 0).toLocaleString()}</span>
         ${mitreTags}
       </div>
@@ -671,7 +952,7 @@ function renderSecurity() {
     });
 
     return `
-      <div class="p-3 rounded-lg" style="border:1px solid #141c2e">
+      <div class="dash-card">
         <div class="flex items-center justify-between mb-2">
           <div class="flex items-center gap-2">
             <span class="severity-indicator" style="width:8px;height:8px;border-radius:50%;background:${severityColor(t.severity)}"></span>
@@ -724,7 +1005,7 @@ function renderSecurity() {
   document.getElementById('control-catalog').innerHTML = controlCategories.map(cat => {
     const catControls = DATA.controls.filter(c => c.category === cat);
     return `
-      <div class="p-3 rounded-lg" style="border:1px solid #141c2e">
+      <div class="dash-card">
         <div class="text-xs font-bold text-gray-500 uppercase mb-2">${cat.replace(/_/g, ' ')}</div>
         ${catControls.map(c => {
           const mitigates = DATA.threats.filter(t => (t.controls || []).includes(c.id));
@@ -739,6 +1020,9 @@ function renderSecurity() {
       </div>
     `;
   }).join('');
+
+  // Kill Chain SVG chart
+  setTimeout(function() { renderKillChainChart(); }, 0);
 }
 
 function renderSecurityMatrix() {
@@ -755,7 +1039,7 @@ function renderSecurityMatrix() {
   });
 
   matrixEl.innerHTML = matrix.map(m => `
-    <div class="p-3 rounded-lg" style="border:1px solid #141c2e">
+    <div class="dash-card">
       <div class="flex items-center justify-between mb-2">
         <div class="flex items-center gap-2">
           <span class="severity-indicator" style="width:8px;height:8px;border-radius:50%;background:${severityColor(m.threat.severity)}"></span>
@@ -776,19 +1060,21 @@ function renderSecurityMatrix() {
 
 // === Research Tab ===
 function renderResearch() {
-  // Paper type filters (includes topic-based filters: moltbook, openclaw)
+  // Paper type filters using unified filter bar
   const typeSet = new Set(DATA.papers.map(p => p.type));
   const types = ['all', ...typeSet, 'moltbook', 'openclaw'];
-  document.getElementById('paper-type-filters').innerHTML = types.map(t => `
-    <button class="paper-filter-btn ${t === activePaperType ? 'active' : ''}" data-type="${t}">${t === 'moltbook' ? 'Moltbook' : t === 'openclaw' ? 'OpenClaw' : t}</button>
-  `).join('');
-
-  document.querySelectorAll('.paper-filter-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      activePaperType = btn.dataset.type;
-      renderResearch();
-    });
+  const filterItems = types.map(t => {
+    const label = t === 'moltbook' ? 'Moltbook' : t === 'openclaw' ? 'OpenClaw' : t;
+    const count = t === 'all' ? DATA.papers.length
+      : (t === 'moltbook' || t === 'openclaw')
+        ? DATA.papers.filter(p => (p.topic_tags || []).includes(t)).length
+        : DATA.papers.filter(p => p.type === t).length;
+    return { id: t, label: label, count: count };
   });
+  renderFilterBar('paper-type-filters', filterItems, activePaperType, function(val) {
+    activePaperType = val;
+    renderResearch();
+  }, { searchHint: DATA.papers.length + ' papers total' });
 
   // Paper list (moltbook/openclaw filter by topic_tags, others by type)
   const filtered = activePaperType === 'all' ? DATA.papers
@@ -807,7 +1093,7 @@ function renderResearch() {
         </div>
         <div class="font-semibold text-sm mb-2">${p.arxiv_url ? `<a href="${p.arxiv_url}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none" onmouseover="this.style.color='#00e6a7'" onmouseout="this.style.color='inherit'">${p.title}</a>` : p.title}${p.arxiv_url ? ` <a href="${p.arxiv_url}" target="_blank" rel="noopener" class="text-xs px-1.5 py-0.5 rounded" style="background:rgba(0,230,167,0.08);color:#00e6a7;border:1px solid #00e6a720;text-decoration:none;font-weight:normal">arXiv</a>` : ''}</div>
         <div class="flex flex-wrap gap-1 mb-2">
-          ${(p.topic_tags || []).map(tag => `<span class="text-xs px-2 py-0.5 rounded" style="background:#141c2e;color:#7a8ba3">${tag}</span>`).join('')}
+          ${(p.topic_tags || []).map(tag => `<span class="text-xs px-2 py-0.5 rounded" style="background:var(--bg-card,#141c2e);color:var(--text-muted,#7a8ba3)">${tag}</span>`).join('')}
         </div>
         <div class="text-xs text-gray-500">
           ${mappedComps.length > 0 ? `<div>Components: ${mappedComps.map(c => c.name).join(', ')}</div>` : ''}
@@ -847,7 +1133,7 @@ function renderResearch() {
   document.getElementById('paper-component-map').innerHTML = Object.entries(compPaperMap).map(([cid, papers]) => {
     const comp = DATA.components.find(c => c.id === cid);
     return `
-      <div class="p-2 rounded-lg" style="border:1px solid #141c2e">
+      <div class="dash-card" style="padding:8px">
         <div class="text-xs font-semibold mb-1">${comp ? comp.name : cid}</div>
         <div class="text-xs text-gray-500">${papers.map(p => p.title.split(':')[0].split(' ').slice(0, 3).join(' ')).join(', ')}</div>
         <div class="text-xs text-blue-400 mt-1">${papers.length} papers</div>
@@ -940,7 +1226,7 @@ function initSearch() {
             <span>${r.icon}</span>
             <div>
               <div class="text-sm font-medium">${highlightMatch(r.label, q)}</div>
-              <div class="text-xs text-gray-500 truncate" style="max-width:400px">${r.sub}</div>
+              <div class="text-xs text-gray-500 truncate" style="max-width:400px">${escapeHtml(r.sub)}</div>
             </div>
           </div>
         </div>
@@ -969,9 +1255,11 @@ function initSearch() {
 }
 
 function highlightMatch(text, query) {
-  const idx = text.toLowerCase().indexOf(query);
-  if (idx === -1) return text;
-  return text.slice(0, idx) + '<mark style="background:#fbbf24;color:#000;border-radius:2px;padding:0 1px">' + text.slice(idx, idx + query.length) + '</mark>' + text.slice(idx + query.length);
+  const safe = escapeHtml(text);
+  const safeQuery = escapeHtml(query);
+  const idx = safe.toLowerCase().indexOf(safeQuery.toLowerCase());
+  if (idx === -1) return safe;
+  return safe.slice(0, idx) + '<mark style="background:#fbbf24;color:#000;border-radius:2px;padding:0 1px">' + safe.slice(idx, idx + safeQuery.length) + '</mark>' + safe.slice(idx + safeQuery.length);
 }
 
 function handleSearchClick(result) {
@@ -1003,37 +1291,55 @@ function switchTab(tabName) {
 }
 
 function navigateToTab(tabName, options = {}) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
   const btn = document.querySelector(`[data-tab="${tabName}"]`);
-  if (btn) btn.classList.add('active');
-  const tab = document.getElementById(`tab-${tabName}`);
-  if (tab) tab.classList.remove('hidden');
-  window.location.hash = tabName;
+  if (!btn) return;
+  btn.click();
 
   if (options.highlightId) {
     setTimeout(() => {
       const el = document.getElementById(options.highlightId);
-      if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.style.outline = '2px solid #00e6a7'; setTimeout(() => el.style.outline = '', 2000); }
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.style.outline = '2px solid #00e6a7';
+        setTimeout(() => { el.style.outline = ''; }, 2000);
+      }
+    }, 200);
+  }
+
+  if (options.filter) {
+    setTimeout(() => {
+      const searchInput = document.querySelector(`#tab-${tabName} input[type="text"]`);
+      if (searchInput) {
+        searchInput.value = options.filter;
+        searchInput.dispatchEvent(new Event('input'));
+      }
     }, 200);
   }
 }
 
 function initHashRouting() {
+  // Read hash on load
   const hash = window.location.hash.slice(1);
   if (hash) {
     const btn = document.querySelector(`[data-tab="${hash}"]`);
-    if (btn) btn.click();
+    if (btn) setTimeout(() => btn.click(), 100);
   }
+
+  // Update hash on tab change
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      window.location.hash = btn.dataset.tab;
+      const tab = btn.dataset.tab || btn.getAttribute('data-tab');
+      if (tab) history.replaceState(null, '', '#' + tab);
     });
   });
+
+  // Handle back/forward
   window.addEventListener('hashchange', () => {
     const h = window.location.hash.slice(1);
-    const btn = document.querySelector(`[data-tab="${h}"]`);
-    if (btn && !btn.classList.contains('active')) btn.click();
+    if (h) {
+      const btn = document.querySelector(`[data-tab="${h}"]`);
+      if (btn) btn.click();
+    }
   });
 }
 
@@ -1068,7 +1374,7 @@ function initEcosystem() {
   });
 
   // Search
-  document.getElementById('eco-search').addEventListener('input', () => renderEcosystem());
+  document.getElementById('eco-search').addEventListener('input', debounce(() => renderEcosystem(), 300));
 }
 
 function renderEcosystem() {
@@ -1095,7 +1401,7 @@ function renderEcosystem() {
         <p class="text-xs text-gray-400 mb-4">${depNet.description}</p>
         <div class="grid grid-cols-1 md:grid-cols-5 gap-3 mb-6">
           ${depTypes.map(d => `
-            <div class="p-3 rounded-lg text-center" style="border:1px solid #141c2e;background:#0a0e1a">
+            <div class="dash-card text-center">
               <div class="text-xl mb-1">${d.icon}</div>
               <div class="text-xs font-semibold mb-1">${d.name}</div>
               <div class="text-xs text-gray-500 leading-relaxed">${d.description.split('.')[0]}</div>
@@ -1108,7 +1414,7 @@ function renderEcosystem() {
         <div class="text-xs font-bold text-gray-500 uppercase mb-2">⚠ Supply Chain Attack Surface</div>
         <div class="flex items-center gap-2 flex-wrap mb-2">
           ${supplyChain.flow.map((step, i) => `
-            <span class="text-xs px-3 py-1.5 rounded-lg font-semibold" style="background:#141c2e;color:#ffc312">${step}</span>
+            <span class="text-xs px-3 py-1.5 rounded-lg font-semibold" style="background:var(--bg-card,#141c2e);color:#ffc312">${step}</span>
             ${i < supplyChain.flow.length - 1 ? '<span class="text-gray-600">→</span>' : ''}
           `).join('')}
         </div>
@@ -1136,24 +1442,19 @@ function renderEcosystem() {
   `).join('');
 
   document.querySelectorAll('[data-ecocat]').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.onclick = () => {
       activeEcoCategory = btn.dataset.ecocat;
       renderEcosystem();
-    });
+    };
   });
 
   // Filter + search
-  const query = document.getElementById('eco-search').value.toLowerCase().trim();
+  const query = document.getElementById('eco-search').value;
   let filtered = repos;
   if (activeEcoCategory !== 'all') {
     filtered = filtered.filter(r => r.category === activeEcoCategory);
   }
-  if (query) {
-    filtered = filtered.filter(r => {
-      const s = [r.name, r.description, r.language, ...(r.tags || []), r.note || ''].join(' ').toLowerCase();
-      return s.includes(query);
-    });
-  }
+  filtered = fuzzySearch(filtered, query, ['name', 'description', 'language', 'tags', 'note']);
 
   // Sort
   filtered = [...filtered].sort((a, b) => {
@@ -1169,11 +1470,10 @@ function renderEcosystem() {
   document.getElementById('eco-result-count').textContent = `${filtered.length} repos`;
 
   // Render cards
-  document.getElementById('eco-repo-list').innerHTML = filtered.map(r => {
+  const ecoRenderItem = (r) => {
     const cat = categories.find(c => c.id === r.category);
     const risk = calcRiskLevel(r);
     const threats = (r.threat_ids || []).map(tid => DATA.threats.find(t => t.id === tid)).filter(Boolean);
-
     return `
       <div class="eco-card" style="border-left-color:${cat ? cat.color : '#374151'}">
         <div class="flex items-center justify-between mb-2">
@@ -1188,7 +1488,7 @@ function renderEcosystem() {
         <div class="flex items-center gap-2 flex-wrap mb-2">
           ${r.language ? `<span class="eco-lang-badge">${r.language}</span>` : ''}
           ${r.stars > 0 ? `<span class="eco-stars">★ ${formatStars(r.stars)}</span>` : ''}
-          ${(r.tags || []).slice(0, 4).map(tag => `<span class="text-xs px-1.5 py-0.5 rounded" style="background:#141c2e;color:#5a6d84">${tag}</span>`).join('')}
+          ${(r.tags || []).slice(0, 4).map(tag => `<span class="text-xs px-1.5 py-0.5 rounded" style="background:var(--bg-card,#141c2e);color:var(--text-secondary,#5a6d84)">${tag}</span>`).join('')}
         </div>
         ${threats.length > 0 ? `
         <div class="threats-section" style="margin-top:6px">
@@ -1206,7 +1506,15 @@ function renderEcosystem() {
         </div>
       </div>
     `;
-  }).join('');
+  };
+  // Remove old pagination if exists
+  var oldPag = document.getElementById('eco-repo-list-pagination');
+  if (oldPag) oldPag.remove();
+  if (filtered.length >= 60) {
+    paginatedRender('eco-repo-list', filtered, ecoRenderItem, ecoPageSize);
+  } else {
+    document.getElementById('eco-repo-list').innerHTML = filtered.map(ecoRenderItem).join('');
+  }
 }
 
 
@@ -1231,7 +1539,7 @@ function initSkills() {
   });
 
   // Search
-  document.getElementById('skill-search').addEventListener('input', () => renderSkills());
+  document.getElementById('skill-search').addEventListener('input', debounce(() => renderSkills(), 300));
 }
 
 function renderSkills() {
@@ -1263,10 +1571,10 @@ function renderSkills() {
   }).join('');
 
   document.querySelectorAll('[data-skillcat]').forEach(el => {
-    el.addEventListener('click', () => {
+    el.onclick = () => {
       activeSkillCategory = el.dataset.skillcat;
       renderSkills();
-    });
+    };
   });
 
   // ClawHub distribution
@@ -1283,16 +1591,12 @@ function renderSkills() {
   `).join('');
 
   // Filter + search skills
-  const query = document.getElementById('skill-search').value.toLowerCase().trim();
+  const query = document.getElementById('skill-search').value;
   let filtered = topSkills;
   if (activeSkillCategory !== 'all') {
     filtered = filtered.filter(s => s.category === activeSkillCategory);
   }
-  if (query) {
-    filtered = filtered.filter(s => {
-      return [s.name, s.description, s.category].join(' ').toLowerCase().includes(query);
-    });
-  }
+  filtered = fuzzySearch(filtered, query, ['name', 'description', 'category']);
 
   // Sort
   filtered = [...filtered].sort((a, b) => {
@@ -1318,7 +1622,7 @@ function renderSkills() {
             <span class="font-semibold text-sm">${s.name}</span>
             ${s.risk_score ? `<span class="text-xs font-bold" style="color:${s.risk_score.total >= 80 ? '#ff4757' : s.risk_score.total >= 60 ? '#ff8c42' : s.risk_score.total >= 40 ? '#ffc312' : '#00e6a7'}">${s.risk_score.total}/100</span>` : ''}
             ${s.risk_score ? policyBadgeHtml(s.risk_score.policy) : (s.risk && s.risk !== 'low' ? `<span class="risk-badge risk-${s.risk}">${s.risk}</span>` : '')}
-            ${catInfo ? `<span class="text-xs px-2 py-0.5 rounded" style="background:#141c2e;color:#7a8ba3">${catInfo.icon} ${catInfo.name}</span>` : ''}
+            ${catInfo ? `<span class="text-xs px-2 py-0.5 rounded" style="background:var(--bg-card,#141c2e);color:var(--text-muted,#7a8ba3)">${catInfo.icon} ${catInfo.name}</span>` : ''}
           </div>
           <p class="text-xs text-gray-400 mb-1">${s.description}</p>
           ${threats.length > 0 ? `
@@ -1341,7 +1645,7 @@ function renderSkills() {
 // =====================================================
 
 function initAttacks() {
-  document.getElementById('attack-search').addEventListener('input', () => renderAttacks());
+  document.getElementById('attack-search').addEventListener('input', debounce(() => renderAttacks(), 300));
 }
 
 function renderAttacks() {
@@ -1383,12 +1687,7 @@ function renderAttacks() {
         <div class="kill-chain-name">${phase.name}</div>
         <div class="text-xs text-gray-500 mb-2">${phase.description}</div>
         <div class="flex flex-wrap gap-1">
-          ${phaseScenarios.slice(0, 5).map(s => `
-            <span class="threat-tag">
-              <span class="severity-indicator" style="width:6px;height:6px;border-radius:50%;background:${severityColor(s.severity)}"></span>
-              ${s.name}
-            </span>
-          `).join('')}
+          ${phaseScenarios.slice(0, 5).map(s => renderThreatTag(s)).join('')}
           ${phaseScenarios.length > 5 ? `<span class="text-xs text-gray-500">+${phaseScenarios.length - 5} more</span>` : ''}
         </div>
       </div>
@@ -1400,7 +1699,7 @@ function renderAttacks() {
     const nvdUrl = `https://nvd.nist.gov/vuln/detail/${c.id}`;
     const mitreUrl = `https://cve.mitre.org/cgi-bin/cvename.cgi?name=${c.id}`;
     return `
-    <div class="p-3 rounded-lg" style="border:1px solid #450a0a;background:rgba(239,68,68,0.05)">
+    <div class="dash-card" style="border-color:#450a0a;background:rgba(239,68,68,0.05)">
       <div class="flex items-center justify-between mb-1">
         <span class="font-mono text-sm font-bold" style="color:#fca5a5">${c.id}</span>
         <div class="flex items-center gap-2">
@@ -1421,7 +1720,7 @@ function renderAttacks() {
     const critCount = layer.surfaces.filter(s => s.severity === 'critical').length;
     const highCount = layer.surfaces.filter(s => s.severity === 'high').length;
     return `
-      <div class="p-3 rounded-lg" style="border:1px solid #141c2e">
+      <div class="dash-card">
         <div class="flex items-center justify-between mb-2">
           <div class="text-sm font-semibold">Layer ${layer.layer_num}: ${layer.layer}</div>
           <div class="flex gap-1">
@@ -1452,54 +1751,57 @@ function renderAttacks() {
     </div>
   `).join('');
 
-  // Phase + Category filter buttons
+  // Phase + Category filter buttons using unified filter bar
   const categories = ['all', ...new Set(scenarios.map(s => s.category))];
   const phases = ['all', ...new Set(scenarios.map(s => s.phase))];
 
-  document.getElementById('atk-category-filters').innerHTML = categories.map(c => `
-    <button class="paper-filter-btn ${c === activeAttackCategory ? 'active' : ''}" data-atkcat="${c}">${c.replace(/-/g, ' ')}</button>
-  `).join('');
-
-  document.getElementById('atk-phase-filters').innerHTML = phases.map(p => `
-    <button class="paper-filter-btn ${p === activeAttackPhase ? 'active' : ''}" data-atkphase="${p}">${p.replace(/_/g, ' ')}</button>
-  `).join('');
-
-  document.querySelectorAll('[data-atkcat]').forEach(btn => {
-    btn.addEventListener('click', () => { activeAttackCategory = btn.dataset.atkcat; renderAttacks(); });
+  const catFilters = categories.map(c => ({
+    id: c,
+    label: c.replace(/-/g, ' '),
+    count: c === 'all' ? scenarios.length : scenarios.filter(s => s.category === c).length
+  }));
+  renderFilterBar('atk-category-filters', catFilters, activeAttackCategory, function(val) {
+    activeAttackCategory = val;
+    renderAttacks();
   });
-  document.querySelectorAll('[data-atkphase]').forEach(btn => {
-    btn.addEventListener('click', () => { activeAttackPhase = btn.dataset.atkphase; renderAttacks(); });
+
+  const phaseFilters = phases.map(p => ({
+    id: p,
+    label: p.replace(/_/g, ' '),
+    count: p === 'all' ? scenarios.length : scenarios.filter(s => s.phase === p).length
+  }));
+  renderFilterBar('atk-phase-filters', phaseFilters, activeAttackPhase, function(val) {
+    activeAttackPhase = val;
+    renderAttacks();
   });
 
   // Filter scenarios
-  const query = document.getElementById('attack-search').value.toLowerCase().trim();
+  const query = document.getElementById('attack-search').value;
   let filtered = scenarios;
   if (activeAttackCategory !== 'all') filtered = filtered.filter(s => s.category === activeAttackCategory);
   if (activeAttackPhase !== 'all') filtered = filtered.filter(s => s.phase === activeAttackPhase);
-  if (query) {
-    filtered = filtered.filter(s => [s.name, s.description, s.category, ...(s.tags || [])].join(' ').toLowerCase().includes(query));
-  }
+  filtered = fuzzySearch(filtered, query, ['name', 'description', 'category', 'tags']);
 
   document.getElementById('atk-scenario-count').textContent = `${filtered.length} scenarios`;
 
   // Render scenario list
   document.getElementById('atk-scenario-list').innerHTML = filtered.map(s => `
-    <div class="p-3 rounded-lg" style="border:1px solid #141c2e">
+    <div class="dash-card">
       <div class="flex items-center justify-between mb-2">
         <div class="flex items-center gap-2">
-          <span class="text-xs font-bold px-2 py-0.5 rounded" style="background:#141c2e;color:#7a8ba3">#${s.id}</span>
+          <span class="text-xs font-bold px-2 py-0.5 rounded" style="background:var(--bg-card,#141c2e);color:var(--text-muted,#7a8ba3)">#${s.id}</span>
           <span class="text-sm font-semibold">${s.name}</span>
         </div>
         <span class="risk-badge risk-${s.severity}">${s.severity}</span>
       </div>
       <p class="text-xs text-gray-400 mb-2 leading-relaxed">${s.description}</p>
       <div class="flex items-center gap-2 flex-wrap">
-        <span class="text-xs px-2 py-0.5 rounded" style="background:#141c2e;color:#7a8ba3">${s.category.replace(/-/g, ' ')}</span>
-        <span class="text-xs px-2 py-0.5 rounded" style="background:#141c2e;color:#7a8ba3">${s.phase.replace(/_/g, ' ')}</span>
+        <span class="text-xs px-2 py-0.5 rounded" style="background:var(--bg-card,#141c2e);color:var(--text-muted,#7a8ba3)">${s.category.replace(/-/g, ' ')}</span>
+        <span class="text-xs px-2 py-0.5 rounded" style="background:var(--bg-card,#141c2e);color:var(--text-muted,#7a8ba3)">${s.phase.replace(/_/g, ' ')}</span>
         ${s.reference ? `<span class="text-xs text-gray-500">&#x1f4ce; ${s.reference}</span>` : ''}
       </div>
       <div class="flex flex-wrap gap-1 mt-2">
-        ${(s.tags || []).map(t => `<span class="text-xs px-1.5 py-0.5 rounded" style="background:#0a0e1a;color:#5a6d84">${t}</span>`).join('')}
+        ${(s.tags || []).map(t => `<span class="text-xs px-1.5 py-0.5 rounded" style="background:#0a0e1a;color:var(--text-secondary,#5a6d84)">${t}</span>`).join('')}
       </div>
       ${(s.control_ids || []).length > 0 ? `
         <div class="flex flex-wrap gap-1 mt-2">
@@ -1532,7 +1834,7 @@ function renderAttacks() {
 // =====================================================
 
 function initTimeline() {
-  document.getElementById('timeline-search').addEventListener('input', () => renderTimeline());
+  document.getElementById('timeline-search').addEventListener('input', debounce(() => renderTimeline(), 300));
 }
 
 function timelineSeverityColor(sev) {
@@ -1573,33 +1875,36 @@ function renderTimeline() {
     </div>
   `).join('');
 
-  // Year + scope filter buttons
+  // Year + scope filter buttons using unified filter bar
   const years = ['all', ...new Set(events.map(e => String(e.year)))];
   const scopes = ['all', ...new Set(events.map(e => e.scope))];
 
-  document.getElementById('tl-year-filters').innerHTML = years.map(y => `
-    <button class="paper-filter-btn ${y === activeTimelineYear ? 'active' : ''}" data-tlyear="${y}">${y}</button>
-  `).join('');
-
-  document.getElementById('tl-scope-filters').innerHTML = scopes.map(s => `
-    <button class="paper-filter-btn ${s === activeTimelineScope ? 'active' : ''}" data-tlscope="${s}">${s.replace(/-/g, ' ')}</button>
-  `).join('');
-
-  document.querySelectorAll('[data-tlyear]').forEach(btn => {
-    btn.addEventListener('click', () => { activeTimelineYear = btn.dataset.tlyear; renderTimeline(); });
+  const yearFilters = years.map(y => ({
+    id: y,
+    label: y,
+    count: y === 'all' ? events.length : events.filter(e => String(e.year) === y).length
+  }));
+  renderFilterBar('tl-year-filters', yearFilters, activeTimelineYear, function(val) {
+    activeTimelineYear = val;
+    renderTimeline();
   });
-  document.querySelectorAll('[data-tlscope]').forEach(btn => {
-    btn.addEventListener('click', () => { activeTimelineScope = btn.dataset.tlscope; renderTimeline(); });
+
+  const scopeFilters = scopes.map(s => ({
+    id: s,
+    label: s.replace(/-/g, ' '),
+    count: s === 'all' ? events.length : events.filter(e => e.scope === s).length
+  }));
+  renderFilterBar('tl-scope-filters', scopeFilters, activeTimelineScope, function(val) {
+    activeTimelineScope = val;
+    renderTimeline();
   });
 
   // Filter events
-  const query = document.getElementById('timeline-search').value.toLowerCase().trim();
+  const query = document.getElementById('timeline-search').value;
   let filtered = events;
   if (activeTimelineYear !== 'all') filtered = filtered.filter(e => String(e.year) === activeTimelineYear);
   if (activeTimelineScope !== 'all') filtered = filtered.filter(e => e.scope === activeTimelineScope);
-  if (query) {
-    filtered = filtered.filter(e => [e.title, e.description, e.category, ...(e.issues || []), e.reference || ''].join(' ').toLowerCase().includes(query));
-  }
+  filtered = fuzzySearch(filtered, query, ['title', 'description', 'category', 'issues', 'reference']);
 
   document.getElementById('tl-event-count').textContent = `${filtered.length} events`;
 
@@ -1623,7 +1928,7 @@ function renderTimeline() {
         </div>
         <div class="space-y-2 pl-4" style="border-left:2px solid ${phase ? phase.color : '#374151'}">
           ${yearEvents.map(e => `
-            <div class="p-3 rounded-lg relative" style="border:1px solid #141c2e">
+            <div class="dash-card relative">
               <div class="absolute -left-6 top-3 w-3 h-3 rounded-full" style="background:${timelineSeverityColor(e.severity)};border:2px solid #0a0e1a"></div>
               <div class="flex items-center justify-between mb-1">
                 <div class="flex items-center gap-2">
@@ -1632,14 +1937,14 @@ function renderTimeline() {
                   <span class="text-sm font-semibold">${e.title}</span>
                 </div>
                 <div class="flex items-center gap-2">
-                  <span class="text-xs px-2 py-0.5 rounded" style="background:#141c2e;color:#7a8ba3">${e.scope.replace(/-/g, ' ')}</span>
+                  <span class="text-xs px-2 py-0.5 rounded" style="background:var(--bg-card,#141c2e);color:var(--text-muted,#7a8ba3)">${e.scope.replace(/-/g, ' ')}</span>
                   ${e.severity !== 'info' ? `<span class="risk-badge risk-${e.severity}">${e.severity}</span>` : ''}
                 </div>
               </div>
               <p class="text-xs text-gray-400 mb-2 leading-relaxed">${e.description}</p>
               <div class="flex items-center gap-2 flex-wrap">
-                <span class="text-xs px-2 py-0.5 rounded" style="background:#141c2e;color:#7a8ba3">${e.category}</span>
-                ${(e.issues || []).map(t => `<span class="text-xs px-1.5 py-0.5 rounded" style="background:#0a0e1a;color:#5a6d84">${t}</span>`).join('')}
+                <span class="text-xs px-2 py-0.5 rounded" style="background:var(--bg-card,#141c2e);color:var(--text-muted,#7a8ba3)">${e.category}</span>
+                ${(e.issues || []).map(t => `<span class="text-xs px-1.5 py-0.5 rounded" style="background:#0a0e1a;color:var(--text-secondary,#5a6d84)">${t}</span>`).join('')}
                 ${e.cvss ? `<span class="text-xs font-bold" style="color:#fca5a5">CVSS ${e.cvss}</span>` : ''}
                 ${e.reference ? (() => {
                   const ref = e.reference;
@@ -1648,7 +1953,7 @@ function renderTimeline() {
                   else if (ref.includes('CVE-')) href = 'https://nvd.nist.gov/vuln/detail/' + ref;
                   else if (ref === 'OpenClaw GitHub') href = 'https://github.com/openclaw/openclaw';
                   else href = 'https://www.google.com/search?q=' + encodeURIComponent(ref + ' openclaw security');
-                  return `<a href="${href}" target="_blank" rel="noopener" class="text-xs px-1.5 py-0.5 rounded" style="color:#7a8ba3;background:#141c2e;text-decoration:none;border:1px solid #1e293b">&#x1f4ce; ${ref}</a>`;
+                  return `<a href="${href}" target="_blank" rel="noopener" class="text-xs px-1.5 py-0.5 rounded" style="color:var(--text-muted,#7a8ba3);background:var(--bg-card,#141c2e);text-decoration:none;border:1px solid var(--border-primary,#1e293b)">&#x1f4ce; ${ref}</a>`;
                 })() : ''}
               </div>
             </div>
@@ -1693,31 +1998,140 @@ function renderTimeline() {
 }
 
 // =====================================================
+// === SVG Chart Visualizations ===
+
+function renderKillChainChart() {
+  var phases = DATA.attacks.kill_chain || [];
+  if (phases.length === 0) return;
+  var el = document.getElementById('kill-chain');
+  if (!el) return;
+  var w = 900, h = 100, padding = 20;
+  var stepW = (w - padding * 2) / phases.length;
+  var colors = ['#22c55e','#84cc16','#eab308','#f97316','#ef4444','#dc2626','#991b1b'];
+  var svg = '<svg viewBox="0 0 ' + w + ' ' + h + '" style="width:100%;max-width:' + w + 'px;height:auto">';
+  phases.forEach(function(p, i) {
+    var x = padding + i * stepW;
+    var c = colors[Math.min(i, colors.length - 1)];
+    var phaseThreats = DATA.threats.filter(function(t) { return t.kill_chain_phase === p.phase; });
+    var arrowW = stepW - 4;
+    var points = i === 0
+      ? x + ',20 ' + (x + arrowW - 15) + ',20 ' + (x + arrowW) + ',50 ' + (x + arrowW - 15) + ',80 ' + x + ',80'
+      : x + ',20 ' + (x + arrowW - 15) + ',20 ' + (x + arrowW) + ',50 ' + (x + arrowW - 15) + ',80 ' + x + ',80 ' + (x + 15) + ',50';
+    svg += '<polygon points="' + points + '" fill="' + c + '22" stroke="' + c + '" stroke-width="1.5"/>';
+    svg += '<text x="' + (x + arrowW / 2) + '" y="45" text-anchor="middle" fill="' + c + '" font-size="10" font-weight="700">' + p.name + '</text>';
+    svg += '<text x="' + (x + arrowW / 2) + '" y="62" text-anchor="middle" fill="#7a8ba3" font-size="8">' + phaseThreats.length + ' threats</text>';
+  });
+  svg += '</svg>';
+  var existingHtml = el.innerHTML;
+  el.innerHTML = '<div class="mb-4">' + svg + '</div>' + existingHtml;
+}
+
+function renderAttackDonutChart() {
+  var distEl = document.getElementById('overview-attack-dist');
+  if (!distEl) return;
+  var dist = DATA.attacks.distribution || [];
+  if (dist.length === 0) return;
+  var size = 160, cx = size / 2, cy = size / 2, r = 55, innerR = 35;
+  var svg = '<svg viewBox="0 0 ' + size + ' ' + size + '" style="width:' + size + 'px;height:' + size + 'px;display:block;margin:0 auto 16px">';
+  var cumAngle = -90;
+  dist.forEach(function(d) {
+    var angle = (d.percent || 0) / 100 * 360;
+    var startRad = cumAngle * Math.PI / 180;
+    var endRad = (cumAngle + angle) * Math.PI / 180;
+    var largeArc = angle > 180 ? 1 : 0;
+    var x1 = cx + r * Math.cos(startRad), y1 = cy + r * Math.sin(startRad);
+    var x2 = cx + r * Math.cos(endRad), y2 = cy + r * Math.sin(endRad);
+    var ix1 = cx + innerR * Math.cos(endRad), iy1 = cy + innerR * Math.sin(endRad);
+    var ix2 = cx + innerR * Math.cos(startRad), iy2 = cy + innerR * Math.sin(startRad);
+    svg += '<path d="M' + x1 + ',' + y1 + ' A' + r + ',' + r + ' 0 ' + largeArc + ',1 ' + x2 + ',' + y2 + ' L' + ix1 + ',' + iy1 + ' A' + innerR + ',' + innerR + ' 0 ' + largeArc + ',0 ' + ix2 + ',' + iy2 + ' Z" fill="' + (d.color || '#64748b') + '" opacity="0.85"/>';
+    cumAngle += angle;
+  });
+  var totalScenarios = (DATA.attacks.scenarios || []).length;
+  svg += '<text x="' + cx + '" y="' + (cy - 4) + '" text-anchor="middle" fill="var(--text-primary, #e2e8f0)" font-size="18" font-weight="700">' + totalScenarios + '</text>';
+  svg += '<text x="' + cx + '" y="' + (cy + 12) + '" text-anchor="middle" fill="var(--text-muted, #64748b)" font-size="8">scenarios</text>';
+  svg += '</svg>';
+  var existingHtml = distEl.innerHTML;
+  distEl.innerHTML = svg + existingHtml;
+}
+
+function renderTimelineChart() {
+  var events = DATA.timeline.events || [];
+  if (events.length === 0) return;
+  var years = {};
+  events.forEach(function(e) { years[e.year] = (years[e.year] || 0) + 1; });
+  var sortedYears = Object.keys(years).sort();
+  var maxCount = Math.max.apply(null, Object.values(years));
+  var w = 200, h = 60, padding = 5;
+  var barW = Math.min(30, (w - padding * 2) / sortedYears.length - 4);
+  var svg = '<svg viewBox="0 0 ' + w + ' ' + h + '" style="width:100%;max-width:' + w + 'px;height:' + h + 'px">';
+  sortedYears.forEach(function(yr, i) {
+    var count = years[yr];
+    var barH = (count / maxCount) * (h - 20);
+    var x = padding + i * (barW + 4);
+    var y = h - barH - 14;
+    var color = yr === '2026' ? '#ef4444' : yr === '2025' ? '#f97316' : '#00e6a7';
+    svg += '<rect x="' + x + '" y="' + y + '" width="' + barW + '" height="' + barH + '" fill="' + color + '" rx="2" opacity="0.7"/>';
+    svg += '<text x="' + (x + barW / 2) + '" y="' + (y - 2) + '" text-anchor="middle" fill="' + color + '" font-size="7" font-weight="600">' + count + '</text>';
+    svg += '<text x="' + (x + barW / 2) + '" y="' + (h - 2) + '" text-anchor="middle" fill="#5a6d84" font-size="7">' + yr + '</text>';
+  });
+  svg += '</svg>';
+  var distEl = document.getElementById('overview-attack-dist');
+  if (distEl && distEl.parentElement) {
+    var chartDiv = document.createElement('div');
+    chartDiv.className = 'mb-3 text-center';
+    chartDiv.innerHTML = '<div class="text-xs text-gray-500 mb-1">Events by Year</div>' + svg;
+    var parentCard = distEl.closest('.dash-card');
+    if (parentCard) {
+      var prevCard = parentCard.previousElementSibling;
+      if (prevCard) {
+        var eventsContainer = prevCard.querySelector('.space-y-3');
+        if (eventsContainer) {
+          prevCard.insertBefore(chartDiv, eventsContainer);
+        }
+      }
+    }
+  }
+}
+
 // === Data Export ===
 // =====================================================
 
 function exportData(format, tabName) {
-  let data, filename;
-  switch(tabName) {
-    case 'directory': data = DATA.repos; filename = 'openclaw-directory'; break;
-    case 'ecosystem': data = DATA.ecosystem.repos; filename = 'openclaw-ecosystem'; break;
-    case 'attacks': data = DATA.attacks.scenarios; filename = 'openclaw-attacks'; break;
-    case 'timeline': data = DATA.timeline.events; filename = 'openclaw-timeline'; break;
-    case 'skills': data = DATA.skills.top_skills; filename = 'openclaw-skills'; break;
-    default: return;
-  }
+  const dataMap = {
+    'directory': () => DATA.repos,
+    'ecosystem': () => DATA.ecosystem.repositories || DATA.ecosystem.repos || [],
+    'attacks': () => DATA.attacks.scenarios,
+    'timeline': () => DATA.timeline.events || DATA.timeline,
+    'skills': () => DATA.skills.top_skills,
+    'security': () => ({ threats: DATA.threats, controls: DATA.controls }),
+    'research': () => DATA.papers,
+  };
 
-  if (format === 'csv') {
-    if (!data || data.length === 0) return;
-    const keys = Object.keys(data[0]);
-    const csv = [keys.join(','), ...data.map(row => keys.map(k => {
-      const v = row[k];
-      const str = Array.isArray(v) ? v.join('; ') : (typeof v === 'object' && v !== null ? JSON.stringify(v) : String(v ?? ''));
-      return '"' + str.replace(/"/g, '""') + '"';
-    }).join(','))].join('\n');
-    downloadFile(csv, filename + '.csv', 'text/csv');
-  } else {
-    downloadFile(JSON.stringify(data, null, 2), filename + '.json', 'application/json');
+  const getData = dataMap[tabName];
+  if (!getData) return;
+  const data = getData();
+
+  if (format === 'json') {
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `openclaw-${tabName}-${new Date().toISOString().slice(0,10)}.json`;
+    a.click(); URL.revokeObjectURL(url);
+  } else if (format === 'csv') {
+    if (!Array.isArray(data) || data.length === 0) return;
+    const headers = Object.keys(data[0]);
+    const csv = [headers.join(','), ...data.map(row =>
+      headers.map(h => {
+        const v = row[h];
+        const str = typeof v === 'object' ? JSON.stringify(v) : String(v || '');
+        return '"' + str.replace(/"/g, '""') + '"';
+      }).join(',')
+    )].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `openclaw-${tabName}-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click(); URL.revokeObjectURL(url);
   }
 }
 
@@ -1786,11 +2200,11 @@ function renderMoltbook() {
       <p class="text-sm text-gray-300 mb-3">${overview.description || ''}</p>
       <p class="text-xs text-gray-400 italic mb-3">"${overview.tagline || ''}"</p>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div class="p-2 rounded" style="border:1px solid #141c2e">
+        <div class="dash-card" style="padding:8px">
           <div class="text-xs font-semibold mb-1" style="color:#00e6a7">Tech Stack</div>
           <div class="text-xs text-gray-400">${overview.tech_stack || ''}</div>
         </div>
-        <div class="p-2 rounded" style="border:1px solid #141c2e">
+        <div class="dash-card" style="padding:8px">
           <div class="text-xs font-semibold mb-1" style="color:#00e6a7">Governance</div>
           <div class="text-xs text-gray-400">${overview.governance || ''}</div>
         </div>
@@ -1825,7 +2239,7 @@ function renderMoltbook() {
   const incEl = document.getElementById('mb-incidents');
   if (incEl) {
     incEl.innerHTML = incidents.map(inc => `
-      <div class="p-3 rounded-lg mb-3" style="border:1px solid ${inc.severity === 'critical' ? '#450a0a' : '#141c2e'};background:${inc.severity === 'critical' ? 'rgba(239,68,68,0.05)' : 'transparent'}">
+      <div class="dash-card mb-3" style="border-color:${inc.severity === 'critical' ? '#450a0a' : ''};background:${inc.severity === 'critical' ? 'rgba(239,68,68,0.05)' : ''}">
         <div class="flex items-center justify-between mb-2">
           <span class="text-sm font-bold">${inc.title}</span>
           <span class="risk-badge risk-${inc.severity}">${inc.severity}</span>
@@ -1847,7 +2261,7 @@ function renderMoltbook() {
   if (contEl) {
     const sevIcon = { critical: '🔴', high: '🟠', medium: '🟡', low: '🟢' };
     contEl.innerHTML = controversies.map(c => `
-      <div class="p-3 rounded-lg mb-3" style="border:1px solid #141c2e">
+      <div class="dash-card mb-3">
         <div class="flex items-center gap-2 mb-2">
           <span>${sevIcon[c.severity] || '⚪'}</span>
           <span class="text-sm font-bold">${c.title}</span>
@@ -1877,8 +2291,8 @@ function renderMoltbook() {
   if (figEl) {
     const roleColor = { 'Creator/CEO': '#00e6a7', Endorser: '#3b82f6', Critic: '#ff4757', Debunker: '#ff8c42', 'Security Researcher': '#ffc312' };
     figEl.innerHTML = figures.map(f => `
-      <div class="flex items-center gap-3 p-2 rounded-lg" style="border:1px solid #141c2e">
-        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0" style="background:#141c2e;color:${roleColor[f.role] || '#00e6a7'}">
+      <div class="dash-card flex items-center gap-3" style="padding:8px">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0" style="background:var(--bg-card,#141c2e);color:${roleColor[f.role] || '#00e6a7'}">
           ${f.name.charAt(0)}
         </div>
         <div>
@@ -1940,12 +2354,12 @@ function renderBasic() {
   const namingEl = document.getElementById('basic-naming-evolution');
   if (namingEl) {
     namingEl.innerHTML = naming.map((n, i) => `
-      <div class="flex items-center gap-4 p-3 rounded-lg" style="border:1px solid #141c2e;background:${i === naming.length - 1 ? 'rgba(0,230,167,0.05)' : 'transparent'}">
+      <div class="dash-card flex items-center gap-4" style="${i === naming.length - 1 ? 'background:rgba(0,230,167,0.05)' : ''}">
         <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold" style="background:${i === naming.length - 1 ? '#00e6a7' : '#141c2e'};color:${i === naming.length - 1 ? '#0a0e1a' : '#00e6a7'}">${i + 1}</div>
         <div class="flex-1">
           <div class="flex items-center gap-2 mb-1">
             <span class="font-bold text-base">${n.name}</span>
-            <span class="text-xs px-2 py-0.5 rounded font-mono" style="background:#141c2e;color:#7a8ba3">${n.versions}</span>
+            <span class="text-xs px-2 py-0.5 rounded font-mono" style="background:var(--bg-card,#141c2e);color:var(--text-muted,#7a8ba3)">${n.versions}</span>
           </div>
           <div class="text-xs text-gray-400">${n.period}</div>
           <div class="text-xs text-gray-500 mt-1">${n.note}</div>
@@ -1965,17 +2379,17 @@ function renderBasic() {
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2">
               <code class="text-sm font-bold" style="color:#00e6a7">${f.file}</code>
-              <span class="text-xs px-1.5 py-0.5 rounded" style="background:#141c2e;color:#7a8ba3">${f.category}</span>
-              ${f.detail ? `<button class="text-xs px-1.5 py-0.5 rounded cursor-pointer" style="background:#141c2e;color:#00d4aa;border:1px solid #1e293b" onclick="this.closest('.p-2').querySelector('.detail-panel').classList.toggle('hidden')">Detail</button>` : ''}
+              <span class="text-xs px-1.5 py-0.5 rounded" style="background:var(--bg-card,#141c2e);color:var(--text-muted,#7a8ba3)">${f.category}</span>
+              ${f.detail ? `<button class="text-xs px-1.5 py-0.5 rounded cursor-pointer" style="background:var(--bg-card,#141c2e);color:#00d4aa;border:1px solid var(--border-primary,#1e293b)" onclick="this.closest('.p-2').querySelector('.detail-panel').classList.toggle('hidden')">Detail</button>` : ''}
               ${f.url ? `<a href="${f.url}" target="_blank" rel="noopener" class="text-xs px-1.5 py-0.5 rounded" style="background:rgba(0,230,167,0.08);color:#00e6a7;border:1px solid #00e6a720;text-decoration:none">Docs</a>` : ''}
             </div>
             <div class="text-xs text-gray-400 mt-1">${f.description}</div>
             ${f.security_note ? `<div class="text-xs mt-1" style="color:#ff8c42">⚠ ${f.security_note}</div>` : ''}
           </div>
         </div>
-        ${f.detail ? `<div class="detail-panel hidden mt-2 ml-9 p-2 rounded text-xs text-gray-400" style="background:#0a0e1a;border:1px solid #1e293b">
+        ${f.detail ? `<div class="detail-panel hidden mt-2 ml-9 p-2 rounded text-xs text-gray-400" style="background:#0a0e1a;border:1px solid var(--border-primary,#1e293b)">
           <div>${f.detail}</div>
-          ${f.spec ? `<div class="mt-1" style="color:#7a8ba3"><span style="color:#00d4aa">Spec:</span> ${f.spec}</div>` : ''}
+          ${f.spec ? `<div class="mt-1" style="color:var(--text-muted,#7a8ba3)"><span style="color:#00d4aa">Spec:</span> ${f.spec}</div>` : ''}
         </div>` : ''}
       </div>
     `).join('');
@@ -1994,7 +2408,7 @@ function renderBasic() {
         ${layers.map(l => `
           <div class="p-2 rounded mb-2" style="border:1px solid #141c2e">
             <div class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded flex items-center justify-center font-bold text-sm flex-shrink-0" style="background:#141c2e;color:#00e6a7">L${l.layer}</div>
+              <div class="w-8 h-8 rounded flex items-center justify-center font-bold text-sm flex-shrink-0" style="background:var(--bg-card,#141c2e);color:#00e6a7">L${l.layer}</div>
               <div class="flex-1">
                 <div class="text-sm flex items-center gap-2">
                   <code class="font-semibold" style="color:#00d4aa">${l.file}</code> — ${l.scope}
@@ -2011,8 +2425,8 @@ function renderBasic() {
         <h4 class="text-sm font-semibold mb-2 flex items-center gap-2" style="color:#00e6a7">Hybrid Search ${search.url ? `<a href="${search.url}" target="_blank" rel="noopener" class="text-xs px-1.5 py-0.5 rounded font-normal" style="background:rgba(0,230,167,0.08);color:#00e6a7;border:1px solid #00e6a720;text-decoration:none">Docs</a>` : ''}</h4>
         <div class="text-xs text-gray-400 mb-2">${(search.engines || []).join(' + ')}</div>
         <div class="flex gap-2 mb-2">
-          <span class="text-xs px-2 py-1 rounded" style="background:#141c2e;color:#00e6a7">Vector: ${(search.vector_weight * 100) || 70}%</span>
-          <span class="text-xs px-2 py-1 rounded" style="background:#141c2e;color:#ffc312">Text: ${(search.text_weight * 100) || 30}%</span>
+          <span class="text-xs px-2 py-1 rounded" style="background:var(--bg-card,#141c2e);color:#00e6a7">Vector: ${(search.vector_weight * 100) || 70}%</span>
+          <span class="text-xs px-2 py-1 rounded" style="background:var(--bg-card,#141c2e);color:#ffc312">Text: ${(search.text_weight * 100) || 30}%</span>
         </div>
         <div class="text-xs text-gray-500">Providers: ${(search.embedding_providers || []).join(', ')}</div>
         ${search.detail ? `<div class="text-xs text-gray-500 mt-2">${search.detail}</div>` : ''}
@@ -2038,18 +2452,18 @@ function renderBasic() {
     archEl.innerHTML = (arch.components || []).map(c => `
       <div class="p-2 rounded-lg" style="border:1px solid #141c2e">
         <div class="flex items-start gap-3">
-          <div class="w-8 h-8 rounded flex items-center justify-center text-xs font-bold flex-shrink-0" style="background:#141c2e;color:#00e6a7">▶</div>
+          <div class="w-8 h-8 rounded flex items-center justify-center text-xs font-bold flex-shrink-0" style="background:var(--bg-card,#141c2e);color:#00e6a7">▶</div>
           <div class="flex-1">
             <div class="text-sm font-semibold flex items-center gap-2">${c.name} <span class="text-xs text-gray-500 font-normal font-mono">${c.introduced}</span>
-              ${c.detail ? `<button class="text-xs px-1.5 py-0.5 rounded cursor-pointer font-normal" style="background:#141c2e;color:#00d4aa;border:1px solid #1e293b" onclick="this.closest('.p-2').querySelector('.detail-panel').classList.toggle('hidden')">Detail</button>` : ''}
+              ${c.detail ? `<button class="text-xs px-1.5 py-0.5 rounded cursor-pointer font-normal" style="background:var(--bg-card,#141c2e);color:#00d4aa;border:1px solid var(--border-primary,#1e293b)" onclick="this.closest('.p-2').querySelector('.detail-panel').classList.toggle('hidden')">Detail</button>` : ''}
               ${c.url ? `<a href="${c.url}" target="_blank" rel="noopener" class="text-xs px-1.5 py-0.5 rounded font-normal" style="background:rgba(0,230,167,0.08);color:#00e6a7;border:1px solid #00e6a720;text-decoration:none">Docs</a>` : ''}
             </div>
             <div class="text-xs text-gray-400 mt-1">${c.description}</div>
           </div>
         </div>
-        ${c.detail ? `<div class="detail-panel hidden mt-2 ml-11 p-2 rounded text-xs text-gray-400" style="background:#0a0e1a;border:1px solid #1e293b">
+        ${c.detail ? `<div class="detail-panel hidden mt-2 ml-11 p-2 rounded text-xs text-gray-400" style="background:#0a0e1a;border:1px solid var(--border-primary,#1e293b)">
           <div>${c.detail}</div>
-          ${c.spec ? `<div class="mt-1" style="color:#7a8ba3"><span style="color:#00d4aa">Spec:</span> ${c.spec}</div>` : ''}
+          ${c.spec ? `<div class="mt-1" style="color:var(--text-muted,#7a8ba3)"><span style="color:#00d4aa">Spec:</span> ${c.spec}</div>` : ''}
         </div>` : ''}
       </div>
     `).join('');
@@ -2111,7 +2525,7 @@ function renderBasic() {
     const catColor = { major: '#00e6a7', security: '#ff4757', feature: '#3b82f6', fix: '#ffc312', initial: '#a855f7' };
     const catLabel = { major: 'Major', security: 'Security', feature: 'Feature', fix: 'Fix', initial: 'Initial' };
     relEl.innerHTML = releases.map(r => `
-      <div class="p-3 rounded-lg mb-2" style="border:1px solid #141c2e">
+      <div class="dash-card mb-2">
         <div class="flex items-center justify-between mb-2">
           <div class="flex items-center gap-2">
             <span class="text-sm font-bold font-mono" style="color:#00e6a7">v${r.version}</span>
@@ -2207,7 +2621,7 @@ function renderArchDiagram() {
   const plugComp = archComps.find(c => c.name === 'Plugin System') || {};
   const chComp = archComps.find(c => c.name === 'Channel Adapters') || {};
 
-  const W = 960, H = 620;
+  const W = 960, H = 820;
   const cx = W / 2, cy = H / 2 - 10;
 
   // Helper: rounded rect with text
@@ -2479,6 +2893,91 @@ function renderArchDiagram() {
   svg += `<rect x="185" y="125" width="610" height="440" rx="12" fill="none" stroke="#ef444425" stroke-width="1.5" stroke-dasharray="4,4"/>`;
   svg += `<text x="190" y="120" fill="#ef444450" font-size="7" font-weight="600">SECURITY PERIMETER (Sandbox + GuardClaw + Policy Enforcement)</text>`;
 
+  // ════════════════════════════════════════
+  // ECOSYSTEM EXTENSIONS (bottom row)
+  // ════════════════════════════════════════
+  const ecoY = 630;
+  svg += `<text x="${cx}" y="${ecoY}" text-anchor="middle" fill="#64748b" font-size="11" font-weight="600">─── ECOSYSTEM EXTENSIONS ───</text>`;
+
+  // Collect ecosystem data for counts
+  const ecoRepos = DATA.ecosystem.repos || [];
+  const hwRepos = ecoRepos.filter(r => r.category === 'hardware');
+  const cloudRepos = ecoRepos.filter(r => r.category === 'cloud-hosted');
+  const chinaRepos = ecoRepos.filter(r => r.category === 'china-ecosystem');
+
+  // ─── HARDWARE / IoT ───
+  const hwx = 10, hwy = ecoY + 14, hww = 290, hwh = 160;
+  svg += `<g style="cursor:pointer" onclick="navigateToTab('ecosystem','hardware')">`;
+  svg += box(hwx, hwy, hww, hwh, 'rgba(245,158,11,0.06)', '#f59e0b40', 10);
+  svg += `<text x="${hwx+hww/2}" y="${hwy+18}" text-anchor="middle" fill="#f59e0b" font-size="13">🔌</text>`;
+  svg += `<text x="${hwx+hww/2}" y="${hwy+34}" text-anchor="middle" fill="#fbbf24" font-size="11" font-weight="700">HARDWARE / IoT</text>`;
+  svg += `<text x="${hwx+hww/2}" y="${hwy+48}" text-anchor="middle" fill="#94a3b8" font-size="8">${hwRepos.length} repos — Embedded AI Agents</text>`;
+  const hwItems = [
+    { icon: '📟', name: 'ESP32-Claw / MimiClaw', desc: '$5 MCU agent, WiFi/BLE' },
+    { icon: '🤖', name: 'RoboClaw Agent', desc: 'Robot motor control AI' },
+    { icon: '🏠', name: 'HomeClaw / SmartClaw', desc: 'Smart home hub agent' },
+    { icon: '📡', name: 'IoTClaw / DeviceClaw', desc: 'IoT device management' },
+    { icon: '🖥️', name: 'BoardClaw', desc: 'Raspberry Pi / SBC agent' }
+  ];
+  hwItems.forEach((item, i) => {
+    const iy = hwy + 58 + i * 18;
+    svg += `<text x="${hwx+14}" y="${iy}" fill="#fde68a" font-size="8">${item.icon} ${item.name}</text>`;
+    svg += `<text x="${hwx+hww-10}" y="${iy}" text-anchor="end" fill="#64748b" font-size="7">${item.desc}</text>`;
+  });
+  svg += `<text x="${hwx+hww/2}" y="${hwy+hwh-8}" text-anchor="middle" fill="#f59e0b40" font-size="7">▸ View Hardware Ecosystem</text>`;
+  svg += `</g>`;
+  // Arrow: Hardware → Local Machine (via Skills/Sandbox)
+  svg += `<line x1="${hwx+hww/2}" y1="${hwy}" x2="${sbx+sbw/2}" y2="${sby+sbh}" stroke="#f59e0b" stroke-width="1" stroke-dasharray="4,3" opacity="0.4" marker-end="url(#af59e0b)"/>`;
+
+  // ─── CLOUD / HOSTED ───
+  const clx = 320, cly = ecoY + 14, clw = 290, clh = 160;
+  svg += `<g style="cursor:pointer" onclick="navigateToTab('ecosystem','cloud-hosted')">`;
+  svg += box(clx, cly, clw, clh, 'rgba(99,102,241,0.06)', '#6366f140', 10);
+  svg += `<text x="${clx+clw/2}" y="${cly+18}" text-anchor="middle" fill="#818cf8" font-size="13">☁️</text>`;
+  svg += `<text x="${clx+clw/2}" y="${cly+34}" text-anchor="middle" fill="#a5b4fc" font-size="11" font-weight="700">CLOUD / HOSTED</text>`;
+  svg += `<text x="${clx+clw/2}" y="${cly+48}" text-anchor="middle" fill="#94a3b8" font-size="8">${cloudRepos.length} repos — Managed Agent Platforms</text>`;
+  const clItems = [
+    { icon: '🌩️', name: 'CloudClaw', desc: 'Managed cloud platform' },
+    { icon: '⚡', name: 'ServerlessClaw', desc: 'Lambda/Cloud Functions' },
+    { icon: '🔧', name: 'Claw API Server', desc: 'REST/GraphQL API' },
+    { icon: '💼', name: 'HostedClaw / Claw SaaS', desc: 'Multi-tenant SaaS' },
+    { icon: '🔶', name: 'MoltWorker (Cloudflare)', desc: 'Workers serverless' }
+  ];
+  clItems.forEach((item, i) => {
+    const iy = cly + 58 + i * 18;
+    svg += `<text x="${clx+14}" y="${iy}" fill="#c4b5fd" font-size="8">${item.icon} ${item.name}</text>`;
+    svg += `<text x="${clx+clw-10}" y="${iy}" text-anchor="end" fill="#64748b" font-size="7">${item.desc}</text>`;
+  });
+  svg += `<text x="${clx+clw/2}" y="${cly+clh-8}" text-anchor="middle" fill="#6366f140" font-size="7">▸ View Cloud Ecosystem</text>`;
+  svg += `</g>`;
+  // Arrow: Cloud → External LLM API
+  svg += `<line x1="${clx+clw/2}" y1="${cly}" x2="${llmx+llmw/2}" y2="${llmy+llmh}" stroke="#6366f1" stroke-width="1" stroke-dasharray="4,3" opacity="0.4" marker-end="url(#a6366f1)"/>`;
+
+  // ─── CHINA ECOSYSTEM ───
+  const cnx = 630, cny = ecoY + 14, cnw = 320, cnh = 160;
+  svg += `<g style="cursor:pointer" onclick="navigateToTab('ecosystem','china-ecosystem')">`;
+  svg += box(cnx, cny, cnw, cnh, 'rgba(239,68,68,0.05)', '#ef444430', 10);
+  svg += `<text x="${cnx+cnw/2}" y="${cny+18}" text-anchor="middle" fill="#ef4444" font-size="13">🇨🇳</text>`;
+  svg += `<text x="${cnx+cnw/2}" y="${cny+34}" text-anchor="middle" fill="#fca5a5" font-size="11" font-weight="700">CHINA ECOSYSTEM</text>`;
+  svg += `<text x="${cnx+cnw/2}" y="${cny+48}" text-anchor="middle" fill="#94a3b8" font-size="8">${chinaRepos.length} repos — Big Tech Forks &amp; Compatible Agents</text>`;
+  const cnItems = [
+    { icon: '🌙', name: 'MaxClaw (MiniMax)', stars: '8.7K', desc: 'Hailuo multimodal' },
+    { icon: '🛒', name: 'CoPaw (Alibaba/Qwen)', stars: '15.2K', desc: 'DingTalk/Taobao' },
+    { icon: '🎵', name: 'ArkClaw (ByteDance)', stars: '11.3K', desc: 'Coze/TikTok' },
+    { icon: '💬', name: 'WorkBuddy (Tencent)', stars: '9.8K', desc: 'WeChat Work' },
+    { icon: '📚', name: 'AutoClaw (Zhipu/GLM)', stars: '7.6K', desc: 'AutoGLM web agent' }
+  ];
+  cnItems.forEach((item, i) => {
+    const iy = cny + 58 + i * 18;
+    svg += `<text x="${cnx+14}" y="${iy}" fill="#fca5a5" font-size="8">${item.icon} ${item.name}</text>`;
+    svg += `<text x="${cnx+cnw/2+30}" y="${iy}" fill="#f8717180" font-size="7">★${item.stars}</text>`;
+    svg += `<text x="${cnx+cnw-10}" y="${iy}" text-anchor="end" fill="#64748b" font-size="7">${item.desc}</text>`;
+  });
+  svg += `<text x="${cnx+cnw/2}" y="${cny+cnh-8}" text-anchor="middle" fill="#ef444440" font-size="7">▸ View China Ecosystem</text>`;
+  svg += `</g>`;
+  // Arrow: China → Agent Runtime (compatible forks)
+  svg += `<line x1="${cnx}" y1="${cny}" x2="${rx+rw/2}" y2="${ry+rh}" stroke="#ef4444" stroke-width="1" stroke-dasharray="4,3" opacity="0.3" marker-end="url(#aef4444)"/>`;
+
   svg += `</svg>`;
 
   // ─── 8-Layer Reference below diagram ───
@@ -2504,7 +3003,12 @@ function renderArchDiagram() {
   });
   layerRef += `</div>`;
 
-  el.innerHTML = svg + layerRef;
+  el.innerHTML = renderArchViewToggle() + svg + '<div id="kc-detail-container"></div>' + layerRef;
+
+  // Render initial overlay if mode is not structure
+  if (archViewMode !== 'structure') {
+    setTimeout(() => { renderArchOverlay(); renderArchDefensePanel(); }, 50);
+  }
 }
 
 function showArchLayer(layerId) {
@@ -2529,7 +3033,7 @@ function showArchLayer(layerId) {
   bodyEl.innerHTML = `
     <p class="text-sm text-gray-400 mb-4">${comp.description}</p>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-      <div class="p-3 rounded-lg" style="background:#0d1321;border:1px solid #141c2e">
+      <div class="p-3 rounded-lg" style="background:var(--bg-input,#0d1321);border:1px solid #141c2e">
         <div class="text-xs text-gray-500 mb-2">Modules (${repos.length})</div>
         <div class="space-y-1" style="max-height:200px;overflow-y:auto">
           ${repos.map(r => `<div class="flex items-center gap-2">
@@ -2538,7 +3042,7 @@ function showArchLayer(layerId) {
           </div>`).join('')}
         </div>
       </div>
-      <div class="p-3 rounded-lg" style="background:#0d1321;border:1px solid #141c2e">
+      <div class="p-3 rounded-lg" style="background:var(--bg-input,#0d1321);border:1px solid #141c2e">
         <div class="text-xs text-gray-500 mb-2">Threats (${threats.length})</div>
         <div class="space-y-1" style="max-height:200px;overflow-y:auto">
           ${threats.map(t => `<div class="flex items-center gap-2">
@@ -2547,7 +3051,7 @@ function showArchLayer(layerId) {
           </div>`).join('')}
         </div>
       </div>
-      <div class="p-3 rounded-lg" style="background:#0d1321;border:1px solid #141c2e">
+      <div class="p-3 rounded-lg" style="background:var(--bg-input,#0d1321);border:1px solid #141c2e">
         <div class="text-xs text-gray-500 mb-2">Controls (${controls.length}) ${missingIds.length > 0 ? `<span style="color:#ff6b7a">/ ${missingIds.length} gaps</span>` : ''}</div>
         <div class="space-y-1" style="max-height:200px;overflow-y:auto">
           ${controls.map(c => `<div class="text-xs flex items-center gap-1">
@@ -2592,7 +3096,7 @@ function renderArchDataflow() {
       <div class="text-xs text-gray-500 mb-2 font-semibold">Core Components</div>
       <div class="space-y-2" style="max-height:320px;overflow-y:auto">
         ${archComps.map(c => `
-          <div class="flex items-start gap-3 px-3 py-2 rounded-lg" style="background:#0d1321;border:1px solid #141c2e">
+          <div class="flex items-start gap-3 px-3 py-2 rounded-lg" style="background:var(--bg-input,#0d1321);border:1px solid #141c2e">
             <span class="text-xs font-bold whitespace-nowrap" style="color:#00d4aa;min-width:90px">${c.name}</span>
             <span class="text-xs text-gray-400 flex-1">${c.description}</span>
             <span class="text-xs text-gray-600 whitespace-nowrap">${c.introduced || ''}</span>
@@ -2612,7 +3116,7 @@ function renderArchDeps() {
   const chars = net.network_characteristics || {};
 
   el.innerHTML = `
-    <div class="mb-3 px-3 py-2 rounded-lg" style="background:#0d1321;border:1px solid #141c2e">
+    <div class="mb-3 px-3 py-2 rounded-lg" style="background:var(--bg-input,#0d1321);border:1px solid #141c2e">
       <div class="flex items-center gap-2 mb-1">
         <span class="text-xs font-bold" style="color:#00d4aa">Topology:</span>
         <span class="text-sm font-semibold text-gray-300">${chars.topology || 'Hub-and-Spoke'}</span>
@@ -2623,7 +3127,7 @@ function renderArchDeps() {
     </div>
     <div class="space-y-2" style="max-height:360px;overflow-y:auto">
       ${depTypes.map(d => `
-        <div class="px-3 py-2 rounded-lg" style="background:#0d1321;border:1px solid #141c2e">
+        <div class="px-3 py-2 rounded-lg" style="background:var(--bg-input,#0d1321);border:1px solid #141c2e">
           <div class="flex items-center gap-2 mb-1">
             <span>${d.icon || ''}</span>
             <span class="text-xs font-bold text-gray-300">${d.name}</span>
@@ -2695,4 +3199,1621 @@ function renderArchLayerSecurity() {
       </div>
     `;
   }).join('');
+}
+
+
+// Architecture view modes
+const archViewModes = [
+  { id: 'structure', label: '📐 Structure', title: 'Default architecture view' },
+  { id: 'usecase', label: '🔄 Use Cases', title: 'Normal use case flow visualization' },
+  { id: 'heatmap', label: '🔥 Heatmap', title: 'Threat density heatmap' },
+  { id: 'cve', label: '🛡 CVE Map', title: 'CVE indicators per zone' },
+  { id: 'attack', label: '⚔️ Attack Flow', title: 'Attack scenario animation' },
+  { id: 'threat', label: '⚠️ Threats', title: 'Threat type mapping per zone' },
+  { id: 'defense', label: '🏰 Defense', title: 'Defense coverage matrix' },
+  { id: 'risk', label: '📊 Risk Score', title: 'Risk score overlay' },
+  { id: 'killchain', label: '🔗 Kill Chain', title: 'Kill chain flow visualization' }
+];
+
+// Normal use case flows for architecture visualization
+const archUseCases = [
+  { id: 'chat', name: '💬 채팅 대화', description: '사용자가 메시지를 보내고 AI 응답을 받는 흐름',
+    steps: [
+      { zone: 'Channel Adapters', label: '사용자가 Slack/Discord/Web으로 메시지 전송', phase: 'input' },
+      { zone: 'Gateway', label: '게이트웨이가 인증 및 요청 라우팅', phase: 'routing' },
+      { zone: 'Agent Runtime', label: '에이전트가 메시지 처리 및 액션 결정', phase: 'processing' },
+      { zone: 'Memory Engine', label: '대화 컨텍스트 및 지식 검색', phase: 'memory' },
+      { zone: 'Agent Runtime', label: '컨텍스트 기반 응답 생성', phase: 'processing' },
+      { zone: 'Gateway', label: '응답 포맷팅 및 전달', phase: 'routing' },
+      { zone: 'Channel Adapters', label: '사용자가 응답 수신', phase: 'output' }
+    ]},
+  { id: 'skill', name: '🔧 스킬 실행', description: '에이전트가 스킬/도구를 호출하여 작업을 완료하는 흐름',
+    steps: [
+      { zone: 'Channel Adapters', label: '사용자가 파일 작업 요청', phase: 'input' },
+      { zone: 'Gateway', label: '요청 인증 완료', phase: 'routing' },
+      { zone: 'Agent Runtime', label: '에이전트가 도구 사용 계획 수립', phase: 'processing' },
+      { zone: 'Plugin System', label: '스킬 로드 및 검증', phase: 'skill' },
+      { zone: 'Sandbox', label: '샌드박스에서 스킬 실행', phase: 'execution' },
+      { zone: 'Plugin System', label: '결과 캡처', phase: 'skill' },
+      { zone: 'Agent Runtime', label: '결과 해석 및 응답 구성', phase: 'processing' },
+      { zone: 'Channel Adapters', label: '사용자에게 결과 전달', phase: 'output' }
+    ]},
+  { id: 'memory', name: '🧠 메모리 및 학습', description: '에이전트가 학습한 지식을 저장하고 검색하는 흐름',
+    steps: [
+      { zone: 'Agent Runtime', label: '대화 중 새로운 정보 식별', phase: 'processing' },
+      { zone: 'Memory Engine', label: '벡터 임베딩 생성', phase: 'memory' },
+      { zone: 'Memory Engine', label: '영구 메모리에 저장 (Vector + BM25)', phase: 'memory' },
+      { zone: 'Agent Runtime', label: '이후: 새로운 쿼리 도착', phase: 'processing' },
+      { zone: 'Memory Engine', label: '하이브리드 검색으로 관련 메모리 검색', phase: 'memory' },
+      { zone: 'Agent Runtime', label: '컨텍스트 강화 응답 생성', phase: 'processing' }
+    ]},
+  { id: 'multi-channel', name: '📡 멀티 채널 라우팅', description: '동일한 에이전트가 여러 채널을 동시에 지원하는 흐름',
+    steps: [
+      { zone: 'Channel Adapters', label: 'Slack, Discord, Web에서 메시지 도착', phase: 'input' },
+      { zone: 'Gateway', label: '채널별 인증 및 정규화', phase: 'routing' },
+      { zone: 'Agent Runtime', label: '채널에 관계없이 통합 처리', phase: 'processing' },
+      { zone: 'Memory Engine', label: '채널 간 공유 메모리', phase: 'memory' },
+      { zone: 'Agent Runtime', label: '채널에 적합한 응답 포맷팅', phase: 'processing' },
+      { zone: 'Gateway', label: '올바른 채널 어댑터로 라우팅', phase: 'routing' },
+      { zone: 'Channel Adapters', label: '해당 채널을 통해 전달', phase: 'output' }
+    ]},
+  { id: 'admin', name: '⚙️ 관리 및 모니터링', description: '관리자가 에이전트를 모니터링하고 제어하는 흐름',
+    steps: [
+      { zone: 'Control UI', label: '관리자가 대시보드 열기', phase: 'admin' },
+      { zone: 'Agent Runtime', label: '에이전트 상태 및 메트릭 조회', phase: 'processing' },
+      { zone: 'Memory Engine', label: '사용 로그 및 메모리 통계 조회', phase: 'memory' },
+      { zone: 'Plugin System', label: '설치된 스킬 및 권한 목록 조회', phase: 'skill' },
+      { zone: 'Control UI', label: '관리자가 권한/정책 조정', phase: 'admin' },
+      { zone: 'Gateway', label: '업데이트된 정책 전파', phase: 'routing' }
+    ]},
+  { id: 'file-ops', name: '📁 로컬 파일 작업', description: '에이전트가 스킬을 통해 로컬 머신의 파일을 읽기/쓰기하는 흐름',
+    steps: [
+      { zone: 'Channel Adapters', label: '사용자 요청: "config.yaml을 읽고 요약해줘"', phase: 'input' },
+      { zone: 'Gateway', label: '요청 인증 및 전달', phase: 'routing' },
+      { zone: 'Agent Runtime', label: '에이전트가 파일시스템 스킬 사용 결정', phase: 'processing' },
+      { zone: 'Plugin System', label: 'skill-filesystem 로드, 경로 검증', phase: 'skill' },
+      { zone: 'Sandbox', label: '샌드박스 환경에서 파일 읽기 실행', phase: 'execution' },
+      { zone: 'Local Machine', label: '로컬 파일시스템에서 config.yaml 읽기', phase: 'local' },
+      { zone: 'Sandbox', label: '파일 내용이 샌드박스로 반환', phase: 'execution' },
+      { zone: 'Plugin System', label: '결과가 에이전트로 전달', phase: 'skill' },
+      { zone: 'Agent Runtime', label: '에이전트가 파일 내용 요약', phase: 'processing' },
+      { zone: 'External LLM API', label: 'LLM이 요약 응답 생성', phase: 'llm' },
+      { zone: 'Agent Runtime', label: '응답 조합', phase: 'processing' },
+      { zone: 'Channel Adapters', label: '사용자에게 요약 전달', phase: 'output' }
+    ]},
+  { id: 'web-browse', name: '🌐 웹 브라우징 및 스크래핑', description: '에이전트가 웹 페이지를 탐색하고 정보를 추출하는 흐름',
+    steps: [
+      { zone: 'Channel Adapters', label: '사용자 요청: "AI 보안 최신 뉴스 확인해줘"', phase: 'input' },
+      { zone: 'Gateway', label: '에이전트로 요청 라우팅', phase: 'routing' },
+      { zone: 'Agent Runtime', label: '에이전트가 브라우저 스킬 사용 계획', phase: 'processing' },
+      { zone: 'Plugin System', label: 'URL 대상으로 skill-browser 로드', phase: 'skill' },
+      { zone: 'Sandbox', label: '샌드박스에서 Chromium 실행', phase: 'execution' },
+      { zone: 'Local Machine', label: '브라우저가 대상 웹사이트로 이동', phase: 'local' },
+      { zone: 'Sandbox', label: '페이지 콘텐츠 추출 및 정제', phase: 'execution' },
+      { zone: 'Plugin System', label: '추출된 콘텐츠 반환', phase: 'skill' },
+      { zone: 'Agent Runtime', label: '에이전트가 웹 콘텐츠 처리', phase: 'processing' },
+      { zone: 'External LLM API', label: 'LLM이 콘텐츠 분석 및 요약', phase: 'llm' },
+      { zone: 'Memory Engine', label: '향후 참조를 위해 주요 발견사항 저장', phase: 'memory' },
+      { zone: 'Agent Runtime', label: '발견사항 포함 응답 구성', phase: 'processing' },
+      { zone: 'Channel Adapters', label: '사용자에게 분석 결과 전달', phase: 'output' }
+    ]},
+  { id: 'llm-reasoning', name: '🤖 LLM 기반 추론', description: '에이전트가 복잡한 추론 작업을 위해 외부 LLM을 사용하는 흐름',
+    steps: [
+      { zone: 'Channel Adapters', label: '사용자 질문: "이 코드의 취약점을 분석해줘"', phase: 'input' },
+      { zone: 'Gateway', label: '요청 인증, 토큰 카운트', phase: 'routing' },
+      { zone: 'Agent Runtime', label: '에이전트가 컨텍스트 포함 프롬프트 준비', phase: 'processing' },
+      { zone: 'Memory Engine', label: '과거 분석 및 패턴 검색', phase: 'memory' },
+      { zone: 'Agent Runtime', label: 'LLM용 강화 프롬프트 구성', phase: 'processing' },
+      { zone: 'External LLM API', label: '심층 분석을 위해 Claude/GPT API 호출', phase: 'llm' },
+      { zone: 'External LLM API', label: 'LLM이 취약점 평가 반환', phase: 'llm' },
+      { zone: 'Agent Runtime', label: '에이전트가 LLM 응답 검증 및 포맷팅', phase: 'processing' },
+      { zone: 'Memory Engine', label: '향후 사용을 위해 분석 결과 캐시', phase: 'memory' },
+      { zone: 'Channel Adapters', label: '사용자에게 취약점 보고서 전달', phase: 'output' }
+    ]},
+  { id: 'code-execute', name: '💻 코드 실행', description: '에이전트가 로컬 머신에서 코드를 작성하고 실행하는 흐름',
+    steps: [
+      { zone: 'Channel Adapters', label: '사용자 요청: "데이터 처리용 Python 스크립트 실행해줘"', phase: 'input' },
+      { zone: 'Gateway', label: '실행 권한 확인과 함께 요청 라우팅', phase: 'routing' },
+      { zone: 'Agent Runtime', label: '에이전트가 Python 코드 생성', phase: 'processing' },
+      { zone: 'External LLM API', label: 'LLM이 코드 생성/검토', phase: 'llm' },
+      { zone: 'Plugin System', label: '코드 페이로드로 skill-python 로드', phase: 'skill' },
+      { zone: 'Sandbox', label: '샌드박스에서 Python 인터프리터 실행', phase: 'execution' },
+      { zone: 'Local Machine', label: '스크립트가 입력 파일 읽기 및 데이터 처리', phase: 'local' },
+      { zone: 'Local Machine', label: '출력 파일이 로컬 파일시스템에 기록', phase: 'local' },
+      { zone: 'Sandbox', label: '실행 결과 및 출력 캡처', phase: 'execution' },
+      { zone: 'Plugin System', label: '에이전트로 결과 반환', phase: 'skill' },
+      { zone: 'Agent Runtime', label: '에이전트가 실행 결과 해석', phase: 'processing' },
+      { zone: 'Channel Adapters', label: '사용자에게 결과 및 출력 전달', phase: 'output' }
+    ]},
+  { id: 'multi-agent', name: '🤝 멀티 에이전트 오케스트레이션', description: '주 에이전트가 전문 에이전트에게 하위 작업을 위임하는 흐름',
+    steps: [
+      { zone: 'Channel Adapters', label: '사용자 요청: "AI 보안 트렌드를 조사하고 보고서 작성해줘"', phase: 'input' },
+      { zone: 'Gateway', label: '주 오케스트레이터 에이전트로 요청 라우팅', phase: 'routing' },
+      { zone: 'Agent Runtime', label: '오케스트레이터가 작업을 하위 작업으로 분해', phase: 'processing' },
+      { zone: 'External LLM API', label: 'LLM이 작업 분해 전략 계획', phase: 'llm' },
+      { zone: 'Agent Runtime', label: '리서치 에이전트 생성 → 웹 검색 하위 작업', phase: 'processing' },
+      { zone: 'Plugin System', label: '리서치 에이전트가 skill-browser 사용', phase: 'skill' },
+      { zone: 'Sandbox', label: '샌드박스에서 웹 스크래핑 실행', phase: 'execution' },
+      { zone: 'Local Machine', label: '브라우저가 여러 웹 소스 가져오기', phase: 'local' },
+      { zone: 'Agent Runtime', label: '작성 에이전트 생성 → 보고서 하위 작업', phase: 'processing' },
+      { zone: 'External LLM API', label: '작성 에이전트가 콘텐츠 생성을 위해 LLM 호출', phase: 'llm' },
+      { zone: 'Memory Engine', label: '두 에이전트가 메모리를 통해 컨텍스트 공유', phase: 'memory' },
+      { zone: 'Agent Runtime', label: '오케스트레이터가 하위 에이전트 결과 병합', phase: 'processing' },
+      { zone: 'Plugin System', label: 'skill-filesystem이 최종 보고서 작성', phase: 'skill' },
+      { zone: 'Local Machine', label: '보고서가 report.md로 저장', phase: 'local' },
+      { zone: 'Channel Adapters', label: '사용자에게 요약과 함께 보고서 전달', phase: 'output' }
+    ]},
+  { id: 'voice-call', name: '📞 사용자 음성 통화', description: '에이전트가 음성 채널을 사용하여 아웃바운드 전화를 거는 흐름',
+    steps: [
+      { zone: 'Agent Runtime', label: '예약된 알림 트리거: 중요 보안 이벤트', phase: 'processing' },
+      { zone: 'Memory Engine', label: '사용자 연락처 설정 및 전화번호 검색', phase: 'memory' },
+      { zone: 'Agent Runtime', label: '음성 메시지 내용 준비', phase: 'processing' },
+      { zone: 'External LLM API', label: 'LLM이 자연스러운 음성 스크립트 생성', phase: 'llm' },
+      { zone: 'Plugin System', label: 'TTS 페이로드로 skill-voice-call 로드', phase: 'skill' },
+      { zone: 'Gateway', label: '정책 엔진을 통해 아웃바운드 통화 승인', phase: 'routing' },
+      { zone: 'Channel Adapters', label: '음성 채널이 Twilio/VAPI를 통해 전화 발신', phase: 'output' },
+      { zone: 'Channel Adapters', label: '사용자 응답 — TTS가 보안 알림 재생', phase: 'output' },
+      { zone: 'Channel Adapters', label: '사용자가 음성 명령으로 응답', phase: 'input' },
+      { zone: 'Gateway', label: 'STT가 사용자 응답 텍스트 변환', phase: 'routing' },
+      { zone: 'Agent Runtime', label: '에이전트가 사용자 지시 처리', phase: 'processing' },
+      { zone: 'Memory Engine', label: '감사 추적을 위해 상호작용 기록', phase: 'memory' },
+      { zone: 'Channel Adapters', label: 'SMS를 통해 확인 메시지 전송', phase: 'output' }
+    ]},
+  { id: 'coding-assist', name: '👨‍💻 인터랙티브 코딩 어시스턴트', description: '에이전트가 IDE에서 사용자의 코드 작성, 디버깅, 테스트를 지원하는 흐름',
+    steps: [
+      { zone: 'Channel Adapters', label: 'VS Code에서 사용자: "auth.py 42번 줄의 버그 수정해줘"', phase: 'input' },
+      { zone: 'Gateway', label: 'IDE 확장이 에이전트로 요청 라우팅', phase: 'routing' },
+      { zone: 'Agent Runtime', label: '에이전트가 코딩 요청 분석', phase: 'processing' },
+      { zone: 'Plugin System', label: 'skill-filesystem이 auth.py 소스 코드 읽기', phase: 'skill' },
+      { zone: 'Local Machine', label: '프로젝트 디렉토리에서 파일 내용 읽기', phase: 'local' },
+      { zone: 'Memory Engine', label: '프로젝트 컨텍스트 및 과거 수정 이력 검색', phase: 'memory' },
+      { zone: 'External LLM API', label: 'LLM이 코드 분석, 버그 식별, 수정 생성', phase: 'llm' },
+      { zone: 'Agent Runtime', label: '에이전트가 제안된 수정 검증', phase: 'processing' },
+      { zone: 'Plugin System', label: 'skill-filesystem이 패치된 auth.py 기록', phase: 'skill' },
+      { zone: 'Local Machine', label: '수정된 파일 디스크에 저장', phase: 'local' },
+      { zone: 'Plugin System', label: 'skill-shell이 테스트 스위트 실행', phase: 'skill' },
+      { zone: 'Sandbox', label: '샌드박스 환경에서 pytest 실행', phase: 'execution' },
+      { zone: 'Local Machine', label: '로컬 코드베이스에 대해 테스트 실행', phase: 'local' },
+      { zone: 'Agent Runtime', label: '에이전트가 테스트 결과 검토 — 모두 통과', phase: 'processing' },
+      { zone: 'Channel Adapters', label: '수정 적용, IDE에 diff 및 테스트 결과 표시', phase: 'output' }
+    ]},
+  { id: 'scheduled-digest', name: '⏰ 예약 일일 다이제스트', description: '에이전트가 캘린더, 뉴스, 소셜 미디어의 예약 요약을 전송하는 흐름',
+    steps: [
+      { zone: 'Agent Runtime', label: '매일 오전 7시에 크론 트리거 실행', phase: 'processing' },
+      { zone: 'Plugin System', label: 'skill-api-connector가 Google Calendar API 호출', phase: 'skill' },
+      { zone: 'External LLM API', label: '오늘의 회의 및 이벤트 가져오기', phase: 'llm' },
+      { zone: 'Plugin System', label: 'skill-api-connector가 Twitter/X API 호출', phase: 'skill' },
+      { zone: 'External LLM API', label: '트렌딩 토픽 및 팔로우 계정 가져오기', phase: 'llm' },
+      { zone: 'Plugin System', label: 'skill-browser가 뉴스 헤드라인 스크래핑', phase: 'skill' },
+      { zone: 'Sandbox', label: '샌드박스에서 브라우저 스크래핑', phase: 'execution' },
+      { zone: 'Local Machine', label: '뉴스 웹사이트 접속', phase: 'local' },
+      { zone: 'Memory Engine', label: '사용자 선호도 및 과거 다이제스트 피드백 검색', phase: 'memory' },
+      { zone: 'Agent Runtime', label: '에이전트가 모든 데이터 소스 통합', phase: 'processing' },
+      { zone: 'External LLM API', label: 'LLM이 개인화된 다이제스트 요약 생성', phase: 'llm' },
+      { zone: 'Agent Runtime', label: '우선순위 및 하이라이트로 다이제스트 포맷팅', phase: 'processing' },
+      { zone: 'Gateway', label: '멀티 채널 전달 준비', phase: 'routing' },
+      { zone: 'Channel Adapters', label: 'Slack + 이메일을 통해 아침 다이제스트 전송', phase: 'output' }
+    ]}
+];
+
+const zoneCVEMap = {
+  'Gateway': ['CVE-2026-25253', 'CVE-2026-26377', 'CVE-2026-28458', 'CVE-2026-28466'],
+  'Agent Runtime': ['CVE-2026-25253', 'CVE-2026-25688', 'CVE-2026-27113', 'CVE-2026-27324', 'CVE-2026-27455', 'CVE-2026-26377'],
+  'Plugin System': ['CVE-2026-25254', 'CVE-2026-25255', 'CVE-2026-25256', 'CVE-2026-27113', 'CVE-2026-28479'],
+  'Sandbox': ['CVE-2026-26376', 'CVE-2026-28468'],
+  'Memory Engine': ['CVE-2026-25688', 'CVE-2026-27324', 'CVE-2026-28479'],
+  'Control UI': ['CVE-2026-28466'],
+  'Channel Adapters': ['CVE-2026-27661', 'CVE-2026-28458']
+};
+
+// Zone positions for overlays (derived from box() calls in renderArchDiagram)
+const archZonePositions = {
+  'Gateway': { x: 195, y: 130, w: 100, h: 130, id: 'gateway' },
+  'Agent Runtime': { x: 310, y: 140, w: 210, h: 220, id: 'agent-runtime' },
+  'Plugin System': { x: 545, y: 130, w: 240, h: 310, id: 'plugin-system' },
+  'Sandbox': { x: 545, y: 452, w: 240, h: 55, id: 'sandbox' },
+  'Memory Engine': { x: 270, y: 376, w: 290, h: 170, id: 'memory-engine' },
+  'Control UI': { x: 195, y: 380, w: 100, h: 70, id: 'control-ui' },
+  'Channel Adapters': { x: 10, y: 70, w: 150, h: 490, id: 'channel-adapters' },
+  'External LLM API': { x: 350, y: 58, w: 260, h: 68, id: 'external-llm' },
+  'Local Machine': { x: 800, y: 70, w: 150, h: 490, id: 'local-machine' },
+  'Hardware/IoT': { x: 10, y: 644, w: 290, h: 160, id: 'hardware' },
+  'Cloud/Hosted': { x: 320, y: 644, w: 290, h: 160, id: 'cloud-hosted' },
+  'China Ecosystem': { x: 630, y: 644, w: 320, h: 160, id: 'china-ecosystem' }
+};
+
+function setArchViewMode(mode) {
+  archViewMode = mode;
+  // Update toggle button states
+  document.querySelectorAll('.arch-view-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.mode === mode);
+  });
+  // Render overlays
+  renderArchOverlay();
+  // Render defense panel below diagram
+  renderArchDefensePanel();
+}
+
+function renderArchViewToggle() {
+  let html = '<div class="flex flex-wrap gap-2 mb-3">';
+  archViewModes.forEach(m => {
+    const activeClass = m.id === archViewMode ? ' active' : '';
+    html += `<button class="arch-view-btn${activeClass}" data-mode="${m.id}" title="${m.title}" onclick="setArchViewMode('${m.id}')">${m.label}</button>`;
+  });
+  html += '</div>';
+  return html;
+}
+
+function renderArchOverlay() {
+  const svgEl = document.querySelector('#arch-diagram svg');
+  if (!svgEl) return;
+
+  // Remove existing overlay group
+  const existing = svgEl.querySelector('#arch-overlay');
+  if (existing) existing.remove();
+
+  // Remove existing popover
+  const existingPop = document.querySelector('.arch-popover');
+  if (existingPop) existingPop.remove();
+
+  // Remove attack flow dropdown if not in attack mode
+  const attackDropdown = document.getElementById('arch-attack-dropdown');
+  if (attackDropdown && archViewMode !== 'attack') attackDropdown.style.display = 'none';
+  if (attackDropdown && archViewMode === 'attack') attackDropdown.style.display = '';
+
+  // Hide/show usecase dropdown
+  const usecaseDropdown = document.getElementById('arch-usecase-dropdown');
+  if (usecaseDropdown && archViewMode !== 'usecase') usecaseDropdown.style.display = 'none';
+  if (usecaseDropdown && archViewMode === 'usecase') usecaseDropdown.style.display = '';
+
+  // Remove kill chain detail panel when not in killchain mode
+  if (archViewMode !== 'killchain') {
+    const kcContainer = document.getElementById('kc-detail-container');
+    if (kcContainer) kcContainer.innerHTML = '';
+    killChainSelectedPhase = null;
+  }
+
+  if (archViewMode === 'structure') return;
+
+  let overlay = '';
+
+  if (archViewMode === 'cve') {
+    overlay = renderCVEOverlay();
+  } else if (archViewMode === 'heatmap') {
+    overlay = renderHeatmapOverlay();
+  } else if (archViewMode === 'attack') {
+    overlay = renderAttackFlowOverlay();
+  } else if (archViewMode === 'usecase') {
+    overlay = renderUseCaseOverlay();
+  } else if (archViewMode === 'threat') {
+    overlay = renderThreatOverlay();
+  } else if (archViewMode === 'risk') {
+    overlay = renderRiskScoreOverlay();
+  } else if (archViewMode === 'defense') {
+    overlay = renderDefenseOverlay();
+  } else if (archViewMode === 'killchain') {
+    overlay = renderKillChainFlowOverlay();
+  }
+
+  if (overlay) {
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    g.setAttribute('id', 'arch-overlay');
+    g.innerHTML = overlay;
+    svgEl.appendChild(g);
+  }
+}
+
+function renderCVEOverlay() {
+  let svg = '';
+  Object.entries(zoneCVEMap).forEach(([zone, cves]) => {
+    const pos = archZonePositions[zone];
+    if (!pos) return;
+    const cx = pos.x + pos.w - 8;
+    const cy = pos.y + 8;
+    svg += `<g class="cve-badge" style="cursor:pointer" onclick="showArchCVEPopover('${zone}', ${cx}, ${cy})">`;
+    svg += `<circle cx="${cx}" cy="${cy}" r="12" fill="#ef4444" stroke="#0a0e1a" stroke-width="2"/>`;
+    svg += `<text x="${cx}" y="${cy + 4}" text-anchor="middle" fill="#ffffff" font-size="10" font-weight="700">${cves.length}</text>`;
+    svg += `</g>`;
+  });
+  return svg;
+}
+
+function showArchCVEPopover(zone, svgX, svgY) {
+  // Remove existing popover
+  const existing = document.querySelector('.arch-popover');
+  if (existing) existing.remove();
+
+  const cves = zoneCVEMap[zone] || [];
+  if (cves.length === 0) return;
+
+  const wrapper = document.getElementById('arch-diagram-wrapper');
+  if (!wrapper) return;
+
+  const svgEl = wrapper.querySelector('svg');
+  if (!svgEl) return;
+  const rect = svgEl.getBoundingClientRect();
+  const wrapperRect = wrapper.getBoundingClientRect();
+  const scaleX = rect.width / 960;
+  const scaleY = rect.height / 820;
+
+  const popX = (svgX * scaleX) + rect.left - wrapperRect.left + wrapper.scrollLeft + 16;
+  const popY = (svgY * scaleY) + rect.top - wrapperRect.top + wrapper.scrollTop;
+
+  const popover = document.createElement('div');
+  popover.className = 'arch-popover';
+  popover.style.cssText = `position:absolute;left:${popX}px;top:${popY}px;z-index:50;background:var(--bg-input,#0d1321);border:1px solid #ef444440;border-radius:8px;padding:12px;min-width:220px;max-width:300px;box-shadow:0 4px 20px rgba(0,0,0,0.5)`;
+  popover.innerHTML = `
+    <div class="flex items-center justify-between mb-2">
+      <span class="text-xs font-bold" style="color:#f87171">${zone} - ${cves.length} CVEs</span>
+      <button onclick="this.parentElement.parentElement.remove()" style="color:#64748b;font-size:14px;cursor:pointer;background:none;border:none">&times;</button>
+    </div>
+    <div class="space-y-1">
+      ${cves.map(c => `<div class="text-xs" style="color:#fca5a5;font-family:monospace;padding:2px 0">\u2022 ${c}</div>`).join('')}
+    </div>
+  `;
+  wrapper.style.position = 'relative';
+  wrapper.appendChild(popover);
+}
+
+function renderHeatmapOverlay() {
+  let svg = '';
+  // Calculate threat density per zone from DATA.threats
+  const zoneThreatCounts = {};
+  const zoneScenarioCounts = {};
+
+  Object.keys(archZonePositions).forEach(zone => {
+    zoneThreatCounts[zone] = 0;
+    zoneScenarioCounts[zone] = 0;
+  });
+
+  // Map threats to zones based on affected_layers
+  const zoneToLayer = {
+    'Gateway': 'gateway',
+    'Agent Runtime': 'agent-runtime',
+    'Plugin System': 'plugin-system',
+    'Sandbox': 'sandbox',
+    'Memory Engine': 'memory-engine',
+    'Control UI': 'control-ui',
+    'Channel Adapters': 'channel-adapters'
+  };
+
+  (DATA.threats || []).forEach(t => {
+    const affected = t.affected_layers || [];
+    Object.entries(zoneToLayer).forEach(([zone, layerId]) => {
+      if (affected.includes(layerId)) {
+        zoneThreatCounts[zone] = (zoneThreatCounts[zone] || 0) + 1;
+      }
+    });
+  });
+
+  // Map scenarios to zones
+  (DATA.attacks.scenarios || []).forEach(s => {
+    const threatIds = s.threat_ids || [];
+    threatIds.forEach(tid => {
+      const threat = DATA.threats.find(t => t.id === tid);
+      if (!threat) return;
+      const affected = threat.affected_layers || [];
+      Object.entries(zoneToLayer).forEach(([zone, layerId]) => {
+        if (affected.includes(layerId)) {
+          zoneScenarioCounts[zone] = (zoneScenarioCounts[zone] || 0) + 1;
+        }
+      });
+    });
+  });
+
+  const maxThreats = Math.max(...Object.values(zoneThreatCounts), 1);
+
+  Object.entries(archZonePositions).forEach(([zone, pos]) => {
+    const count = zoneThreatCounts[zone] || 0;
+    const scenarios = zoneScenarioCounts[zone] || 0;
+    const ratio = count / maxThreats;
+
+    // Color gradient: green -> yellow -> orange -> red
+    let color;
+    if (ratio < 0.25) color = 'rgba(34,197,94,0.25)';
+    else if (ratio < 0.5) color = 'rgba(234,179,8,0.3)';
+    else if (ratio < 0.75) color = 'rgba(249,115,22,0.35)';
+    else color = 'rgba(239,68,68,0.4)';
+
+    const safeZone = zone.replace(/'/g, "\\'");
+    svg += `<g class="heatmap-overlay" style="cursor:pointer" onclick="event.stopPropagation();showHeatmapPopover('${safeZone}', ${pos.x + pos.w/2}, ${pos.y + pos.h/2})">`;
+    svg += `<rect x="${pos.x}" y="${pos.y}" width="${pos.w}" height="${pos.h}" rx="8" fill="${color}" stroke="none" style="pointer-events:all"/>`;
+    // Density label
+    svg += `<text x="${pos.x + pos.w/2}" y="${pos.y + pos.h/2 + 4}" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="700" style="pointer-events:none;text-shadow:0 1px 3px rgba(0,0,0,0.8)">${count} threats, ${scenarios} scenarios</text>`;
+    svg += `</g>`;
+  });
+  return svg;
+}
+
+window.showHeatmapPopover = function(zone, svgX, svgY) {
+  const existing = document.querySelector('.arch-popover');
+  if (existing) existing.remove();
+
+  const wrapper = document.getElementById('arch-diagram-wrapper');
+  if (!wrapper) return;
+  const svgEl = wrapper.querySelector('svg');
+  if (!svgEl) return;
+
+  const rect = svgEl.getBoundingClientRect();
+  const wrapperRect = wrapper.getBoundingClientRect();
+  const scaleX = rect.width / 960;
+  const scaleY = rect.height / 820;
+  const popX = (svgX * scaleX) + rect.left - wrapperRect.left + wrapper.scrollLeft + 16;
+  const popY = (svgY * scaleY) + rect.top - wrapperRect.top + wrapper.scrollTop;
+
+  const zoneToLayer = {
+    'Gateway': 'gateway', 'Agent Runtime': 'agent-runtime', 'Plugin System': 'plugin-system',
+    'Sandbox': 'sandbox', 'Memory Engine': 'memory-engine', 'Control UI': 'control-ui',
+    'Channel Adapters': 'channel-adapters'
+  };
+  const layerId = zoneToLayer[zone];
+
+  // Threats affecting this zone
+  const threats = (DATA.threats || []).filter(t => (t.affected_layers || []).includes(layerId));
+
+  // Scenarios linked via threats
+  const threatIds = threats.map(t => t.id);
+  const scenarios = (DATA.attacks.scenarios || []).filter(s =>
+    (s.threat_ids || []).some(tid => threatIds.includes(tid))
+  );
+
+  const severityBadge = (sev) => {
+    const colors = { critical: '#ef4444', high: '#f97316', medium: '#eab308', low: '#22c55e' };
+    return `<span style="background:${colors[sev] || '#888'};color:#fff;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600">${sev}</span>`;
+  };
+
+  let html = '';
+  html += `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">`;
+  html += `<span style="font-weight:700;font-size:13px;color:#00e6a7">${zone}</span>`;
+  html += `<button onclick="this.closest('.arch-popover').remove()" style="color:#64748b;font-size:14px;cursor:pointer;background:none;border:none">&times;</button>`;
+  html += `</div>`;
+
+  // Threats section
+  html += `<div style="font-size:11px;color:#94a3b8;margin-bottom:4px;font-weight:600">Threats (${threats.length})</div>`;
+  if (threats.length > 0) {
+    threats.forEach(t => {
+      html += `<div style="margin:3px 0;font-size:11px;line-height:1.5">`;
+      html += `${severityBadge(t.severity)} <strong style="color:#e2e8f0">${t.name}</strong>`;
+      html += `<div style="color:#94a3b8;font-size:10px;margin-top:1px">${t.description}</div>`;
+      html += `</div>`;
+    });
+  } else {
+    html += `<div style="font-size:10px;color:#64748b;margin:4px 0">No direct threats mapped</div>`;
+  }
+
+  // Scenarios section
+  if (scenarios.length > 0) {
+    html += `<div style="font-size:11px;color:#94a3b8;margin:8px 0 4px;font-weight:600">Related Scenarios (${scenarios.length})</div>`;
+    scenarios.slice(0, 8).forEach(s => {
+      const sev = s.severity || 'medium';
+      html += `<div style="margin:2px 0;font-size:10px;line-height:1.4">`;
+      html += `${severityBadge(sev)} <span style="color:#cbd5e1">${s.name}</span>`;
+      html += `</div>`;
+    });
+    if (scenarios.length > 8) {
+      html += `<div style="font-size:9px;color:#64748b;margin-top:4px">+ ${scenarios.length - 8} more scenarios</div>`;
+    }
+  }
+
+  const popover = document.createElement('div');
+  popover.className = 'arch-popover';
+  popover.style.cssText = `position:absolute;left:${popX}px;top:${popY}px;z-index:50;background:var(--bg-input,#0d1321);border:1px solid #f9731640;border-radius:8px;padding:12px;min-width:240px;max-width:340px;box-shadow:0 4px 20px rgba(0,0,0,0.5);max-height:400px;overflow-y:auto`;
+  popover.innerHTML = html;
+  wrapper.style.position = 'relative';
+  wrapper.appendChild(popover);
+};
+
+function renderThreatOverlay() {
+  const threats = DATA.threats || [];
+  if (threats.length === 0) return '';
+
+  // Zone letter → archZonePositions name mapping
+  const zoneLetterToName = {
+    'A': 'Gateway', 'B': 'Agent Runtime', 'C': 'Plugin System',
+    'D': 'Sandbox', 'E': 'Memory Engine', 'F': 'Control UI',
+    'G': 'Control UI', 'H': 'Channel Adapters'
+  };
+
+  const severityColors = {
+    'critical': { fill: 'rgba(239,68,68,0.30)', stroke: '#ef4444', badge: '#ef4444', text: '#fff' },
+    'high':     { fill: 'rgba(249,115,22,0.25)', stroke: '#f97316', badge: '#f97316', text: '#fff' },
+    'medium':   { fill: 'rgba(234,179,8,0.20)',  stroke: '#eab308', badge: '#eab308', text: '#000' },
+    'low':      { fill: 'rgba(34,197,94,0.15)',   stroke: '#22c55e', badge: '#22c55e', text: '#000' }
+  };
+
+  // Collect threats per zone (primary + propagation)
+  const zonePrimaryThreats = {};
+  const zonePropagationThreats = {};
+  const propagationArrows = [];
+
+  threats.forEach(t => {
+    const pz = t.primary_zones || [];
+    const propz = t.propagation_zones || [];
+    pz.forEach(z => {
+      const name = zoneLetterToName[z];
+      if (name) {
+        if (!zonePrimaryThreats[name]) zonePrimaryThreats[name] = [];
+        zonePrimaryThreats[name].push(t);
+      }
+    });
+    propz.forEach(z => {
+      const name = zoneLetterToName[z];
+      if (name) {
+        if (!zonePropagationThreats[name]) zonePropagationThreats[name] = [];
+        zonePropagationThreats[name].push(t);
+      }
+    });
+    // Arrows from primary to propagation zones
+    pz.forEach(from => {
+      propz.forEach(to => {
+        if (from !== to) {
+          const fromName = zoneLetterToName[from];
+          const toName = zoneLetterToName[to];
+          if (fromName && toName && fromName !== toName) {
+            propagationArrows.push({ from: fromName, to: toName, threat: t });
+          }
+        }
+      });
+    });
+  });
+
+  let svg = '';
+
+  // 1. Zone severity overlays
+  Object.entries(archZonePositions).forEach(([zone, pos]) => {
+    const primary = zonePrimaryThreats[zone] || [];
+    const propagation = zonePropagationThreats[zone] || [];
+    const allThreats = [...new Set([...primary, ...propagation])];
+    if (allThreats.length === 0) return;
+
+    // Determine max severity
+    const severityRank = { critical: 4, high: 3, medium: 2, low: 1 };
+    let maxSev = 'low';
+    allThreats.forEach(t => {
+      if ((severityRank[t.severity] || 0) > (severityRank[maxSev] || 0)) maxSev = t.severity;
+    });
+    const c = severityColors[maxSev] || severityColors.medium;
+
+    svg += `<rect x="${pos.x}" y="${pos.y}" width="${pos.w}" height="${pos.h}" rx="8" fill="${c.fill}" stroke="${c.stroke}" stroke-width="2" stroke-dasharray="4 2" style="pointer-events:none"/>`;
+
+    // Threat count badge (top-left) — use escaped zone name for onclick
+    const bx = pos.x + 10;
+    const by = pos.y + 12;
+    const safeZone = zone.replace(/'/g, "\\'");
+    svg += `<g style="cursor:pointer;pointer-events:all" onclick="event.stopPropagation();showArchThreatPopover('${safeZone}', ${bx + 50}, ${by})">`;
+    svg += `<rect x="${bx}" y="${by - 8}" width="${primary.length > 0 ? 70 : 55}" height="16" rx="8" fill="${c.badge}" opacity="0.9" style="pointer-events:all"/>`;
+    svg += `<text x="${bx + (primary.length > 0 ? 35 : 27)}" y="${by + 4}" text-anchor="middle" fill="${c.text}" font-size="9" font-weight="700" style="pointer-events:none">${primary.length} primary</text>`;
+    svg += `</g>`;
+
+    if (propagation.length > 0) {
+      svg += `<g style="cursor:pointer;pointer-events:all" onclick="event.stopPropagation();showArchThreatPopover('${safeZone}', ${bx + 50}, ${by + 18})">`;
+      svg += `<rect x="${bx}" y="${by + 10}" width="75" height="16" rx="8" fill="${c.badge}" opacity="0.5" style="pointer-events:all"/>`;
+      svg += `<text x="${bx + 37}" y="${by + 22}" text-anchor="middle" fill="#fff" font-size="9" font-weight="600" style="pointer-events:none">${propagation.length} propagated</text>`;
+      svg += `</g>`;
+    }
+
+    // Severity label (bottom center)
+    svg += `<text x="${pos.x + pos.w/2}" y="${pos.y + pos.h - 8}" text-anchor="middle" fill="${c.stroke}" font-size="10" font-weight="700" style="pointer-events:none;text-shadow:0 1px 2px rgba(0,0,0,0.6)">${maxSev.toUpperCase()}</text>`;
+  });
+
+  // 2. Propagation arrows (deduplicated)
+  const arrowKey = new Set();
+  svg += `<defs><marker id="threat-arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#f97316" opacity="0.7"/></marker></defs>`;
+
+  propagationArrows.forEach(({ from, to }) => {
+    const key = `${from}->${to}`;
+    if (arrowKey.has(key)) return;
+    arrowKey.add(key);
+
+    const fp = archZonePositions[from];
+    const tp = archZonePositions[to];
+    if (!fp || !tp) return;
+
+    const x1 = fp.x + fp.w / 2;
+    const y1 = fp.y + fp.h / 2;
+    const x2 = tp.x + tp.w / 2;
+    const y2 = tp.y + tp.h / 2;
+    const mx = (x1 + x2) / 2 + (y2 - y1) * 0.15;
+    const my = (y1 + y2) / 2 - (x2 - x1) * 0.15;
+
+    svg += `<path d="M${x1},${y1} Q${mx},${my} ${x2},${y2}" fill="none" stroke="#f97316" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#threat-arrowhead)" opacity="0.6">`;
+    svg += `<animate attributeName="stroke-dashoffset" from="16" to="0" dur="1.5s" repeatCount="indefinite"/></path>`;
+  });
+
+  // 3. Legend
+  const lx = 10, ly = 570;
+  svg += `<rect x="${lx}" y="${ly}" width="280" height="40" rx="6" fill="rgba(10,14,26,0.85)" stroke="#333" stroke-width="1"/>`;
+  svg += `<text x="${lx + 8}" y="${ly + 14}" fill="#aaa" font-size="9" font-weight="600">THREAT SEVERITY</text>`;
+  const legendItems = [
+    { label: 'Critical', color: '#ef4444' },
+    { label: 'High', color: '#f97316' },
+    { label: 'Medium', color: '#eab308' },
+    { label: 'Low', color: '#22c55e' }
+  ];
+  legendItems.forEach((item, i) => {
+    const ix = lx + 8 + i * 65;
+    svg += `<circle cx="${ix + 4}" cy="${ly + 30}" r="4" fill="${item.color}"/>`;
+    svg += `<text x="${ix + 12}" y="${ly + 33}" fill="#ccc" font-size="9">${item.label}</text>`;
+  });
+  svg += `<text x="${lx + 275}" y="${ly + 33}" text-anchor="end" fill="#f97316" font-size="9">- - → propagation</text>`;
+
+  return svg;
+}
+
+// Threat popover for Threat view
+window.showArchThreatPopover = function(zone, svgX, svgY) {
+  const existing = document.querySelector('.arch-popover');
+  if (existing) existing.remove();
+
+  const wrapper = document.getElementById('arch-diagram-wrapper');
+  if (!wrapper) return;
+  const svgEl = wrapper.querySelector('svg');
+  if (!svgEl) return;
+
+  // Convert SVG coordinates to screen coordinates (same as CVE popover)
+  const rect = svgEl.getBoundingClientRect();
+  const wrapperRect = wrapper.getBoundingClientRect();
+  const scaleX = rect.width / 960;
+  const scaleY = rect.height / 820;
+  const popX = (svgX * scaleX) + rect.left - wrapperRect.left + wrapper.scrollLeft + 16;
+  const popY = (svgY * scaleY) + rect.top - wrapperRect.top + wrapper.scrollTop;
+
+  const zoneLetterToName = {
+    'A': 'Gateway', 'B': 'Agent Runtime', 'C': 'Plugin System',
+    'D': 'Sandbox', 'E': 'Memory Engine', 'F': 'Control UI',
+    'G': 'Control UI', 'H': 'Channel Adapters'
+  };
+  const nameToLetter = {};
+  Object.entries(zoneLetterToName).forEach(([k, v]) => { if (!nameToLetter[v]) nameToLetter[v] = k; });
+
+  const threats = DATA.threats || [];
+  const zoneLetter = nameToLetter[zone];
+  const primary = threats.filter(t => (t.primary_zones || []).includes(zoneLetter));
+  const propagated = threats.filter(t => (t.propagation_zones || []).includes(zoneLetter));
+
+  const severityBadge = (sev) => {
+    const colors = { critical: '#ef4444', high: '#f97316', medium: '#eab308', low: '#22c55e' };
+    return `<span style="background:${colors[sev] || '#888'};color:#fff;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600">${sev}</span>`;
+  };
+
+  let html = '';
+  html += `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">`;
+  html += `<span style="font-weight:700;font-size:13px;color:#00e6a7">${zone} — Threats</span>`;
+  html += `<button onclick="this.closest('.arch-popover').remove()" style="color:#64748b;font-size:14px;cursor:pointer;background:none;border:none">&times;</button>`;
+  html += `</div>`;
+
+  if (primary.length > 0) {
+    html += `<div style="font-size:11px;color:#94a3b8;margin-bottom:4px;font-weight:600">Primary Threats (${primary.length})</div>`;
+    primary.forEach(t => {
+      html += `<div style="margin:3px 0;font-size:11px;line-height:1.5">`;
+      html += `${severityBadge(t.severity)} <strong style="color:#e2e8f0">${t.name}</strong>`;
+      html += `<div style="color:#94a3b8;font-size:10px;margin-top:1px">${t.description}</div>`;
+      if (t.mitre_ids && t.mitre_ids.length) {
+        html += `<div style="color:#64748b;font-size:9px;margin-top:1px">${t.mitre_ids.join(', ')}</div>`;
+      }
+      html += `</div>`;
+    });
+  }
+
+  if (propagated.length > 0) {
+    html += `<div style="font-size:11px;color:#94a3b8;margin:6px 0 4px;font-weight:600">Propagated Threats (${propagated.length})</div>`;
+    propagated.forEach(t => {
+      html += `<div style="margin:3px 0;font-size:11px;line-height:1.5">`;
+      html += `${severityBadge(t.severity)} <span style="color:#cbd5e1">${t.name}</span>`;
+      const fromZones = (t.primary_zones || []).map(z => zoneLetterToName[z] || z).join(', ');
+      html += `<span style="color:#64748b;font-size:9px"> ← from ${fromZones}</span>`;
+      html += `</div>`;
+    });
+  }
+
+  // Related controls
+  const controls = DATA.controls || [];
+  const zoneControls = controls.filter(c => (c.applicable_zones || []).includes(zoneLetter));
+  if (zoneControls.length > 0) {
+    html += `<div style="font-size:11px;color:#94a3b8;margin:6px 0 4px;font-weight:600">Controls (${zoneControls.length})</div>`;
+    html += `<div style="display:flex;flex-wrap:wrap;gap:3px">`;
+    zoneControls.forEach(c => {
+      html += `<span style="background:rgba(0,228,167,0.15);color:#00e6a7;padding:1px 6px;border-radius:4px;font-size:9px">${c.name}</span>`;
+    });
+    html += `</div>`;
+  }
+
+  const popover = document.createElement('div');
+  popover.className = 'arch-popover';
+  popover.style.cssText = `position:absolute;left:${popX}px;top:${popY}px;z-index:50;background:var(--bg-input,#0d1321);border:1px solid #ef444440;border-radius:8px;padding:12px;min-width:240px;max-width:340px;box-shadow:0 4px 20px rgba(0,0,0,0.5);max-height:400px;overflow-y:auto`;
+  popover.innerHTML = html;
+  wrapper.style.position = 'relative';
+  wrapper.appendChild(popover);
+};
+
+function renderAttackFlowOverlay() {
+  const scenarios = DATA.attacks.scenarios || [];
+  if (scenarios.length === 0) return '';
+
+  // Show dropdown (rendered outside SVG, in the diagram wrapper)
+  let dropdownEl = document.getElementById('arch-attack-dropdown');
+  if (!dropdownEl) {
+    dropdownEl = document.createElement('div');
+    dropdownEl.id = 'arch-attack-dropdown';
+    dropdownEl.style.cssText = 'margin-bottom:8px';
+    dropdownEl.innerHTML = `
+      <select id="arch-attack-select" onchange="animateAttackFlow(this.value)" class="text-xs px-3 py-1.5 rounded-lg" style="background:var(--bg-input,#141c2e);color:var(--text-primary,#e2e8f0);border:1px solid var(--border-primary,#1e293b);max-width:400px;width:100%">
+        <option value="">-- Select attack scenario --</option>
+        ${scenarios.map(s => `<option value="${s.id}">${s.name} (${s.severity})</option>`).join('')}
+      </select>
+    `;
+    const wrapper = document.getElementById('arch-diagram-wrapper');
+    if (wrapper) wrapper.parentElement.insertBefore(dropdownEl, wrapper);
+  }
+  dropdownEl.style.display = '';
+
+  return '';
+}
+
+// Detailed attack flow paths per scenario — maps scenario category+id to
+// concrete architecture zone steps with contextual labels.
+const attackFlowPaths = {
+  // Supply chain attacks: external → ClawHub(Plugin System) → Agent
+  1:  [{ zone:'External LLM API', label:'공격자가 ClawHub에 오염된 스킬 게시' },
+      { zone:'Plugin System', label:'악성 스킬이 ClawHub 검토 통과' },
+      { zone:'Agent Runtime', label:'사용자가 스킬 설치; 에이전트가 로드' },
+      { zone:'Sandbox', label:'스킬이 샌드박스에서 악성 페이로드 실행' },
+      { zone:'Local Machine', label:'페이로드 탈출: 자격 증명 유출' }],
+  40: [{ zone:'External LLM API', label:'1,184개의 악성 스킬이 ClawHub에 업로드' },
+      { zone:'Plugin System', label:'스킬이 인기 패키지 모방 (타이포스쿼팅)' },
+      { zone:'Agent Runtime', label:'에이전트가 트렌딩 스킬 자동 설치' },
+      { zone:'Sandbox', label:'백도어 코드 실행' },
+      { zone:'Local Machine', label:'82개국에서 대량 자격 증명 수집' }],
+  17: [{ zone:'External LLM API', label:'공격자가 트로이 의존성 패키지 생성' },
+      { zone:'Plugin System', label:'정상 스킬이 트로이 패키지에 의존' },
+      { zone:'Agent Runtime', label:'스킬 설치 중 의존성 자동 해결' },
+      { zone:'Local Machine', label:'의존성 설치 중 트로이 실행' }],
+  41: [{ zone:'External LLM API', label:'손상된 npm 패키지 게시' },
+      { zone:'Plugin System', label:'Cline CLI가 손상된 의존성 설치' },
+      { zone:'Agent Runtime', label:'악성 postinstall 스크립트 실행' },
+      { zone:'Local Machine', label:'리버스 쉘 수립' }],
+  // Prompt injection via browser
+  8:  [{ zone:'Channel Adapters', label:'사용자가 에이전트에게 웹 페이지 탐색 요청' },
+      { zone:'Gateway', label:'에이전트로 요청 전달' },
+      { zone:'Agent Runtime', label:'에이전트가 skill-browser 호출' },
+      { zone:'Plugin System', label:'skill-browser 로드' },
+      { zone:'Sandbox', label:'샌드박스에서 브라우저 실행' },
+      { zone:'Local Machine', label:'브라우저가 악성 웹사이트로 이동' },
+      { zone:'Sandbox', label:'페이지 DOM에서 숨겨진 프롬프트 추출' },
+      { zone:'Agent Runtime', label:'주입된 프롬프트가 에이전트 추론 탈취' },
+      { zone:'Plugin System', label:'에이전트가 skill-filesystem 호출 (공격자 의도)' },
+      { zone:'Local Machine', label:'민감한 파일 읽기 및 유출' }],
+  // Other prompt injections
+  9:  [{ zone:'Plugin System', label:'SKILL.md에 숨겨진 명령 포함' },
+      { zone:'Agent Runtime', label:'에이전트가 SKILL.md를 스킬 설정으로 읽기' },
+      { zone:'Agent Runtime', label:'숨겨진 프롬프트가 에이전트 동작 재정의' },
+      { zone:'Plugin System', label:'에이전트가 의도하지 않은 도구 호출' },
+      { zone:'Local Machine', label:'로컬 시스템에서 무단 작업 수행' }],
+  33: [{ zone:'Channel Adapters', label:'개발자가 숨겨진 프롬프트 포함 코드 붙여넣기' },
+      { zone:'Gateway', label:'AI 코딩 어시스턴트에 코드 전송' },
+      { zone:'Agent Runtime', label:'코드 주석의 주입된 프롬프트 활성화' },
+      { zone:'External LLM API', label:'LLM이 주입된 명령 따르기' },
+      { zone:'Plugin System', label:'에이전트가 코드베이스에 백도어 작성' },
+      { zone:'Local Machine', label:'백도어 포함 코드가 저장소에 커밋' }],
+  44: [{ zone:'External LLM API', label:'악성 MCP 서버가 조작된 샘플링 요청 전송' },
+      { zone:'Agent Runtime', label:'에이전트가 샘플링 요청을 신뢰로 처리' },
+      { zone:'Agent Runtime', label:'주입된 프롬프트가 에이전트 목표 재정의' },
+      { zone:'Plugin System', label:'에이전트가 공격자 선택 도구 실행' }],
+  46: [{ zone:'Plugin System', label:'3줄 쉘 페이로드가 포함된 악성 SKILL.md' },
+      { zone:'Agent Runtime', label:'에이전트가 SKILL.md를 명령으로 파싱' },
+      { zone:'Plugin System', label:'페이로드로 skill-shell 호출' },
+      { zone:'Sandbox', label:'쉘 명령 실행' },
+      { zone:'Local Machine', label:'전체 쉘 접근 권한 획득' }],
+  // RCE attacks
+  6:  [{ zone:'Channel Adapters', label:'공격자가 조작된 MCP 도구 요청 전송' },
+      { zone:'Gateway', label:'게이트웨이의 SSRF 취약점 (CVE-2026-25253)' },
+      { zone:'Agent Runtime', label:'악성 도구 호출이 런타임에 도달' },
+      { zone:'Local Machine', label:'호스트에서 임의 코드 실행' }],
+  7:  [{ zone:'Channel Adapters', label:'사용자가 비정제 입력으로 스킬 트리거' },
+      { zone:'Agent Runtime', label:'에이전트가 skill-shell에 입력 전달' },
+      { zone:'Plugin System', label:'스킬 파라미터에서 명령 주입' },
+      { zone:'Sandbox', label:'주입된 명령이 샌드박스 탈출' },
+      { zone:'Local Machine', label:'호스트 사용자로 시스템 명령 실행' }],
+  34: [{ zone:'Channel Adapters', label:'공격자가 잘못된 음성 확장 요청 전송' },
+      { zone:'Gateway', label:'음성 확장의 사전 인증 RCE (CVE-2026-28446)' },
+      { zone:'Local Machine', label:'인증 없이 원격 코드 실행' }],
+  // Credential theft
+  11: [{ zone:'Channel Adapters', label:'무해해 보이는 요청이 파일 검색 트리거' },
+      { zone:'Agent Runtime', label:'에이전트가 skill-filesystem으로 설정 파일 검색' },
+      { zone:'Plugin System', label:'skill-filesystem이 .env, .aws/credentials 읽기' },
+      { zone:'Local Machine', label:'파일시스템에서 자격 증명 파일 접근' },
+      { zone:'Agent Runtime', label:'에이전트 응답에 자격 증명 포함' },
+      { zone:'Channel Adapters', label:'채팅 출력에서 자격 증명 유출' }],
+  12: [{ zone:'Agent Runtime', label:'손상된 에이전트가 SSH 키 검색' },
+      { zone:'Plugin System', label:'skill-filesystem이 ~/.ssh/ 스캔' },
+      { zone:'Local Machine', label:'파일시스템에서 개인 키 읽기' },
+      { zone:'Agent Runtime', label:'키를 사용하여 다른 시스템 접근' },
+      { zone:'External LLM API', label:'연결된 서버로 측면 이동' }],
+  13: [{ zone:'Agent Runtime', label:'에이전트가 API 키 참조 요청 처리' },
+      { zone:'Memory Engine', label:'대화 기록에서 API 키 발견' },
+      { zone:'Agent Runtime', label:'메모리 컨텍스트에서 키 추출' },
+      { zone:'Channel Adapters', label:'채널 응답을 통해 키 유출' }],
+  38: [{ zone:'External LLM API', label:'Shodan/Censys 스캔으로 135K+ 노출 패널 발견' },
+      { zone:'Gateway', label:'인증 없는 노출된 관리자 패널' },
+      { zone:'Control UI', label:'공격자가 Control UI에 직접 접근' },
+      { zone:'Agent Runtime', label:'에이전트 전체 제어 권한 획득' },
+      { zone:'Memory Engine', label:'모든 대화 데이터 및 자격 증명 노출' }],
+  // Memory/data poisoning
+  15: [{ zone:'External LLM API', label:'공격자가 오염된 문서 제작' },
+      { zone:'Plugin System', label:'RAG 파이프라인을 통해 문서 수집' },
+      { zone:'Memory Engine', label:'오염된 벡터가 메모리에 저장' },
+      { zone:'Agent Runtime', label:'에이전트가 쿼리에 대해 오염된 컨텍스트 검색' },
+      { zone:'Channel Adapters', label:'사용자가 조작된 응답 수신' }],
+  19: [{ zone:'Channel Adapters', label:'공격자가 숨겨진 페이로드 포함 대화 전송' },
+      { zone:'Agent Runtime', label:'에이전트가 상호작용 처리 및 저장' },
+      { zone:'Memory Engine', label:'악성 콘텐츠가 장기 메모리에 저장' },
+      { zone:'Agent Runtime', label:'이후 쿼리가 오염된 메모리 검색' },
+      { zone:'Channel Adapters', label:'손상된 컨텍스트로 모든 사용자 영향' }],
+  // Hijacking
+  5:  [{ zone:'External LLM API', label:'공격자가 노출된 WebSocket에 연결' },
+      { zone:'Gateway', label:'WebSocket 인증 우회 악용' },
+      { zone:'Agent Runtime', label:'공격자가 에이전트 세션에 명령 주입' },
+      { zone:'Plugin System', label:'무단 도구 호출' },
+      { zone:'Local Machine', label:'에이전트가 공격자 작업 수행' }],
+  14: [{ zone:'Channel Adapters', label:'사용자가 에이전트 제어 브라우저로 탐색' },
+      { zone:'Plugin System', label:'skill-browser가 대상 페이지 열기' },
+      { zone:'Sandbox', label:'샌드박스에서 브라우저 세션 활성' },
+      { zone:'Local Machine', label:'브라우저에서 세션 쿠키 도난' },
+      { zone:'External LLM API', label:'공격자 C2 서버로 쿠키 전송' }],
+  36: [{ zone:'External LLM API', label:'공격자가 브라우저 제어 인증 우회 악용' },
+      { zone:'Plugin System', label:'인증 없이 skill-browser 조작 (CVE-2026-28485)' },
+      { zone:'Sandbox', label:'공격자가 샌드박스 브라우저 제어' },
+      { zone:'Local Machine', label:'브라우저를 통해 로컬 리소스 접근' }],
+  42: [{ zone:'External LLM API', label:'Perplexity Comet을 통한 제로클릭 익스플로잇' },
+      { zone:'Agent Runtime', label:'에이전트가 악성 콘텐츠 자동 처리' },
+      { zone:'Agent Runtime', label:'사용자 상호작용 없이 에이전트 추론 탈취' },
+      { zone:'Plugin System', label:'공격자 제어 작업 실행' }],
+  // Multi-stage
+  20: [{ zone:'Plugin System', label:'공격자가 여러 스킬을 연쇄 활용' },
+      { zone:'Agent Runtime', label:'skill-browser가 페이로드 URL 가져오기' },
+      { zone:'Sandbox', label:'브라우저를 통해 페이로드 다운로드' },
+      { zone:'Plugin System', label:'skill-shell이 다운로드된 페이로드 실행' },
+      { zone:'Local Machine', label:'멀티 스킬 체인으로 코드 실행 달성' }],
+  24: [{ zone:'Channel Adapters', label:'AI 웜이 메시지 채널을 통해 진입' },
+      { zone:'Agent Runtime', label:'에이전트가 웜 페이로드 처리' },
+      { zone:'Memory Engine', label:'웜이 에이전트 메모리에 지속' },
+      { zone:'Channel Adapters', label:'웜이 연결된 에이전트로 전파' },
+      { zone:'Agent Runtime', label:'감염된 에이전트가 더 많은 채널로 확산' }],
+  28: [{ zone:'Agent Runtime', label:'손상된 에이전트 A가 에이전트 B와 협력' },
+      { zone:'Memory Engine', label:'C2 통신에 공유 메모리 사용' },
+      { zone:'Agent Runtime', label:'에이전트 B가 권한 상승' },
+      { zone:'Plugin System', label:'결합된 스킬 접근으로 제어 우회' },
+      { zone:'Local Machine', label:'여러 시스템에 걸친 협력 공격' }],
+  43: [{ zone:'External LLM API', label:'프롬프트웨어 페이로드 제작 및 배포' },
+      { zone:'Channel Adapters', label:'일반 메시지를 통해 페이로드 전달' },
+      { zone:'Agent Runtime', label:'에이전트가 프롬프트웨어 명령 실행' },
+      { zone:'Plugin System', label:'프롬프트웨어가 영구 후크 설치' },
+      { zone:'Memory Engine', label:'킬 체인이 세션 간 지속' },
+      { zone:'Local Machine', label:'전체 시스템 침해 달성' }],
+  // Resource abuse
+  10: [{ zone:'Channel Adapters', label:'무해해 보이는 요청이 체인 시작' },
+      { zone:'Agent Runtime', label:'에이전트가 재귀적 도구 호출 루프 진입' },
+      { zone:'External LLM API', label:'반복당 대량 토큰 소비' },
+      { zone:'Plugin System', label:'스킬이 수천 번 호출' },
+      { zone:'Gateway', label:'속도 제한 소진; 서비스 저하' }],
+  // Other
+  27: [{ zone:'Channel Adapters', label:'에이전트가 채팅에서 신뢰할 수 있는 엔티티 사칭' },
+      { zone:'Agent Runtime', label:'LLM이 소셜 엔지니어링 스크립트 생성' },
+      { zone:'External LLM API', label:'LLM이 설득력 있는 피싱 콘텐츠 제작' },
+      { zone:'Channel Adapters', label:'사용자가 자격 증명 노출에 속음' }],
+  45: [{ zone:'Plugin System', label:'지연 호출 타이머가 포함된 도구 심기' },
+      { zone:'Agent Runtime', label:'초기 검토 시 도구가 무해하게 보임' },
+      { zone:'Agent Runtime', label:'승인 창이 닫힌 후 타이머 트리거' },
+      { zone:'Plugin System', label:'지연된 악성 작업 실행' },
+      { zone:'Local Machine', label:'무단 시스템 접근 달성' }],
+};
+
+// Kill Chain phase → primary architecture zone mapping
+const killChainZoneMapping = {
+  'reconnaissance': { zone: 'External LLM API', color: '#3b82f6' },
+  'initial_access': { zone: 'Gateway', color: '#a855f7' },
+  'execution': { zone: 'Agent Runtime', color: '#f59e0b' },
+  'persistence': { zone: 'Memory Engine', color: '#06b6d4' },
+  'privilege_escalation': { zone: 'Sandbox', color: '#ef4444' },
+  'lateral_movement': { zone: 'Channel Adapters', color: '#10b981' },
+  'impact': { zone: 'Local Machine', color: '#f43f5e' }
+};
+
+let killChainAnimTimer = null;
+let killChainSelectedPhase = null;
+
+function renderKillChainFlowOverlay() {
+  const killChain = DATA.attacks.kill_chain || [];
+  const scenarios = DATA.attacks.scenarios || [];
+  const threats = DATA.threats || [];
+  if (killChain.length === 0) return '';
+
+  // Count scenarios and threats per phase
+  const phaseCounts = {};
+  killChain.forEach(kc => { phaseCounts[kc.phase] = 0; });
+  scenarios.forEach(s => {
+    if (s.phase && phaseCounts[s.phase] !== undefined) phaseCounts[s.phase]++;
+  });
+  const phaseThreatsMap = {};
+  killChain.forEach(kc => { phaseThreatsMap[kc.phase] = []; });
+  threats.forEach(t => {
+    if (t.kill_chain_phase && phaseThreatsMap[t.kill_chain_phase]) phaseThreatsMap[t.kill_chain_phase].push(t);
+  });
+
+  let svg = '';
+
+  // Semi-transparent dark overlay for contrast
+  svg += `<rect x="0" y="0" width="960" height="820" rx="12" fill="rgba(10,14,26,0.55)" style="pointer-events:none"/>`;
+
+  // Defs
+  svg += `<defs>
+    <filter id="kc-glow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <marker id="kc-arrow" viewBox="0 0 12 8" refX="11" refY="4" markerWidth="10" markerHeight="7" orient="auto">
+      <polygon points="0 0,12 4,0 8" fill="#00e6a7" opacity="0.8"/>
+    </marker>
+  </defs>`;
+
+  // ─── TOP: Kill Chain Phases (clickable arrow strip) ───
+  const stripY = 4;
+  svg += `<rect x="5" y="${stripY}" width="950" height="42" rx="8" fill="rgba(10,14,26,0.9)" stroke="#1e3a5f" stroke-width="1"/>`;
+  svg += `<text x="15" y="${stripY + 12}" fill="#64748b" font-size="7" font-weight="600">KILL CHAIN PHASES (클릭하여 상세 보기)</text>`;
+
+  const phaseW = 132;
+  const arrowY = stripY + 18;
+  killChain.forEach((kc, i) => {
+    const mapping = killChainZoneMapping[kc.phase];
+    if (!mapping) return;
+    const px = 12 + i * phaseW;
+    const count = phaseCounts[kc.phase] || 0;
+    const tCount = (phaseThreatsMap[kc.phase] || []).length;
+    const isSelected = killChainSelectedPhase === kc.phase;
+    const fillA = isSelected ? '50' : '25';
+    const strokeA = isSelected ? 'ee' : '60';
+    const sw = isSelected ? 2 : 1;
+
+    svg += `<g style="cursor:pointer;pointer-events:all" onclick="showKillChainPhaseDetail('${kc.phase}')">`;
+    // Arrow chevron shape
+    if (i === 0) {
+      svg += `<polygon points="${px},${arrowY} ${px + phaseW - 6},${arrowY} ${px + phaseW},${arrowY + 10} ${px + phaseW - 6},${arrowY + 20} ${px},${arrowY + 20}" fill="${mapping.color}${fillA}" stroke="${mapping.color}${strokeA}" stroke-width="${sw}"/>`;
+    } else if (i < killChain.length - 1) {
+      svg += `<polygon points="${px},${arrowY} ${px + phaseW - 6},${arrowY} ${px + phaseW},${arrowY + 10} ${px + phaseW - 6},${arrowY + 20} ${px},${arrowY + 20} ${px + 6},${arrowY + 10}" fill="${mapping.color}${fillA}" stroke="${mapping.color}${strokeA}" stroke-width="${sw}"/>`;
+    } else {
+      svg += `<polygon points="${px},${arrowY} ${px + phaseW},${arrowY} ${px + phaseW},${arrowY + 20} ${px},${arrowY + 20} ${px + 6},${arrowY + 10}" fill="${mapping.color}${fillA}" stroke="${mapping.color}${strokeA}" stroke-width="${sw}"/>`;
+    }
+    // Phase number + name
+    svg += `<text x="${px + (i === 0 ? 0 : 6) + (phaseW - (i === 0 ? 0 : 6)) / 2}" y="${arrowY + 8}" text-anchor="middle" fill="${mapping.color}" font-size="7.5" font-weight="700">${i + 1}. ${kc.name}</text>`;
+    // Counts
+    svg += `<text x="${px + (i === 0 ? 0 : 6) + (phaseW - (i === 0 ? 0 : 6)) / 2}" y="${arrowY + 18}" text-anchor="middle" fill="${mapping.color}90" font-size="6">${tCount} threats · ${count} scenarios</text>`;
+    svg += `</g>`;
+  });
+
+  // ─── Zone overlays with phase mapping ───
+  const points = [];
+  killChain.forEach((kc, i) => {
+    const mapping = killChainZoneMapping[kc.phase];
+    if (!mapping) return;
+    const pos = archZonePositions[mapping.zone];
+    if (!pos) return;
+    points.push({
+      x: pos.x + pos.w / 2, y: pos.y + pos.h / 2,
+      zone: mapping.zone, color: mapping.color,
+      phase: kc.phase, name: kc.name, description: kc.description,
+      count: phaseCounts[kc.phase] || 0,
+      threatCount: (phaseThreatsMap[kc.phase] || []).length,
+      pos: pos, index: i
+    });
+  });
+
+  // Highlight affected zones
+  points.forEach(p => {
+    const isSelected = killChainSelectedPhase === p.phase;
+    svg += `<rect x="${p.pos.x}" y="${p.pos.y}" width="${p.pos.w}" height="${p.pos.h}" rx="8" fill="${p.color}${isSelected ? '25' : '10'}" stroke="${p.color}" stroke-width="${isSelected ? 4 : 2.5}" opacity="0.7" style="cursor:pointer;pointer-events:all" onclick="showKillChainPhaseDetail('${p.phase}')">
+      <animate attributeName="opacity" values="${isSelected ? '0.8;1;0.8' : '0.5;0.9;0.5'}" dur="3s" begin="${p.index * 0.4}s" repeatCount="indefinite"/>
+    </rect>`;
+  });
+
+  // Curved connecting paths
+  for (let i = 0; i < points.length - 1; i++) {
+    const p1 = points[i], p2 = points[i + 1];
+    const dx = p2.x - p1.x, dy = p2.y - p1.y;
+    const cpx = (p1.x + p2.x) / 2 + (dy > 0 ? -40 : 40);
+    const cpy = (p1.y + p2.y) / 2 + (dx > 0 ? -30 : 30);
+    svg += `<path d="M${p1.x},${p1.y} Q${cpx},${cpy} ${p2.x},${p2.y}" fill="none" stroke="${p2.color}" stroke-width="2.5" stroke-dasharray="10 5" opacity="0.6" marker-end="url(#kc-arrow)">
+      <animate attributeName="stroke-dashoffset" from="30" to="0" dur="1.5s" repeatCount="indefinite"/>
+    </path>`;
+  }
+
+  // Phase badges on each zone
+  points.forEach((p, i) => {
+    const badgeX = p.pos.x + p.pos.w / 2;
+    const badgeY = p.pos.y + 20;
+    const isSelected = killChainSelectedPhase === p.phase;
+
+    svg += `<g style="cursor:pointer;pointer-events:all" onclick="showKillChainPhaseDetail('${p.phase}')">`;
+    // Number circle
+    svg += `<circle cx="${badgeX - 40}" cy="${badgeY}" r="${isSelected ? 16 : 14}" fill="${p.color}" stroke="${isSelected ? '#ffffff' : '#0a0e1a'}" stroke-width="2.5" filter="url(#kc-glow)">
+      <animate attributeName="r" values="${isSelected ? '16;18;16' : '14;16;14'}" dur="2.5s" begin="${i * 0.3}s" repeatCount="indefinite"/>
+    </circle>`;
+    svg += `<text x="${badgeX - 40}" y="${badgeY + 1}" text-anchor="middle" dominant-baseline="middle" fill="#ffffff" font-size="10" font-weight="800">${i + 1}</text>`;
+    // Phase name
+    const labelW = p.name.length * 7 + 40;
+    svg += `<rect x="${badgeX - 22}" y="${badgeY - 12}" width="${labelW}" height="24" rx="12" fill="${p.color}${isSelected ? '50' : '30'}" stroke="${p.color}${isSelected ? 'cc' : '80'}" stroke-width="${isSelected ? 2 : 1}"/>`;
+    svg += `<text x="${badgeX - 18 + labelW / 2}" y="${badgeY + 1}" text-anchor="middle" dominant-baseline="middle" fill="${p.color}" font-size="9" font-weight="700">${p.name}</text>`;
+    // Stats bar at bottom of zone
+    const infoY = p.pos.y + p.pos.h - 20;
+    if (p.count > 0 || p.threatCount > 0) {
+      const infoX = p.pos.x + 10;
+      svg += `<rect x="${infoX}" y="${infoY}" width="${p.pos.w - 20}" height="18" rx="4" fill="rgba(10,14,26,0.8)" stroke="${p.color}40" stroke-width="0.5"/>`;
+      let infoText = '';
+      if (p.threatCount > 0) infoText += `⚠ ${p.threatCount} threats`;
+      if (p.count > 0) infoText += `${infoText ? '  ·  ' : ''}📋 ${p.count} scenarios`;
+      svg += `<text x="${infoX + (p.pos.w - 20) / 2}" y="${infoY + 12}" text-anchor="middle" fill="${p.color}" font-size="7.5" font-weight="600">${infoText}</text>`;
+    }
+    svg += `</g>`;
+  });
+
+  // Animated moving dot
+  if (points.length >= 2) {
+    const segs = [];
+    for (let i = 0; i < points.length - 1; i++) {
+      const p1 = points[i], p2 = points[i + 1];
+      const dx = p2.x - p1.x, dy = p2.y - p1.y;
+      const cpx = (p1.x + p2.x) / 2 + (dy > 0 ? -40 : 40);
+      const cpy = (p1.y + p2.y) / 2 + (dx > 0 ? -30 : 30);
+      if (i === 0) segs.push(`M${p1.x},${p1.y}`);
+      segs.push(`Q${cpx},${cpy} ${p2.x},${p2.y}`);
+    }
+    const fullPath = segs.join(' ');
+    svg += `<circle r="6" fill="#ffffff" opacity="0.9" filter="url(#kc-glow)">
+      <animateMotion dur="${points.length * 1.8}s" repeatCount="indefinite" path="${fullPath}"/>
+    </circle>`;
+    svg += `<circle r="3" fill="#00e6a7">
+      <animateMotion dur="${points.length * 1.8}s" repeatCount="indefinite" path="${fullPath}"/>
+    </circle>`;
+  }
+
+  // Render detail panel into dedicated container after overlay
+  setTimeout(() => { renderKillChainDetailPanel(); }, 50);
+
+  return svg;
+}
+
+window.showKillChainPhaseDetail = function(phase) {
+  killChainSelectedPhase = (killChainSelectedPhase === phase) ? null : phase;
+  renderArchOverlay();
+};
+
+function renderKillChainDetailPanel() {
+  // Remove existing panel
+  const existing = document.getElementById('kc-detail-panel');
+  if (existing) existing.remove();
+
+  if (!killChainSelectedPhase) return;
+
+  const killChain = DATA.attacks.kill_chain || [];
+  const scenarios = DATA.attacks.scenarios || [];
+  const threats = DATA.threats || [];
+
+  const kc = killChain.find(k => k.phase === killChainSelectedPhase);
+  if (!kc) return;
+
+  const mapping = killChainZoneMapping[killChainSelectedPhase];
+  if (!mapping) return;
+
+  const phaseIndex = killChain.indexOf(kc);
+  const phaseThreats = threats.filter(t => t.kill_chain_phase === killChainSelectedPhase);
+  const phaseScenarios = scenarios.filter(s => s.phase === killChainSelectedPhase);
+
+  const sevColors = { critical: '#ef4444', high: '#f97316', medium: '#eab308', low: '#22c55e' };
+
+  let html = `<div id="kc-detail-panel" class="mt-4" style="border:2px solid ${mapping.color}40;border-radius:12px;background:var(--bg-card,#0d1321);overflow:hidden">`;
+
+  // Header
+  html += `<div style="padding:16px 20px;background:${mapping.color}10;border-bottom:1px solid ${mapping.color}30;display:flex;align-items:center;justify-content:space-between">`;
+  html += `<div style="display:flex;align-items:center;gap:12px">`;
+  html += `<span style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:${mapping.color};color:#fff;font-weight:800;font-size:14px">${phaseIndex + 1}</span>`;
+  html += `<div>`;
+  html += `<div style="font-size:16px;font-weight:700;color:${mapping.color}">${kc.name}</div>`;
+  html += `<div style="font-size:12px;color:var(--text-secondary,#94a3b8);margin-top:2px">${kc.description}</div>`;
+  html += `</div></div>`;
+  html += `<div style="display:flex;gap:16px;align-items:center">`;
+  html += `<span style="font-size:12px;color:${mapping.color}"><span style="font-weight:700;font-size:16px">${phaseThreats.length}</span> Threats</span>`;
+  html += `<span style="font-size:12px;color:${mapping.color}"><span style="font-weight:700;font-size:16px">${phaseScenarios.length}</span> Scenarios</span>`;
+  html += `<span style="font-size:11px;padding:4px 10px;border-radius:6px;background:${mapping.color}15;color:${mapping.color};border:1px solid ${mapping.color}40">🎯 ${mapping.zone}</span>`;
+  html += `<button onclick="showKillChainPhaseDetail('${killChainSelectedPhase}')" style="color:var(--text-secondary,#64748b);font-size:18px;cursor:pointer;background:none;border:none;padding:4px 8px">&times;</button>`;
+  html += `</div></div>`;
+
+  // Body — two columns: Threats | Scenarios
+  html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:0;min-height:200px">`;
+
+  // === Left: Threats ===
+  html += `<div style="padding:16px 20px;border-right:1px solid ${mapping.color}15">`;
+  html += `<div style="font-size:12px;font-weight:700;color:var(--text-primary,#e2e8f0);margin-bottom:12px;display:flex;align-items:center;gap:6px">⚠️ 관련 위협 (Threats)</div>`;
+
+  if (phaseThreats.length === 0) {
+    html += `<div style="font-size:12px;color:var(--text-secondary,#64748b);padding:20px 0;text-align:center">이 단계에 직접 매핑된 위협이 없습니다</div>`;
+  } else {
+    phaseThreats.forEach(t => {
+      const sevColor = sevColors[t.severity] || '#64748b';
+      const affectedZones = (t.primary_zones || []).concat(t.propagation_zones || []);
+      html += `<div style="padding:10px 12px;margin-bottom:8px;border-radius:8px;background:var(--bg-hover,rgba(255,255,255,0.02));border:1px solid ${sevColor}20;cursor:default">`;
+      html += `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">`;
+      html += `<span style="font-size:12px;font-weight:700;color:var(--text-primary,#e2e8f0)">${t.name}</span>`;
+      html += `<span style="font-size:9px;padding:2px 8px;border-radius:4px;background:${sevColor}20;color:${sevColor};font-weight:600;text-transform:uppercase">${t.severity}</span>`;
+      html += `</div>`;
+      html += `<div style="font-size:11px;color:var(--text-secondary,#94a3b8);margin-bottom:6px;line-height:1.4">${t.description}</div>`;
+      // Affected layers
+      if (t.affected_layers && t.affected_layers.length > 0) {
+        html += `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:4px">`;
+        t.affected_layers.forEach(l => {
+          html += `<span style="font-size:9px;padding:2px 6px;border-radius:3px;background:${mapping.color}10;color:${mapping.color};border:1px solid ${mapping.color}20">${l}</span>`;
+        });
+        html += `</div>`;
+      }
+      // MITRE IDs
+      if (t.mitre_ids && t.mitre_ids.length > 0) {
+        html += `<div style="font-size:9px;color:var(--text-secondary,#64748b);margin-top:4px">MITRE: ${t.mitre_ids.join(', ')}</div>`;
+      }
+      // Controls
+      if (t.controls && t.controls.length > 0) {
+        html += `<div style="font-size:9px;color:#22c55e;margin-top:2px">🛡 ${t.controls.join(', ')}</div>`;
+      }
+      html += `</div>`;
+    });
+  }
+  html += `</div>`;
+
+  // === Right: Scenarios ===
+  html += `<div style="padding:16px 20px">`;
+  html += `<div style="font-size:12px;font-weight:700;color:var(--text-primary,#e2e8f0);margin-bottom:12px;display:flex;align-items:center;gap:6px">📋 공격 시나리오 (Scenarios)</div>`;
+
+  if (phaseScenarios.length === 0) {
+    html += `<div style="font-size:12px;color:var(--text-secondary,#64748b);padding:20px 0;text-align:center">이 단계에 매핑된 시나리오가 없습니다</div>`;
+  } else {
+    // Show max 8 scenarios with scrollable container
+    html += `<div style="max-height:400px;overflow-y:auto">`;
+    phaseScenarios.forEach((s, si) => {
+      const sevColor = sevColors[s.severity] || '#64748b';
+      html += `<div style="padding:10px 12px;margin-bottom:8px;border-radius:8px;background:var(--bg-hover,rgba(255,255,255,0.02));border:1px solid ${sevColor}20">`;
+      html += `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">`;
+      html += `<span style="font-size:12px;font-weight:700;color:var(--text-primary,#e2e8f0)">${si + 1}. ${s.name}</span>`;
+      html += `<span style="font-size:9px;padding:2px 8px;border-radius:4px;background:${sevColor}20;color:${sevColor};font-weight:600;text-transform:uppercase">${s.severity}</span>`;
+      html += `</div>`;
+      html += `<div style="font-size:11px;color:var(--text-secondary,#94a3b8);margin-bottom:6px;line-height:1.4">${s.description}</div>`;
+      // Tags
+      if (s.tags && s.tags.length > 0) {
+        html += `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:4px">`;
+        s.tags.forEach(tag => {
+          html += `<span style="font-size:9px;padding:2px 6px;border-radius:3px;background:rgba(255,255,255,0.04);color:var(--text-secondary,#94a3b8);border:1px solid rgba(255,255,255,0.06)">#${tag}</span>`;
+        });
+        html += `</div>`;
+      }
+      // Linked threats
+      if (s.threat_ids && s.threat_ids.length > 0) {
+        const linkedThreats = s.threat_ids.map(tid => threats.find(t => t.id === tid)).filter(Boolean);
+        if (linkedThreats.length > 0) {
+          html += `<div style="font-size:9px;color:#f97316;margin-top:4px">⚠ 관련 위협: ${linkedThreats.map(t => t.name).join(', ')}</div>`;
+        }
+      }
+      // MITRE mapping
+      if (s.mitre_ids && s.mitre_ids.length > 0) {
+        html += `<div style="font-size:9px;color:var(--text-secondary,#64748b);margin-top:2px">MITRE: ${s.mitre_ids.join(', ')}</div>`;
+      }
+      // Flow path
+      if (s.flow_path && s.flow_path.length > 0) {
+        html += `<div style="font-size:9px;color:${mapping.color};margin-top:4px">🔗 Attack Path: ${s.flow_path.join(' → ')}</div>`;
+      }
+      // Reference
+      if (s.reference) {
+        html += `<div style="font-size:9px;color:var(--text-secondary,#64748b);margin-top:2px">📎 ${s.reference}</div>`;
+      }
+      html += `</div>`;
+    });
+    html += `</div>`;
+  }
+  html += `</div>`;
+
+  html += `</div>`; // grid end
+  html += `</div>`; // panel end
+
+  // Insert panel into the dedicated container (between SVG and layer reference)
+  const container = document.getElementById('kc-detail-container');
+  if (container) {
+    container.innerHTML = html;
+  }
+}
+
+function animateAttackFlow(scenarioId) {
+  if (!scenarioId) {
+    const overlay = document.querySelector('#arch-overlay');
+    if (overlay) overlay.innerHTML = '';
+    const info = document.getElementById('attack-step-info');
+    if (info) info.innerHTML = '';
+    return;
+  }
+
+  const scenario = DATA.attacks.scenarios.find(s => String(s.id) === String(scenarioId));
+  if (!scenario) return;
+
+  const svgEl = document.querySelector('#arch-diagram svg');
+  if (!svgEl) return;
+
+  let overlay = svgEl.querySelector('#arch-overlay');
+  if (!overlay) {
+    overlay = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    overlay.setAttribute('id', 'arch-overlay');
+    svgEl.appendChild(overlay);
+  }
+
+  // Get detailed path for this scenario, or generate a default one
+  const detailedPath = attackFlowPaths[scenario.id];
+  const steps = detailedPath || generateDefaultAttackPath(scenario);
+
+  let svgContent = '';
+  const points = [];
+
+  steps.forEach((step, i) => {
+    const pos = archZonePositions[step.zone];
+    if (!pos) return;
+    // Offset to avoid overlapping when same zone appears multiple times
+    const sameZonePrev = points.filter(p => p.zone === step.zone).length;
+    const offsetX = sameZonePrev * 18 - (sameZonePrev > 0 ? 9 : 0);
+    const offsetY = sameZonePrev * 12;
+    points.push({
+      x: pos.x + pos.w / 2 + offsetX,
+      y: pos.y + pos.h / 2 + offsetY,
+      zone: step.zone, label: step.label, index: i
+    });
+  });
+
+  // Draw curved connecting lines
+  for (let i = 0; i < points.length - 1; i++) {
+    const p1 = points[i], p2 = points[i + 1];
+    const midX = (p1.x + p2.x) / 2;
+    const midY = (p1.y + p2.y) / 2 - 15;
+    svgContent += `<path d="M${p1.x},${p1.y} Q${midX},${midY} ${p2.x},${p2.y}" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="8 4" opacity="0.6">
+      <animate attributeName="stroke-dashoffset" from="24" to="0" dur="1.2s" repeatCount="indefinite"/>
+    </path>`;
+  }
+
+  // Highlight affected zones with pulsing borders
+  const uniqueZones = [...new Set(steps.map(s => s.zone))];
+  uniqueZones.forEach(zone => {
+    const pos = archZonePositions[zone];
+    if (!pos) return;
+    svgContent += `<rect x="${pos.x}" y="${pos.y}" width="${pos.w}" height="${pos.h}" rx="8" fill="rgba(239,68,68,0.06)" stroke="#ef4444" stroke-width="2" opacity="0.7">
+      <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2s" repeatCount="indefinite"/>
+    </rect>`;
+  });
+
+  // Draw step circles with numbers
+  points.forEach((p, i) => {
+    svgContent += `<circle cx="${p.x}" cy="${p.y}" r="11" fill="#ef4444" opacity="0.9" stroke="#0a0e1a" stroke-width="2">
+      <animate attributeName="r" values="11;13;11" dur="2s" begin="${i * 0.2}s" repeatCount="indefinite"/>
+    </circle>`;
+    svgContent += `<text x="${p.x}" y="${p.y + 1}" text-anchor="middle" dominant-baseline="middle" fill="white" font-size="8" font-weight="bold">${i + 1}</text>`;
+  });
+
+  // Animated moving dot along path
+  if (points.length >= 2) {
+    const pathD = points.map((p, i) => (i === 0 ? `M${p.x},${p.y}` : `L${p.x},${p.y}`)).join(' ');
+    svgContent += `<circle r="5" fill="#ff4757" opacity="0.9">
+      <animateMotion dur="${points.length * 1.2}s" repeatCount="indefinite" path="${pathD}"/>
+    </circle>`;
+  }
+
+  // Scenario info box at bottom
+  svgContent += `<rect x="10" y="570" width="940" height="40" rx="6" fill="rgba(239,68,68,0.08)" stroke="#ef444420" stroke-width="1"/>`;
+  const sev = scenario.severity === 'critical' ? '#ef4444' : scenario.severity === 'high' ? '#f97316' : '#eab308';
+  svgContent += `<text x="20" y="588" fill="${sev}" font-size="9" font-weight="700">⚠ ${scenario.name}</text>`;
+  const descShort = scenario.description && scenario.description.length > 100 ? scenario.description.substring(0, 100) + '...' : (scenario.description || '');
+  svgContent += `<text x="20" y="602" fill="#94a3b8" font-size="7.5">${descShort}</text>`;
+
+  overlay.innerHTML = svgContent;
+
+  // Show step descriptions below SVG
+  let infoEl = document.getElementById('attack-step-info');
+  if (!infoEl) {
+    infoEl = document.createElement('div');
+    infoEl.id = 'attack-step-info';
+    infoEl.className = 'mt-2 text-xs';
+    infoEl.style.color = 'var(--text-secondary,#94a3b8)';
+    const dropdown = document.getElementById('arch-attack-dropdown');
+    if (dropdown) dropdown.appendChild(infoEl);
+  }
+  infoEl.innerHTML = steps.map((s, i) =>
+    `<span class="inline-flex items-center gap-1 mr-3 mb-1"><span style="display:inline-block;width:18px;height:18px;border-radius:50%;background:#ef4444;text-align:center;line-height:18px;font-size:8px;font-weight:bold;color:white">${i+1}</span> <span style="color:var(--risk-extreme,#f87171)">${s.zone}</span>: ${s.label}</span>`
+  ).join('');
+}
+
+// Generate a sensible default attack path for scenarios without custom mapping
+function generateDefaultAttackPath(scenario) {
+  const cat = scenario.category || '';
+  const phase = scenario.phase || 'execution';
+  const steps = [];
+
+  if (cat.includes('supply-chain')) {
+    steps.push({ zone: 'External LLM API', label: '악성 패키지/스킬 게시' });
+    steps.push({ zone: 'Plugin System', label: '손상된 컴포넌트 설치' });
+    steps.push({ zone: 'Agent Runtime', label: '에이전트가 악성 코드 로드' });
+    steps.push({ zone: 'Local Machine', label: '호스트에서 페이로드 실행' });
+  } else if (cat.includes('prompt-injection')) {
+    steps.push({ zone: 'Channel Adapters', label: '조작된 입력이 시스템 진입' });
+    steps.push({ zone: 'Gateway', label: '에이전트로 입력 전달' });
+    steps.push({ zone: 'Agent Runtime', label: '주입된 프롬프트가 추론 탈취' });
+    steps.push({ zone: 'Plugin System', label: '의도하지 않은 도구 호출' });
+  } else if (cat.includes('remote-code') || cat.includes('rce')) {
+    steps.push({ zone: 'Channel Adapters', label: '익스플로잇 페이로드 전달' });
+    steps.push({ zone: 'Gateway', label: '취약점 트리거' });
+    steps.push({ zone: 'Agent Runtime', label: '코드 실행 달성' });
+    steps.push({ zone: 'Local Machine', label: '시스템 침해' });
+  } else if (cat.includes('credential')) {
+    steps.push({ zone: 'Agent Runtime', label: '에이전트가 민감한 데이터 접근' });
+    steps.push({ zone: 'Plugin System', label: '파일시스템/메모리 스킬 사용' });
+    steps.push({ zone: 'Local Machine', label: '시스템에서 자격 증명 읽기' });
+    steps.push({ zone: 'Channel Adapters', label: '데이터 유출' });
+  } else if (cat.includes('hijack')) {
+    steps.push({ zone: 'External LLM API', label: '공격자가 무단 접근 획득' });
+    steps.push({ zone: 'Agent Runtime', label: '에이전트 세션 탈취' });
+    steps.push({ zone: 'Plugin System', label: '무단 작업 수행' });
+  } else if (cat.includes('multi-stage')) {
+    steps.push({ zone: 'Channel Adapters', label: '초기 공격 벡터' });
+    steps.push({ zone: 'Agent Runtime', label: '1단계 실행' });
+    steps.push({ zone: 'Plugin System', label: '멀티 도구 체인 활성화' });
+    steps.push({ zone: 'Memory Engine', label: '지속성 수립' });
+    steps.push({ zone: 'Local Machine', label: '전체 침해' });
+  } else {
+    steps.push({ zone: 'Channel Adapters', label: '공격 시작' });
+    steps.push({ zone: 'Gateway', label: '진입점 악용' });
+    steps.push({ zone: 'Agent Runtime', label: '에이전트 침해' });
+    if (phase === 'impact') steps.push({ zone: 'Local Machine', label: '대상에 대한 영향' });
+  }
+  return steps;
+}
+
+function renderRiskScoreOverlay() {
+  let svg = '';
+  const archComps = DATA.basic.architecture?.components || [];
+
+  // Calculate risk scores per zone
+  Object.entries(archZonePositions).forEach(([zone, pos]) => {
+    const repos = DATA.repos.filter(r => {
+      const comp = DATA.components.find(c => c.id === r.layer);
+      if (!comp) return false;
+      return comp.name === zone || (zone === 'Agent Runtime' && comp.name === 'Agent Runtime') || r.layer === pos.id;
+    });
+
+    const totalThreats = new Set(repos.flatMap(r => r.threat_ids || [])).size;
+    const totalControls = new Set(repos.flatMap(r => r.control_ids || [])).size;
+    const totalGaps = repos.reduce((s, r) => s + findControlGaps(r).length, 0);
+    const coverage = totalThreats > 0 ? Math.round(totalControls / (totalControls + totalGaps) * 100) : 100;
+
+    // Risk score: inverse of coverage weighted by threat count
+    const riskScore = Math.round((100 - coverage) * Math.min(totalThreats / 5, 1) + totalThreats * 3);
+    const clampedScore = Math.min(100, riskScore);
+
+    // Color based on risk
+    let borderColor, fillColor;
+    if (clampedScore >= 70) { borderColor = '#ef4444'; fillColor = 'rgba(239,68,68,0.15)'; }
+    else if (clampedScore >= 40) { borderColor = '#f97316'; fillColor = 'rgba(249,115,22,0.12)'; }
+    else if (clampedScore >= 20) { borderColor = '#eab308'; fillColor = 'rgba(234,179,8,0.1)'; }
+    else { borderColor = '#22c55e'; fillColor = 'rgba(34,197,94,0.08)'; }
+
+    // Zone highlight border
+    svg += `<rect x="${pos.x}" y="${pos.y}" width="${pos.w}" height="${pos.h}" rx="8" fill="${fillColor}" stroke="${borderColor}" stroke-width="2.5"/>`;
+
+    // Risk score badge
+    const cx = pos.x + pos.w/2;
+    const cy = pos.y + pos.h/2;
+
+    // Mini donut chart
+    const donutR = 18;
+    const circumference = 2 * Math.PI * donutR;
+    const filled = (clampedScore / 100) * circumference;
+    const remaining = circumference - filled;
+
+    svg += `<circle cx="${cx}" cy="${cy}" r="${donutR}" fill="rgba(10,14,26,0.8)" stroke="#1e293b" stroke-width="1"/>`;
+    svg += `<circle cx="${cx}" cy="${cy}" r="${donutR - 3}" fill="none" stroke="#1e293b" stroke-width="4"/>`;
+    svg += `<circle cx="${cx}" cy="${cy}" r="${donutR - 3}" fill="none" stroke="${borderColor}" stroke-width="4" stroke-dasharray="${filled} ${remaining}" stroke-dashoffset="${circumference * 0.25}" stroke-linecap="round"/>`;
+    svg += `<text x="${cx}" y="${cy + 4}" text-anchor="middle" fill="#ffffff" font-size="10" font-weight="700">${clampedScore}</text>`;
+  });
+  return svg;
+}
+
+function renderArchDefensePanel() {
+  const defensePanel = document.getElementById('arch-defense-panel');
+  if (archViewMode !== 'defense') {
+    if (defensePanel) defensePanel.style.display = 'none';
+    return;
+  }
+
+  if (!defensePanel) {
+    // Create the defense panel below the diagram
+    const el = document.createElement('div');
+    el.id = 'arch-defense-panel';
+    el.className = 'card mt-4';
+    const diagramCard = document.querySelector('#arch-diagram')?.closest('.card');
+    if (diagramCard) {
+      diagramCard.parentElement.insertBefore(el, diagramCard.nextSibling);
+    }
+  }
+
+  const panel = document.getElementById('arch-defense-panel');
+  if (!panel) return;
+  panel.style.display = '';
+
+  let html = '<h3 class="card-title mb-3">\ud83c\udff0 Defense Coverage Matrix</h3>';
+  html += '<div class="space-y-3">';
+
+  Object.entries(archZonePositions).forEach(([zone, pos]) => {
+    const repos = DATA.repos.filter(r => r.layer === pos.id);
+    const threatIds = [...new Set(repos.flatMap(r => r.threat_ids || []))];
+    const controlIds = [...new Set(repos.flatMap(r => r.control_ids || []))];
+    const gaps = repos.flatMap(r => findControlGaps(r));
+    const missingIds = [...new Set(gaps.flatMap(g => g.missing))];
+    const totalThreats = threatIds.length;
+    const coveredThreats = Math.max(0, totalThreats - missingIds.length);
+    const coverage = totalThreats > 0 ? Math.round(coveredThreats / totalThreats * 100) : 100;
+    const cveCount = (zoneCVEMap[zone] || []).length;
+
+    html += `
+      <div class="coverage-bar" style="background:var(--bg-input,#0d1321);border:1px solid #141c2e;border-radius:8px;padding:12px;cursor:pointer" onclick="this.querySelector('.coverage-details').classList.toggle('hidden')">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-bold" style="color:#e2e8f0">${zone}</span>
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-gray-500">${totalThreats} threats</span>
+            <span class="text-xs text-gray-500">${controlIds.length} controls</span>
+            ${cveCount > 0 ? `<span class="text-xs" style="color:#ef4444">${cveCount} CVEs</span>` : ''}
+            <span class="text-xs font-bold" style="color:${coverage >= 80 ? '#22c55e' : coverage >= 50 ? '#eab308' : '#ef4444'}">${coverage}%</span>
+          </div>
+        </div>
+        <div class="w-full h-3 rounded-full" style="background:var(--bg-card,#141c2e);overflow:hidden">
+          <div class="coverage-fill h-full rounded-full" style="width:${coverage}%;background:${coverage >= 80 ? '#22c55e' : coverage >= 50 ? '#eab308' : '#ef4444'};transition:width 0.3s"></div>
+        </div>
+        <div class="coverage-details hidden mt-3">
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <div class="text-xs text-gray-500 mb-1">Covered Threats</div>
+              ${threatIds.slice(0, coveredThreats).map(tid => {
+                const t = DATA.threats.find(th => th.id === tid);
+                return t ? `<div class="text-xs" style="color:#22c55e">\u2713 ${t.name}</div>` : '';
+              }).join('')}
+            </div>
+            <div>
+              <div class="text-xs text-gray-500 mb-1">Gaps</div>
+              ${missingIds.map(mid => {
+                const c = DATA.controls.find(ct => ct.id === mid);
+                return c ? `<div class="text-xs" style="color:#ef4444">\u2717 ${c.name}</div>` : '';
+              }).join('')}
+              ${missingIds.length === 0 ? '<div class="text-xs" style="color:#22c55e">No gaps detected</div>' : ''}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  html += '</div>';
+  panel.innerHTML = html;
+}
+
+// === Use Case Flow Visualization ===
+function renderUseCaseOverlay() {
+  // Add use case dropdown if not exists
+  let dropdown = document.getElementById('arch-usecase-dropdown');
+  if (!dropdown) {
+    dropdown = document.createElement('div');
+    dropdown.id = 'arch-usecase-dropdown';
+    dropdown.className = 'mb-3';
+    dropdown.innerHTML = `
+      <select id="arch-usecase-select" class="text-xs px-3 py-1.5 rounded" style="background:var(--bg-input,#0d1117);border:1px solid var(--border-primary,#1e293b);color:var(--text-primary,#e2e8f0);min-width:280px" onchange="animateUseCaseFlow(this.value)">
+        <option value="">-- Select a use case --</option>
+        ${archUseCases.map(uc => `<option value="${uc.id}">${uc.name} — ${uc.description}</option>`).join('')}
+      </select>
+      <div id="usecase-step-info" class="mt-2 text-xs" style="color:var(--text-secondary,#94a3b8)"></div>
+    `;
+    const diagramEl = document.getElementById('arch-diagram');
+    if (diagramEl) diagramEl.parentElement.insertBefore(dropdown, diagramEl);
+  }
+  dropdown.style.display = '';
+  return '';
+}
+
+function animateUseCaseFlow(usecaseId) {
+  const svgEl = document.querySelector('#arch-diagram svg');
+  if (!svgEl) return;
+
+  // Clear previous animation
+  const prev = svgEl.querySelector('#usecase-flow');
+  if (prev) prev.remove();
+
+  const uc = archUseCases.find(u => u.id === usecaseId);
+  if (!uc) return;
+
+  const stepInfo = document.getElementById('usecase-step-info');
+  const phaseColors = {
+    input: '#3b82f6', routing: '#f59e0b', processing: '#8b5cf6',
+    memory: '#06b6d4', skill: '#10b981', execution: '#f97316',
+    output: '#22c55e', admin: '#ec4899',
+    local: '#f59e0b', llm: '#a78bfa'
+  };
+
+  const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  g.setAttribute('id', 'usecase-flow');
+
+  // Draw flow path and step indicators
+  const points = [];
+  uc.steps.forEach((step, i) => {
+    const pos = archZonePositions[step.zone];
+    if (!pos) return;
+    // Offset each step slightly to avoid overlapping
+    const offsetX = (i % 3 - 1) * 15;
+    const offsetY = (Math.floor(i / 3) % 2) * 10;
+    points.push({ x: pos.x + pos.w / 2 + offsetX, y: pos.y + pos.h / 2 + offsetY, step, index: i });
+  });
+
+  // Draw connecting lines with gradient
+  for (let i = 0; i < points.length - 1; i++) {
+    const p1 = points[i], p2 = points[i + 1];
+    const color = phaseColors[p1.step.phase] || '#00e6a7';
+    // Curved path
+    const midX = (p1.x + p2.x) / 2;
+    const midY = (p1.y + p2.y) / 2 - 20;
+    g.innerHTML += `<path d="M${p1.x},${p1.y} Q${midX},${midY} ${p2.x},${p2.y}" fill="none" stroke="${color}" stroke-width="2.5" stroke-dasharray="8 4" opacity="0.7">
+      <animate attributeName="stroke-dashoffset" from="24" to="0" dur="1.5s" repeatCount="indefinite"/>
+    </path>`;
+    // Arrow at midpoint
+    const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
+    const ax = midX, ay = midY + 10;
+    g.innerHTML += `<polygon points="${ax},${ay-4} ${ax+8},${ay} ${ax},${ay+4}" fill="${color}" opacity="0.8" transform="rotate(${angle*180/Math.PI},${ax},${ay})"/>`;
+  }
+
+  // Draw step circles with numbers
+  points.forEach((p, i) => {
+    const color = phaseColors[p.step.phase] || '#00e6a7';
+    g.innerHTML += `
+      <circle cx="${p.x}" cy="${p.y}" r="14" fill="${color}" opacity="0.9" stroke="#fff" stroke-width="1.5">
+        <animate attributeName="r" values="14;16;14" dur="2s" begin="${i * 0.3}s" repeatCount="indefinite"/>
+      </circle>
+      <text x="${p.x}" y="${p.y + 1}" text-anchor="middle" dominant-baseline="middle" fill="white" font-size="10" font-weight="bold">${i + 1}</text>
+    `;
+  });
+
+  // Append overlay
+  const overlayGroup = svgEl.querySelector('#arch-overlay');
+  if (overlayGroup) {
+    overlayGroup.appendChild(g);
+  } else {
+    const newG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    newG.setAttribute('id', 'arch-overlay');
+    newG.appendChild(g);
+    svgEl.appendChild(newG);
+  }
+
+  // Show step descriptions
+  if (stepInfo) {
+    stepInfo.innerHTML = `<div class="font-bold mb-2" style="color:#e2e8f0">${uc.name}</div>` +
+      uc.steps.map((s, i) => {
+        const color = phaseColors[s.phase] || '#00e6a7';
+        return `<span class="inline-flex items-center gap-1 mr-3 mb-1"><span style="display:inline-block;width:18px;height:18px;border-radius:50%;background:${color};text-align:center;line-height:18px;font-size:9px;font-weight:bold;color:white">${i+1}</span> ${s.label}</span>`;
+      }).join('');
+  }
+}
+
+// === Defense SVG Overlay (zone border coloring) ===
+function renderDefenseOverlay() {
+  let overlay = '';
+  Object.entries(archZonePositions).forEach(([zone, pos]) => {
+    const repos = DATA.repos.filter(r => r.layer === pos.id);
+    const threatIds = [...new Set(repos.flatMap(r => r.threat_ids || []))];
+    const totalThreats = threatIds.length;
+    const gaps = repos.flatMap(r => findControlGaps(r));
+    const missingCount = [...new Set(gaps.flatMap(g => g.missing))].length;
+    const coverage = totalThreats > 0 ? Math.round((totalThreats - missingCount) / totalThreats * 100) : 100;
+    const color = coverage >= 80 ? '#22c55e' : coverage >= 50 ? '#eab308' : '#ef4444';
+
+    overlay += `<rect x="${pos.x}" y="${pos.y}" width="${pos.w}" height="${pos.h}" rx="8" fill="${color}" opacity="0.15" stroke="${color}" stroke-width="2" stroke-dasharray="6 3"/>`;
+    overlay += `<text x="${pos.x + pos.w/2}" y="${pos.y + pos.h/2 + 4}" text-anchor="middle" fill="${color}" font-size="16" font-weight="bold">${coverage}%</text>`;
+  });
+  return overlay;
 }

@@ -1,10 +1,12 @@
 {
+  "data_as_of": "2026-03-11",
   "stats": {
     "total_clawhub": 14850,
     "curated_voltagen": 5980,
     "flagged_malicious": 1184,
+    "flagged_malicious_note": "ClawHub 등록 스킬 중 1,184개가 악성 또는 의심 플래그. 이 중 341개는 ClawHavoc 캠페인으로 식별.",
     "flagged_percent": 8.0,
-    "categories_count": 35
+    "categories_count": 36
   },
   "categories": [
     {
@@ -216,6 +218,12 @@
       "name": "Enterprise & Governance",
       "icon": "🏢",
       "count": 55
+    },
+    {
+      "id": "uncategorized",
+      "name": "Uncategorized / Other",
+      "icon": "📦",
+      "count": 9282
     }
   ],
   "top_skills": [

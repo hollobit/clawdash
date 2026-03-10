@@ -1,190 +1,2586 @@
 {
+  "data_as_of": "2026-03-11",
   "stats": {
     "total_skills_examined": 2857,
-    "malicious_skills": 341,
-    "malicious_skills_note": "ClawHavoc 캠페인에서 식별된 341개 (전체 820개 악성 스킬 중)",
-    "malicious_percent": 11.9,
+    "malicious_skills": 1184,
+    "malicious_skills_note": "ClawHub 등록 스킬 중 1,184개가 악성 또는 의심 플래그. 이 중 341개는 ClawHavoc 1차 캠페인으로 식별.",
+    "malicious_percent": 8.0,
+    "malicious_percent_note": "1,184 / 14,850 전체 ClawHub 등록 스킬 기준. total_skills_examined(2,857)은 ClawHavoc 감사 대상 표본 수",
     "vulnerability_rate_low": 26,
     "vulnerability_rate_high": 36,
-    "attack_surfaces": 40,
+    "attack_surfaces": 42,
     "attack_scenarios": 46,
-    "cves": 15
+    "cves": 26
   },
   "distribution": [
-    { "category": "Credential Theft", "percent": 38, "color": "#ef4444" },
-    { "category": "Malware Distribution", "percent": 27, "color": "#f97316" },
-    { "category": "Agent Hijacking", "percent": 19, "color": "#eab308" },
-    { "category": "Prompt Injection", "percent": 10, "color": "#8b5cf6" },
-    { "category": "Resource Abuse", "percent": 6, "color": "#64748b" }
+    {
+      "category": "Credential Theft",
+      "percent": 38,
+      "color": "#ef4444"
+    },
+    {
+      "category": "Malware Distribution",
+      "percent": 27,
+      "color": "#f97316"
+    },
+    {
+      "category": "Agent Hijacking",
+      "percent": 19,
+      "color": "#eab308"
+    },
+    {
+      "category": "Prompt Injection",
+      "percent": 10,
+      "color": "#8b5cf6"
+    },
+    {
+      "category": "Resource Abuse",
+      "percent": 6,
+      "color": "#64748b"
+    }
   ],
   "kill_chain": [
-    { "phase": "reconnaissance", "name": "Reconnaissance", "description": "스킬 레지스트리 스캔, 인기 스킬 타겟팅, 생태계 정보 수집" },
-    { "phase": "initial_access", "name": "Initial Access", "description": "악성 스킬을 합법적 도구로 위장하여 설치 유도, 타이포스쿼팅, 가짜 저장소" },
-    { "phase": "execution", "name": "Execution", "description": "셸 명령 실행, 악성 코드 다운로드, 도구 체인 악용" },
-    { "phase": "persistence", "name": "Persistence", "description": "에이전트 메모리 변조, 명령어 주입, SKILL.md 인스트럭션 은닉" },
-    { "phase": "privilege_escalation", "name": "Privilege Escalation", "description": "시스템 도구 접근, 관리자 권한 획득, 컨테이너 탈출" },
-    { "phase": "lateral_movement", "name": "Lateral Movement", "description": "탈취한 인증정보로 인접 시스템 이동, 멀티에이전트 체인 공격, 클라우드 인프라 횡적 이동" },
-    { "phase": "impact", "name": "Impact", "description": "인증정보 탈취, 데이터 유출, 봇넷 구축, 암호화폐 탈취" }
+    {
+      "phase": "reconnaissance",
+      "name": "Reconnaissance",
+      "description": "스킬 레지스트리 스캔, 인기 스킬 타겟팅, 생태계 정보 수집"
+    },
+    {
+      "phase": "initial_access",
+      "name": "Initial Access",
+      "description": "악성 스킬을 합법적 도구로 위장하여 설치 유도, 타이포스쿼팅, 가짜 저장소"
+    },
+    {
+      "phase": "execution",
+      "name": "Execution",
+      "description": "셸 명령 실행, 악성 코드 다운로드, 도구 체인 악용"
+    },
+    {
+      "phase": "persistence",
+      "name": "Persistence",
+      "description": "에이전트 메모리 변조, 명령어 주입, SKILL.md 인스트럭션 은닉"
+    },
+    {
+      "phase": "privilege_escalation",
+      "name": "Privilege Escalation",
+      "description": "시스템 도구 접근, 관리자 권한 획득, 컨테이너 탈출"
+    },
+    {
+      "phase": "lateral_movement",
+      "name": "Lateral Movement",
+      "description": "탈취한 인증정보로 인접 시스템 이동, 멀티에이전트 체인 공격, 클라우드 인프라 횡적 이동"
+    },
+    {
+      "phase": "impact",
+      "name": "Impact",
+      "description": "인증정보 탈취, 데이터 유출, 봇넷 구축, 암호화폐 탈취"
+    }
   ],
   "attack_surfaces": [
-    { "layer": "User Interface", "layer_num": 1, "surfaces": [
-      { "id": 1, "name": "Prompt Injection", "severity": "critical" },
-      { "id": 2, "name": "Jailbreak Prompts", "severity": "high" },
-      { "id": 3, "name": "Social Engineering Prompts", "severity": "medium" },
-      { "id": 4, "name": "Hidden Instructions (HTML/Markdown)", "severity": "high" },
-      { "id": 5, "name": "Multi-turn Manipulation", "severity": "medium" },
-      { "id": 6, "name": "Goal Hijacking", "severity": "high" }
-    ]},
-    { "layer": "Agent Reasoning", "layer_num": 2, "surfaces": [
-      { "id": 7, "name": "Tool Selection Hijack", "severity": "high" },
-      { "id": 8, "name": "Chain-of-Thought Poisoning", "severity": "high" },
-      { "id": 9, "name": "Planner Manipulation", "severity": "high" },
-      { "id": 10, "name": "Memory Retrieval Attack", "severity": "medium" },
-      { "id": 11, "name": "Context Overflow", "severity": "medium" },
-      { "id": 12, "name": "Instruction Override", "severity": "critical" },
-      { "id": 41, "name": "MCP Sampling Injection", "severity": "high" },
-      { "id": 42, "name": "Delayed Tool Invocation", "severity": "high" }
-    ]},
-    { "layer": "Tool Runtime", "layer_num": 3, "surfaces": [
-      { "id": 13, "name": "Shell Execution", "severity": "critical" },
-      { "id": 14, "name": "Python Code Execution", "severity": "critical" },
-      { "id": 15, "name": "Browser Automation", "severity": "high" },
-      { "id": 16, "name": "File Read/Write Operations", "severity": "high" },
-      { "id": 17, "name": "API Invocation", "severity": "medium" },
-      { "id": 18, "name": "System Command Chaining", "severity": "critical" },
-      { "id": 19, "name": "Task Recursion", "severity": "medium" },
-      { "id": 20, "name": "Resource Exhaustion", "severity": "medium" }
-    ]},
-    { "layer": "Skill Ecosystem", "layer_num": 4, "surfaces": [
-      { "id": 21, "name": "Malicious Skill Installation", "severity": "critical" },
-      { "id": 22, "name": "Typosquatting Skills", "severity": "high" },
-      { "id": 23, "name": "Dependency Hijacking", "severity": "critical" },
-      { "id": 24, "name": "Script Payload Delivery", "severity": "critical" },
-      { "id": 25, "name": "SKILL.md Injection", "severity": "high" },
-      { "id": 26, "name": "Remote Code Fetching", "severity": "critical" },
-      { "id": 27, "name": "Credential Harvesting", "severity": "critical" },
-      { "id": 28, "name": "Supply-Chain Attacks", "severity": "critical" }
-    ]},
-    { "layer": "Agent Memory", "layer_num": 5, "surfaces": [
-      { "id": 29, "name": "Memory Poisoning", "severity": "high" },
-      { "id": 30, "name": "Instruction Persistence", "severity": "high" },
-      { "id": 31, "name": "Context Replay", "severity": "medium" },
-      { "id": 32, "name": "Behavioral Drift", "severity": "medium" }
-    ]},
-    { "layer": "External Integration", "layer_num": 6, "surfaces": [
-      { "id": 33, "name": "OAuth Token Exposure", "severity": "critical" },
-      { "id": 34, "name": "API Key Leakage", "severity": "critical" },
-      { "id": 35, "name": "Webhook Abuse", "severity": "medium" },
-      { "id": 36, "name": "Third-Party API Poisoning", "severity": "high" }
-    ]},
-    { "layer": "Runtime Infrastructure", "layer_num": 7, "surfaces": [
-      { "id": 37, "name": "WebSocket Control Interface Takeover", "severity": "critical" },
-      { "id": 38, "name": "Localhost Service Abuse", "severity": "high" },
-      { "id": 39, "name": "Container Escape", "severity": "critical" },
-      { "id": 40, "name": "Remote Code Execution in Runtime", "severity": "critical" }
-    ]}
+    {
+      "layer": "User Interface",
+      "layer_num": 1,
+      "surfaces": [
+        {
+          "id": 1,
+          "name": "Prompt Injection",
+          "severity": "critical"
+        },
+        {
+          "id": 2,
+          "name": "Jailbreak Prompts",
+          "severity": "high"
+        },
+        {
+          "id": 3,
+          "name": "Social Engineering Prompts",
+          "severity": "medium"
+        },
+        {
+          "id": 4,
+          "name": "Hidden Instructions (HTML/Markdown)",
+          "severity": "high"
+        },
+        {
+          "id": 5,
+          "name": "Multi-turn Manipulation",
+          "severity": "medium"
+        },
+        {
+          "id": 6,
+          "name": "Goal Hijacking",
+          "severity": "high"
+        }
+      ]
+    },
+    {
+      "layer": "Agent Reasoning",
+      "layer_num": 2,
+      "surfaces": [
+        {
+          "id": 7,
+          "name": "Tool Selection Hijack",
+          "severity": "high"
+        },
+        {
+          "id": 8,
+          "name": "Chain-of-Thought Poisoning",
+          "severity": "high"
+        },
+        {
+          "id": 9,
+          "name": "Planner Manipulation",
+          "severity": "high"
+        },
+        {
+          "id": 10,
+          "name": "Memory Retrieval Attack",
+          "severity": "medium"
+        },
+        {
+          "id": 11,
+          "name": "Context Overflow",
+          "severity": "medium"
+        },
+        {
+          "id": 12,
+          "name": "Instruction Override",
+          "severity": "critical"
+        },
+        {
+          "id": 41,
+          "name": "MCP Sampling Injection",
+          "severity": "high"
+        },
+        {
+          "id": 42,
+          "name": "Delayed Tool Invocation",
+          "severity": "high"
+        }
+      ]
+    },
+    {
+      "layer": "Tool Runtime",
+      "layer_num": 3,
+      "surfaces": [
+        {
+          "id": 13,
+          "name": "Shell Execution",
+          "severity": "critical"
+        },
+        {
+          "id": 14,
+          "name": "Python Code Execution",
+          "severity": "critical"
+        },
+        {
+          "id": 15,
+          "name": "Browser Automation",
+          "severity": "high"
+        },
+        {
+          "id": 16,
+          "name": "File Read/Write Operations",
+          "severity": "high"
+        },
+        {
+          "id": 17,
+          "name": "API Invocation",
+          "severity": "medium"
+        },
+        {
+          "id": 18,
+          "name": "System Command Chaining",
+          "severity": "critical"
+        },
+        {
+          "id": 19,
+          "name": "Task Recursion",
+          "severity": "medium"
+        },
+        {
+          "id": 20,
+          "name": "Resource Exhaustion",
+          "severity": "medium"
+        }
+      ]
+    },
+    {
+      "layer": "Skill Ecosystem",
+      "layer_num": 4,
+      "surfaces": [
+        {
+          "id": 21,
+          "name": "Malicious Skill Installation",
+          "severity": "critical"
+        },
+        {
+          "id": 22,
+          "name": "Typosquatting Skills",
+          "severity": "high"
+        },
+        {
+          "id": 23,
+          "name": "Dependency Hijacking",
+          "severity": "critical"
+        },
+        {
+          "id": 24,
+          "name": "Script Payload Delivery",
+          "severity": "critical"
+        },
+        {
+          "id": 25,
+          "name": "SKILL.md Injection",
+          "severity": "high"
+        },
+        {
+          "id": 26,
+          "name": "Remote Code Fetching",
+          "severity": "critical"
+        },
+        {
+          "id": 27,
+          "name": "Credential Harvesting",
+          "severity": "critical"
+        },
+        {
+          "id": 28,
+          "name": "Supply-Chain Attacks",
+          "severity": "critical"
+        }
+      ]
+    },
+    {
+      "layer": "Agent Memory",
+      "layer_num": 5,
+      "surfaces": [
+        {
+          "id": 29,
+          "name": "Memory Poisoning",
+          "severity": "high"
+        },
+        {
+          "id": 30,
+          "name": "Instruction Persistence",
+          "severity": "high"
+        },
+        {
+          "id": 31,
+          "name": "Context Replay",
+          "severity": "medium"
+        },
+        {
+          "id": 32,
+          "name": "Behavioral Drift",
+          "severity": "medium"
+        }
+      ]
+    },
+    {
+      "layer": "External Integration",
+      "layer_num": 6,
+      "surfaces": [
+        {
+          "id": 33,
+          "name": "OAuth Token Exposure",
+          "severity": "critical"
+        },
+        {
+          "id": 34,
+          "name": "API Key Leakage",
+          "severity": "critical"
+        },
+        {
+          "id": 35,
+          "name": "Webhook Abuse",
+          "severity": "medium"
+        },
+        {
+          "id": 36,
+          "name": "Third-Party API Poisoning",
+          "severity": "high"
+        }
+      ]
+    },
+    {
+      "layer": "Runtime Infrastructure",
+      "layer_num": 7,
+      "surfaces": [
+        {
+          "id": 37,
+          "name": "WebSocket Control Interface Takeover",
+          "severity": "critical"
+        },
+        {
+          "id": 38,
+          "name": "Localhost Service Abuse",
+          "severity": "high"
+        },
+        {
+          "id": 39,
+          "name": "Container Escape",
+          "severity": "critical"
+        },
+        {
+          "id": 40,
+          "name": "Remote Code Execution in Runtime",
+          "severity": "critical"
+        }
+      ]
+    }
   ],
   "cves": [
-    { "id": "CVE-2026-25253", "title": "One-Click RCE", "category": "Remote Code Execution", "description": "gatewayUrl 파라미터 인젝션 → WebSocket 연결 → 토큰 유출", "severity": "critical", "reference": "Immersive Labs" },
-    { "id": "CVE-2026-25157", "title": "Command Injection", "category": "Code Execution", "description": "스킬 명령 인젝션을 통한 셸 명령 실행", "severity": "critical", "reference": "Immersive Labs" },
-    { "id": "CVE-2026-24763", "title": "Command Injection", "category": "Code Execution", "description": "추가 명령 인젝션 취약점", "severity": "high", "reference": "Immersive Labs" },
-    { "id": "CVE-2026-28446", "title": "Voice Extension RCE", "category": "Remote Code Execution", "description": "voice-call 확장의 인바운드 허용목록 정책 우회 → 빈 Caller ID 및 접미사 매칭을 통한 사전 인증 없는 원격 코드 실행. CVSS 9.8", "severity": "critical", "reference": "DEV Community / RedPacket Security" },
-    { "id": "CVE-2026-28484", "title": "Pre-commit Hook Option Injection", "category": "Command Injection", "description": "git-hooks/pre-commit 훅의 파일명 미검증 → 대시(-)로 시작하는 파일명이 git 플래그로 해석되어 .gitignore 파일 포함 전체 파일 스테이징", "severity": "high", "reference": "SentinelOne" },
-    { "id": "CVE-2026-29610", "title": "PATH Manipulation Command Hijacking", "category": "Command Hijacking", "description": "node-host 실행 또는 프로젝트 부트스트래핑을 통한 PATH 환경변수 조작 → allowlisted safe-bin 명령 오버라이드로 임의 명령 실행", "severity": "high", "reference": "RedPacket Security / THREATINT" },
-    { "id": "CVE-2026-28462", "title": "Unsafe Output Path Handling", "category": "Path Traversal", "description": "브라우저 제어 API가 trace 및 다운로드 파일의 출력 경로를 임시 디렉토리로 제한하지 않아 임의 경로 쓰기 가능", "severity": "high", "reference": "RedPacket Security" },
-    { "id": "CVE-2026-28485", "title": "Browser Control Auth Bypass", "category": "Authentication Bypass", "description": "/agent/act 브라우저 제어 HTTP 라우트에 인증 미적용 → 비인가 로컬 호출자의 권한 있는 작업 수행 가능", "severity": "high", "reference": "RedPacket Security / THREATINT" },
-    { "id": "CVE-2026-28478", "title": "Webhook DoS", "category": "Denial of Service", "description": "웹훅 핸들러의 요청 바디 크기/시간 제한 부재 → 대용량 JSON 또는 느린 업로드로 메모리 소진 및 가용성 저하", "severity": "medium", "reference": "RedPacket Security" },
-    { "id": "CVE-2026-28394", "title": "web_fetch DoS via Memory Exhaustion", "category": "Denial of Service", "description": "web_fetch 도구의 HTML 파싱 시 리소스 제한 부재 → 악성 URL의 과도한/중첩 HTML로 Gateway 프로세스 크래시", "severity": "medium", "reference": "SentinelOne" },
-    { "id": "CVE-2026-28450", "title": "Nostr Profile Tampering", "category": "Authentication Bypass", "description": "Nostr 채널 플러그인의 프로필 관리 HTTP 엔드포인트에 게이트웨이 인증 미적용 → 비인가 원격 호출자의 프로필/설정 읽기 및 변조. CVSS 8.3", "severity": "high", "reference": "GitLab Advisory / dCERT" },
-    { "id": "CVE-2026-28465", "title": "Voice-Call Webhook Verification Bypass", "category": "Authentication Bypass", "description": "voice-call 플러그인의 웹훅 검증에서 Forwarded/X-Forwarded-* 헤더 조작으로 인증 우회 가능. CVSS 8.2", "severity": "high", "reference": "RedPacket Security" },
-    { "id": "CVE-2026-28458", "title": "Browser Relay WebSocket Auth Bypass", "category": "Authentication Bypass", "description": "/cdp WebSocket 엔드포인트(Browser Relay, 포트 18792)에 인증 토큰 미요구 → 웹사이트가 루프백 연결로 세션 쿠키 탈취 및 다른 탭에서 JS 실행 가능", "severity": "critical", "reference": "RedPacket Security" },
-    { "id": "CVE-2026-28466", "title": "Gateway Approval Field Injection", "category": "Command Injection", "description": "Gateway가 node.invoke 파라미터의 내부 승인 필드 미검증 → 인증된 클라이언트가 system.run 명령의 실행 승인 게이팅 우회 가능", "severity": "high", "reference": "RedPacket Security" },
-    { "id": "CVE-2026-28468", "title": "Sandbox Browser Bridge Auth Bypass", "category": "Authentication Bypass", "description": "Sandbox 브라우저 브릿지 서버가 Gateway 인증 없이 요청 수락 → 로컬 공격자의 브라우저 제어 엔드포인트 접근 가능", "severity": "high", "reference": "RedPacket Security" },
-    { "id": "CVE-2026-28479", "title": "SHA-1 Cache Poisoning", "category": "Cache Poisoning", "description": "Sandbox 식별자 캐시 키에 SHA-1 사용 → 충돌 공격으로 캐시 포이즈닝 및 안전하지 않은 Sandbox 상태 재사용 가능", "severity": "high", "reference": "RedPacket Security" }
+    {
+      "id": "CVE-2026-25253",
+      "title": "One-Click RCE",
+      "category": "Remote Code Execution",
+      "description": "gatewayUrl 파라미터 인젝션 → WebSocket 연결 → 토큰 유출",
+      "severity": "critical",
+      "reference": "Immersive Labs",
+      "affected_zones": [
+        "A",
+        "B"
+      ],
+      "kill_chain_path": [
+        "A",
+        "B",
+        "local"
+      ]
+    },
+    {
+      "id": "CVE-2026-25157",
+      "title": "Command Injection",
+      "category": "Code Execution",
+      "description": "스킬 명령 인젝션을 통한 셸 명령 실행",
+      "severity": "critical",
+      "reference": "Immersive Labs",
+      "affected_zones": [
+        "B",
+        "C"
+      ],
+      "kill_chain_path": [
+        "C",
+        "B",
+        "local"
+      ]
+    },
+    {
+      "id": "CVE-2026-24763",
+      "title": "Command Injection",
+      "category": "Code Execution",
+      "description": "추가 명령 인젝션 취약점",
+      "severity": "high",
+      "reference": "Immersive Labs",
+      "affected_zones": [
+        "B",
+        "C"
+      ],
+      "kill_chain_path": [
+        "C",
+        "B",
+        "local"
+      ]
+    },
+    {
+      "id": "CVE-2026-28446",
+      "title": "Voice Extension RCE",
+      "category": "Remote Code Execution",
+      "description": "voice-call 확장의 인바운드 허용목록 정책 우회 → 빈 Caller ID 및 접미사 매칭을 통한 사전 인증 없는 원격 코드 실행. CVSS 9.8",
+      "severity": "critical",
+      "reference": "DEV Community / RedPacket Security",
+      "affected_zones": [
+        "A",
+        "H"
+      ],
+      "kill_chain_path": [
+        "H",
+        "A",
+        "B",
+        "local"
+      ]
+    },
+    {
+      "id": "CVE-2026-28484",
+      "title": "Pre-commit Hook Option Injection",
+      "category": "Command Injection",
+      "description": "git-hooks/pre-commit 훅의 파일명 미검증 → 대시(-)로 시작하는 파일명이 git 플래그로 해석되어 .gitignore 파일 포함 전체 파일 스테이징",
+      "severity": "high",
+      "reference": "SentinelOne",
+      "affected_zones": [
+        "C",
+        "G"
+      ],
+      "kill_chain_path": [
+        "C",
+        "G",
+        "local"
+      ]
+    },
+    {
+      "id": "CVE-2026-29610",
+      "title": "PATH Manipulation Command Hijacking",
+      "category": "Command Hijacking",
+      "description": "node-host 실행 또는 프로젝트 부트스트래핑을 통한 PATH 환경변수 조작 → allowlisted safe-bin 명령 오버라이드로 임의 명령 실행",
+      "severity": "high",
+      "reference": "RedPacket Security / THREATINT",
+      "affected_zones": [
+        "B",
+        "C"
+      ],
+      "kill_chain_path": [
+        "C",
+        "B",
+        "local"
+      ]
+    },
+    {
+      "id": "CVE-2026-28462",
+      "title": "Unsafe Output Path Handling",
+      "category": "Path Traversal",
+      "description": "브라우저 제어 API가 trace 및 다운로드 파일의 출력 경로를 임시 디렉토리로 제한하지 않아 임의 경로 쓰기 가능",
+      "severity": "high",
+      "reference": "RedPacket Security",
+      "affected_zones": [
+        "B",
+        "D"
+      ],
+      "kill_chain_path": [
+        "D",
+        "B",
+        "local"
+      ]
+    },
+    {
+      "id": "CVE-2026-28485",
+      "title": "Browser Control Auth Bypass",
+      "category": "Authentication Bypass",
+      "description": "/agent/act 브라우저 제어 HTTP 라우트에 인증 미적용 → 비인가 로컬 호출자의 권한 있는 작업 수행 가능",
+      "severity": "high",
+      "reference": "RedPacket Security / THREATINT",
+      "affected_zones": [
+        "B",
+        "D"
+      ],
+      "kill_chain_path": [
+        "A",
+        "D",
+        "B"
+      ]
+    },
+    {
+      "id": "CVE-2026-28478",
+      "title": "Webhook DoS",
+      "category": "Denial of Service",
+      "description": "웹훅 핸들러의 요청 바디 크기/시간 제한 부재 → 대용량 JSON 또는 느린 업로드로 메모리 소진 및 가용성 저하",
+      "severity": "medium",
+      "reference": "RedPacket Security",
+      "affected_zones": [
+        "A",
+        "H"
+      ],
+      "kill_chain_path": [
+        "H",
+        "A"
+      ]
+    },
+    {
+      "id": "CVE-2026-28394",
+      "title": "web_fetch DoS via Memory Exhaustion",
+      "category": "Denial of Service",
+      "description": "web_fetch 도구의 HTML 파싱 시 리소스 제한 부재 → 악성 URL의 과도한/중첩 HTML로 Gateway 프로세스 크래시",
+      "severity": "medium",
+      "reference": "SentinelOne",
+      "affected_zones": [
+        "A",
+        "B"
+      ],
+      "kill_chain_path": [
+        "A",
+        "B"
+      ]
+    },
+    {
+      "id": "CVE-2026-28450",
+      "title": "Nostr Profile Tampering",
+      "category": "Authentication Bypass",
+      "description": "Nostr 채널 플러그인의 프로필 관리 HTTP 엔드포인트에 게이트웨이 인증 미적용 → 비인가 원격 호출자의 프로필/설정 읽기 및 변조. CVSS 8.3",
+      "severity": "high",
+      "reference": "GitLab Advisory / dCERT",
+      "affected_zones": [
+        "H"
+      ],
+      "kill_chain_path": [
+        "H",
+        "A",
+        "B"
+      ]
+    },
+    {
+      "id": "CVE-2026-28465",
+      "title": "Voice-Call Webhook Verification Bypass",
+      "category": "Authentication Bypass",
+      "description": "voice-call 플러그인의 웹훅 검증에서 Forwarded/X-Forwarded-* 헤더 조작으로 인증 우회 가능. CVSS 8.2",
+      "severity": "high",
+      "reference": "RedPacket Security",
+      "affected_zones": [
+        "A",
+        "H"
+      ],
+      "kill_chain_path": [
+        "H",
+        "A"
+      ]
+    },
+    {
+      "id": "CVE-2026-28458",
+      "title": "Browser Relay WebSocket Auth Bypass",
+      "category": "Authentication Bypass",
+      "description": "/cdp WebSocket 엔드포인트(Browser Relay, 포트 18792)에 인증 토큰 미요구 → 웹사이트가 루프백 연결로 세션 쿠키 탈취 및 다른 탭에서 JS 실행 가능",
+      "severity": "critical",
+      "reference": "RedPacket Security",
+      "affected_zones": [
+        "A",
+        "H"
+      ],
+      "kill_chain_path": [
+        "H",
+        "A",
+        "B"
+      ]
+    },
+    {
+      "id": "CVE-2026-28466",
+      "title": "Gateway Approval Field Injection",
+      "category": "Command Injection",
+      "description": "Gateway가 node.invoke 파라미터의 내부 승인 필드 미검증 → 인증된 클라이언트가 system.run 명령의 실행 승인 게이팅 우회 가능",
+      "severity": "high",
+      "reference": "RedPacket Security",
+      "affected_zones": [
+        "A",
+        "F"
+      ],
+      "kill_chain_path": [
+        "A",
+        "F",
+        "B"
+      ]
+    },
+    {
+      "id": "CVE-2026-28468",
+      "title": "Sandbox Browser Bridge Auth Bypass",
+      "category": "Authentication Bypass",
+      "description": "Sandbox 브라우저 브릿지 서버가 Gateway 인증 없이 요청 수락 → 로컬 공격자의 브라우저 제어 엔드포인트 접근 가능",
+      "severity": "high",
+      "reference": "RedPacket Security",
+      "affected_zones": [
+        "D"
+      ],
+      "kill_chain_path": [
+        "D",
+        "B"
+      ]
+    },
+    {
+      "id": "CVE-2026-28479",
+      "title": "SHA-1 Cache Poisoning",
+      "category": "Cache Poisoning",
+      "description": "Sandbox 식별자 캐시 키에 SHA-1 사용 → 충돌 공격으로 캐시 포이즈닝 및 안전하지 않은 Sandbox 상태 재사용 가능",
+      "severity": "high",
+      "reference": "RedPacket Security",
+      "affected_zones": [
+        "C",
+        "E"
+      ],
+      "kill_chain_path": [
+        "C",
+        "E",
+        "B"
+      ]
+    },
+    {
+      "id": "CVE-2026-25254",
+      "title": "Arbitrary File Read",
+      "category": "Information Disclosure",
+      "description": "파일 읽기 제한 우회 → 에이전트 런타임에서 임의 파일 접근",
+      "severity": "high",
+      "reference": "Immersive Labs",
+      "affected_zones": [
+        "B",
+        "C"
+      ],
+      "kill_chain_path": [
+        "C",
+        "B",
+        "local"
+      ]
+    },
+    {
+      "id": "CVE-2026-25255",
+      "title": "Malicious Skill Package",
+      "category": "Supply Chain",
+      "description": "악성 스킬 패키지 설치를 통한 코드 실행",
+      "severity": "critical",
+      "reference": "Immersive Labs",
+      "affected_zones": [
+        "C"
+      ],
+      "kill_chain_path": [
+        "external",
+        "C",
+        "B"
+      ]
+    },
+    {
+      "id": "CVE-2026-25256",
+      "title": "Dependency Confusion",
+      "category": "Supply Chain",
+      "description": "의존성 혼동 공격을 통한 악성 패키지 주입",
+      "severity": "high",
+      "reference": "Immersive Labs",
+      "affected_zones": [
+        "C"
+      ],
+      "kill_chain_path": [
+        "external",
+        "C",
+        "B"
+      ]
+    },
+    {
+      "id": "CVE-2026-25688",
+      "title": "Memory Injection",
+      "category": "Memory Corruption",
+      "description": "에이전트 메모리 인젝션을 통한 행동 변조",
+      "severity": "high",
+      "reference": "Immersive Labs",
+      "affected_zones": [
+        "B",
+        "E"
+      ],
+      "kill_chain_path": [
+        "B",
+        "E",
+        "B"
+      ]
+    },
+    {
+      "id": "CVE-2026-26376",
+      "title": "Sandbox Escape",
+      "category": "Container Escape",
+      "description": "샌드박스 격리 우회를 통한 호스트 시스템 접근",
+      "severity": "critical",
+      "reference": "Immersive Labs",
+      "affected_zones": [
+        "D"
+      ],
+      "kill_chain_path": [
+        "B",
+        "D",
+        "local"
+      ]
+    },
+    {
+      "id": "CVE-2026-26377",
+      "title": "Token Exfiltration",
+      "category": "Credential Theft",
+      "description": "인증 토큰 유출을 통한 세션 탈취",
+      "severity": "critical",
+      "reference": "Immersive Labs",
+      "affected_zones": [
+        "A",
+        "B"
+      ],
+      "kill_chain_path": [
+        "B",
+        "A",
+        "external"
+      ]
+    },
+    {
+      "id": "CVE-2026-27113",
+      "title": "Plugin Hijack",
+      "category": "Plugin Exploitation",
+      "description": "플러그인 하이재킹을 통한 악성 행동 수행",
+      "severity": "high",
+      "reference": "Immersive Labs",
+      "affected_zones": [
+        "B",
+        "C"
+      ],
+      "kill_chain_path": [
+        "C",
+        "B",
+        "C"
+      ]
+    },
+    {
+      "id": "CVE-2026-27324",
+      "title": "Agent Persistence",
+      "category": "Persistence",
+      "description": "에이전트 메모리에 악성 명령을 지속적으로 유지",
+      "severity": "high",
+      "reference": "Immersive Labs",
+      "affected_zones": [
+        "B",
+        "E"
+      ],
+      "kill_chain_path": [
+        "B",
+        "E",
+        "B"
+      ]
+    },
+    {
+      "id": "CVE-2026-27455",
+      "title": "Multi-Agent Exploitation",
+      "category": "Multi-Agent Attack",
+      "description": "멀티 에이전트 환경에서 에이전트 간 공격 전파",
+      "severity": "high",
+      "reference": "Immersive Labs",
+      "affected_zones": [
+        "B"
+      ],
+      "kill_chain_path": [
+        "B",
+        "B",
+        "C"
+      ]
+    },
+    {
+      "id": "CVE-2026-27661",
+      "title": "Channel Injection",
+      "category": "Injection",
+      "description": "채널 어댑터를 통한 악성 명령 주입",
+      "severity": "high",
+      "reference": "Immersive Labs",
+      "affected_zones": [
+        "H"
+      ],
+      "kill_chain_path": [
+        "H",
+        "A",
+        "B"
+      ]
+    }
   ],
   "scenarios": [
-    { "id": 1, "name": "ClawHub Supply-Chain Poisoning", "category": "supply-chain-attack", "phase": "initial_access", "severity": "critical", "description": "생산성 도구로 위장한 악성 스킬 업로드 → 인증정보 탈취, 악성코드 설치", "reference": "Koi.ai ClawHavoc campaign", "tags": ["clawhub", "trojan", "credential-theft"], "threat_ids": ["supply-chain-attack", "credential-theft"], "control_ids": ["signed-skill-packages", "provenance-verification", "dependency-scanning"], "mitre_ids": ["ATTACK-T1195", "ATLAS-AML.T0010"], "timeline_event_ids": [11, 21, 25], "cve_ids": [] },
-    { "id": 2, "name": "Atomic macOS Stealer (AMOS)", "category": "malware", "phase": "execution", "severity": "critical", "description": "악성 스킬 → 터미널 명령 → AMOS 다운로드. macOS 비밀번호, 브라우저 데이터, 암호화폐 지갑 탈취", "reference": "Trend Micro", "tags": ["macos", "stealer", "crypto"], "threat_ids": ["supply-chain-attack", "remote-code-execution"], "control_ids": ["sandboxing", "container-isolation", "dependency-scanning"], "mitre_ids": ["ATTACK-T1059"], "timeline_event_ids": [17, 18], "cve_ids": [] },
-    { "id": 3, "name": "Fake Crypto Trading Bot", "category": "credential-theft", "phase": "persistence", "severity": "critical", "description": "지갑 연동 → 개인키 유출. 14개 악성 암호화폐 스킬 식별", "reference": "Tom's Hardware", "tags": ["crypto", "wallet", "private-key"], "threat_ids": ["credential-theft", "data-exfiltration"], "control_ids": ["secrets-isolation", "vault-integration"], "mitre_ids": ["ATLAS-AML.T0024"], "timeline_event_ids": [17], "cve_ids": [] },
-    { "id": 4, "name": "Fake OpenClaw GitHub Repository", "category": "malware", "phase": "initial_access", "severity": "high", "description": "GitHub 업로드 + Bing 검색 광고로 배포 → Vidar 인포스틸러 설치", "reference": "TechRadar", "tags": ["github", "vidar", "search-ads"], "threat_ids": ["supply-chain-attack", "remote-code-execution"], "control_ids": ["provenance-verification", "registry-integrity"], "mitre_ids": ["ATTACK-T1195"], "timeline_event_ids": [], "cve_ids": [] },
-    { "id": 5, "name": "ClawJacked WebSocket Exploit", "category": "hijacking", "phase": "execution", "severity": "critical", "description": "WebSocket 브루트포스 → 로컬 에이전트 인증 우회 → 에이전트 제어권 탈취", "reference": "TechRadar", "tags": ["websocket", "brute-force", "local"], "threat_ids": ["remote-code-execution", "credential-theft"], "control_ids": ["sandboxing", "network-egress-control"], "mitre_ids": ["ATTACK-T1059"], "timeline_event_ids": [30], "cve_ids": [] },
-    { "id": 6, "name": "One-Click RCE (CVE-2026-25253)", "category": "remote-code-execution", "phase": "execution", "severity": "critical", "description": "gatewayUrl 파라미터 인젝션 → WebSocket → 토큰 유출 → 원격 코드 실행", "reference": "Immersive Labs", "tags": ["cve", "websocket", "rce"], "threat_ids": ["remote-code-execution"], "control_ids": ["sandboxing", "network-egress-control", "runtime-monitoring"], "mitre_ids": ["ATTACK-T1059"], "timeline_event_ids": [19], "cve_ids": ["CVE-2026-25253"] },
-    { "id": 7, "name": "Command Injection (CVE-2026-25157)", "category": "remote-code-execution", "phase": "execution", "severity": "critical", "description": "스킬 내 직접 명령 인젝션을 통한 임의 코드 실행", "reference": "Immersive Labs", "tags": ["cve", "command-injection"], "threat_ids": ["remote-code-execution"], "control_ids": ["sandboxing", "capability-scoping", "input-validation"], "mitre_ids": ["ATTACK-T1059"], "timeline_event_ids": [19], "cve_ids": ["CVE-2026-25157"] },
-    { "id": 8, "name": "Prompt Injection via Browser Skill", "category": "prompt-injection", "phase": "execution", "severity": "high", "description": "악성 웹페이지 → 브라우저 스킬 → 주입된 프롬프트 → 비인가 명령 실행", "reference": "", "tags": ["browser", "prompt-injection", "web"], "threat_ids": ["indirect-prompt-injection", "remote-code-execution"], "control_ids": ["content-filtering", "sandboxing", "prompt-filtering"], "mitre_ids": ["ATLAS-AML.T0051.001"], "timeline_event_ids": [13], "cve_ids": [] },
-    { "id": 9, "name": "Hidden SKILL.md Instructions", "category": "prompt-injection", "phase": "persistence", "severity": "high", "description": "숨겨진 마크다운 인스트럭션 → 에이전트가 공격자 명령 수행. 사용자 인식 불가", "reference": "Snyk", "tags": ["skillmd", "hidden", "markdown"], "threat_ids": ["indirect-prompt-injection"], "control_ids": ["input-validation", "content-filtering"], "mitre_ids": ["ATLAS-AML.T0051.001"], "timeline_event_ids": [], "cve_ids": [] },
-    { "id": 10, "name": "Tool-Calling Chain Exploit (ClawDrain)", "category": "resource-abuse", "phase": "impact", "severity": "medium", "description": "멀티 도구 루프 → 토큰 증폭 → 대규모 API 비용 폭증", "reference": "arXiv 2603.00902", "tags": ["token-drain", "loop", "cost"], "threat_ids": ["unsafe-tool-use"], "control_ids": ["runtime-monitoring", "workflow-constraints"], "mitre_ids": ["ATLAS-AML.T0011"], "timeline_event_ids": [32], "cve_ids": [] },
-    { "id": 11, "name": "Credential Theft via Filesystem Skill", "category": "credential-theft", "phase": "persistence", "severity": "critical", "description": "파일시스템 스킬이 ~/.aws 읽기 → 인증정보 외부 업로드", "reference": "Snyk", "tags": ["filesystem", "aws", "credentials"], "threat_ids": ["credential-theft", "data-exfiltration"], "control_ids": ["secrets-isolation", "capability-scoping", "least-privilege"], "mitre_ids": ["ATTACK-T1552", "ATTACK-T1041"], "timeline_event_ids": [], "cve_ids": [] },
-    { "id": 12, "name": "SSH Key Harvesting", "category": "credential-theft", "phase": "lateral_movement", "severity": "critical", "description": "파일시스템 스킬로 ~/.ssh 접근 → 인프라 전체 침해 가능", "reference": "", "tags": ["ssh", "keys", "lateral-movement"], "threat_ids": ["credential-theft", "data-exfiltration"], "control_ids": ["secrets-isolation", "capability-scoping", "least-privilege"], "mitre_ids": ["ATTACK-T1552"], "timeline_event_ids": [], "cve_ids": [] },
-    { "id": 13, "name": "API Key Exfiltration", "category": "credential-theft", "phase": "impact", "severity": "critical", "description": "OpenAI 키, GitHub 토큰, AWS 인증정보 등 클라우드 자격증명 탈취", "reference": "", "tags": ["api-keys", "cloud", "exfiltration"], "threat_ids": ["credential-theft", "data-exfiltration"], "control_ids": ["secrets-isolation", "vault-integration", "network-egress-control"], "mitre_ids": ["ATLAS-AML.T0024", "ATTACK-T1552"], "timeline_event_ids": [], "cve_ids": [] },
-    { "id": 14, "name": "Browser Session Hijacking", "category": "hijacking", "phase": "persistence", "severity": "high", "description": "브라우저 자동화로 쿠키 추출 → 세션 탈취 → 신원 도용", "reference": "", "tags": ["browser", "cookies", "session"], "threat_ids": ["credential-theft", "data-exfiltration"], "control_ids": ["sandboxing", "network-egress-control"], "mitre_ids": ["ATTACK-T1539"], "timeline_event_ids": [], "cve_ids": [] },
-    { "id": 15, "name": "RAG Knowledge Poisoning", "category": "data-poisoning", "phase": "persistence", "severity": "high", "description": "악성 문서 → RAG 수집 → 잘못된 정보 기반 의사결정 유도", "reference": "", "tags": ["rag", "knowledge", "poisoning"], "threat_ids": ["data-poisoning", "knowledge-manipulation"], "control_ids": ["memory-integrity-checks", "provenance-verification"], "mitre_ids": ["ATLAS-AML.T0020"], "timeline_event_ids": [], "cve_ids": [] },
-    { "id": 16, "name": "Tool Metadata Manipulation", "category": "hijacking", "phase": "execution", "severity": "high", "description": "악성 메타데이터 → 에이전트가 잘못된 도구 선택. 성공률 81-95%", "reference": "", "tags": ["metadata", "tool-selection", "81-95%"], "threat_ids": ["indirect-prompt-injection", "unsafe-tool-use"], "control_ids": ["input-validation", "runtime-monitoring"], "mitre_ids": ["ATLAS-AML.T0051"], "timeline_event_ids": [], "cve_ids": [] },
-    { "id": 17, "name": "Skill Dependency Attack", "category": "supply-chain-attack", "phase": "initial_access", "severity": "critical", "description": "스킬 → npm/pip 의존성 → 악성 패키지 실행", "reference": "", "tags": ["npm", "pip", "dependency"], "threat_ids": ["supply-chain-attack"], "control_ids": ["dependency-scanning", "registry-integrity", "provenance-verification"], "mitre_ids": ["ATTACK-T1195"], "timeline_event_ids": [], "cve_ids": [] },
-    { "id": 18, "name": "Token Drain Attack", "category": "resource-abuse", "phase": "impact", "severity": "medium", "description": "반복 에이전트 태스크로 과도한 토큰 사용 → 빌링 공격", "reference": "", "tags": ["token", "billing", "loop"], "threat_ids": ["unsafe-tool-use"], "control_ids": ["runtime-monitoring", "workflow-constraints"], "mitre_ids": ["ATLAS-AML.T0011"], "timeline_event_ids": [], "cve_ids": [] },
-    { "id": 19, "name": "Agent Memory Poisoning", "category": "data-poisoning", "phase": "persistence", "severity": "high", "description": "프롬프트 인젝션 → 영구 행동 저장 → 장기적 행동 변조", "reference": "", "tags": ["memory", "persistent", "behavioral"], "threat_ids": ["memory-poisoning", "data-poisoning"], "control_ids": ["memory-integrity-checks", "memory-access-control", "periodic-audit"], "mitre_ids": ["ATLAS-AML.T0020"], "timeline_event_ids": [], "cve_ids": [] },
-    { "id": 20, "name": "Multi-Skill Attack Chain", "category": "multi-stage", "phase": "execution", "severity": "critical", "description": "브라우저 스킬(인젝션) → 셸 스킬(악성코드 설치) 다단계 공격", "reference": "", "tags": ["multi-skill", "chain", "browser-to-shell"], "threat_ids": ["indirect-prompt-injection", "remote-code-execution"], "control_ids": ["sandboxing", "capability-scoping", "runtime-monitoring"], "mitre_ids": ["ATLAS-AML.T0051.001", "ATTACK-T1059"], "timeline_event_ids": [], "cve_ids": [] },
-    { "id": 21, "name": "Cloud Credential Theft", "category": "credential-theft", "phase": "lateral_movement", "severity": "critical", "description": "AWS, GCP 서비스 계정 탈취 → 클라우드 인프라 침해", "reference": "", "tags": ["aws", "gcp", "cloud"], "threat_ids": ["credential-theft", "privilege-escalation"], "control_ids": ["secrets-isolation", "least-privilege", "vault-integration"], "mitre_ids": ["ATLAS-AML.T0024", "ATTACK-T1552"], "timeline_event_ids": [15], "cve_ids": [] },
-    { "id": 22, "name": "IoT Device Control Attack", "category": "physical", "phase": "impact", "severity": "high", "description": "IoT 스킬 → 디바이스 API → 물리적 장치 제어", "reference": "", "tags": ["iot", "physical", "device"], "threat_ids": ["unsafe-tool-use", "privilege-escalation"], "control_ids": ["capability-scoping", "human-approval", "network-egress-control"], "mitre_ids": ["ATLAS-AML.T0011"], "timeline_event_ids": [], "cve_ids": [] },
-    { "id": 23, "name": "Trojanized VSCode Extension", "category": "supply-chain-attack", "phase": "initial_access", "severity": "high", "description": "가짜 VSCode 확장 배포 → 개발 환경 침해", "reference": "TechRadar (Moltbot)", "tags": ["vscode", "extension", "trojan"], "threat_ids": ["supply-chain-attack", "remote-code-execution"], "control_ids": ["provenance-verification", "dependency-scanning"], "mitre_ids": ["ATTACK-T1195"], "timeline_event_ids": [27], "cve_ids": [] },
-    { "id": 24, "name": "AI Agent Worm Propagation", "category": "multi-stage", "phase": "persistence", "severity": "critical", "description": "감염된 에이전트 → 스킬 설치 → 다른 에이전트로 전파", "reference": "", "tags": ["worm", "propagation", "self-spreading"], "threat_ids": ["remote-code-execution", "supply-chain-attack"], "control_ids": ["sandboxing", "network-egress-control", "container-isolation"], "mitre_ids": ["ATTACK-T1059"], "timeline_event_ids": [], "cve_ids": [] },
-    { "id": 25, "name": "Data Harvesting Botnet", "category": "malware", "phase": "impact", "severity": "critical", "description": "악성 스킬 → 감염 머신 → 프록시 네트워크 구축", "reference": "", "tags": ["botnet", "proxy", "harvesting"], "threat_ids": ["remote-code-execution", "data-exfiltration"], "control_ids": ["sandboxing", "network-egress-control"], "mitre_ids": ["ATTACK-T1059"], "timeline_event_ids": [], "cve_ids": [] },
-    { "id": 26, "name": "GhostSocks Proxy Deployment", "category": "malware", "phase": "impact", "severity": "high", "description": "감염 디바이스를 레지덴셜 프록시 노드로 전환", "reference": "TechRadar", "tags": ["ghostsocks", "proxy", "residential"], "threat_ids": ["remote-code-execution"], "control_ids": ["sandboxing", "network-egress-control", "container-isolation"], "mitre_ids": ["ATTACK-T1059"], "timeline_event_ids": [], "cve_ids": [] },
-    { "id": 27, "name": "Social Engineering via Agent", "category": "user-manipulation", "phase": "execution", "severity": "medium", "description": "에이전트 메시지로 사용자를 속여 위험한 명령 실행 승인 유도", "reference": "", "tags": ["social-engineering", "user", "approval"], "threat_ids": ["user-manipulation"], "control_ids": ["human-approval", "transparency-logging", "action-explanation"], "mitre_ids": ["ATLAS-AML.T0048"], "timeline_event_ids": [], "cve_ids": [] },
-    { "id": 28, "name": "Multi-Agent Coordination Attack", "category": "multi-stage", "phase": "lateral_movement", "severity": "high", "description": "Agent A가 Agent B에 명령 전송 → 분산 공격 수행", "reference": "", "tags": ["multi-agent", "coordination", "distributed"], "threat_ids": ["privilege-escalation", "remote-code-execution"], "control_ids": ["capability-scoping", "runtime-monitoring", "policy-enforcement"], "mitre_ids": ["ATTACK-T1068"], "timeline_event_ids": [], "cve_ids": [] },
-    { "id": 29, "name": "Agent Planner Hijacking", "category": "prompt-injection", "phase": "execution", "severity": "high", "description": "추론/계획 레이어 조작 → 악성 태스크 계획 수립", "reference": "", "tags": ["planner", "reasoning", "hijack"], "threat_ids": ["indirect-prompt-injection", "user-manipulation"], "control_ids": ["prompt-filtering", "input-validation", "capability-scoping"], "mitre_ids": ["ATLAS-AML.T0051"], "timeline_event_ids": [], "cve_ids": [] },
-    { "id": 30, "name": "Enterprise Shadow-AI Compromise", "category": "credential-theft", "phase": "impact", "severity": "critical", "description": "엔터프라이즈 시스템 권한으로 실행되는 AI 에이전트 → 기업 전체 침해", "reference": "Cyera Labs", "tags": ["enterprise", "shadow-ai", "privileges"], "threat_ids": ["credential-theft", "privilege-escalation", "data-exfiltration"], "control_ids": ["least-privilege", "policy-enforcement", "secrets-isolation", "runtime-monitoring"], "mitre_ids": ["ATLAS-AML.T0024", "ATTACK-T1068"], "timeline_event_ids": [15, 16], "cve_ids": [] },
-    { "id": 31, "name": "MCP Server Exposure Attack", "category": "credential-theft", "phase": "reconnaissance", "severity": "critical", "description": "인증 없이 노출된 MCP 서버 스캔 → 관리자 패널, API 키, DB 인증정보, 에이전트 대화 기록 탈취. 8,000+ 서버 영향", "reference": "Medium / r/cybersecurity", "tags": ["mcp", "no-auth", "mass-exposure", "credential-harvest"], "threat_ids": ["credential-theft", "data-exfiltration", "remote-code-execution"], "control_ids": ["network-egress-control", "secrets-isolation", "least-privilege"], "mitre_ids": ["ATTACK-T1552", "ATTACK-T1041", "ATLAS-AML.T0024"], "timeline_event_ids": [34, 35], "cve_ids": [] },
-    { "id": 32, "name": "MCP Tool Poisoning via Rug Pull", "category": "supply-chain-attack", "phase": "execution", "severity": "critical", "description": "MCP 도구 디스크립터를 승인 후 변경(Rug Pull) → 신뢰된 도구가 악성 행동 수행. 도구 메타데이터 조작으로 에이전트 도구 선택 하이재킹", "reference": "arXiv 2602.19555", "tags": ["mcp", "rug-pull", "tool-poisoning", "descriptor-manipulation"], "threat_ids": ["supply-chain-attack", "indirect-prompt-injection", "unsafe-tool-use"], "control_ids": ["provenance-verification", "runtime-monitoring", "signed-skill-packages", "input-validation"], "mitre_ids": ["ATLAS-AML.T0010", "ATLAS-AML.T0051"], "timeline_event_ids": [33], "cve_ids": [] },
-    { "id": 33, "name": "AI Coding Assistant Prompt Injection", "category": "prompt-injection", "phase": "execution", "severity": "critical", "description": "악성 코드 저장소/문서/API 응답에 숨겨진 명령 삽입 → AI 코딩 어시스턴트가 악성 명령 실행. auto-approve 설정 변경으로 RAT화 가능", "reference": "TechBuzz / WebAsha", "tags": ["coding-assistant", "repository-injection", "auto-approve", "rat"], "threat_ids": ["indirect-prompt-injection", "remote-code-execution", "supply-chain-attack"], "control_ids": ["content-filtering", "sandboxing", "human-approval", "capability-scoping"], "mitre_ids": ["ATLAS-AML.T0051.001", "ATTACK-T1059", "ATTACK-T1195"], "timeline_event_ids": [], "cve_ids": [] },
-    { "id": 34, "name": "Voice Extension Pre-Auth RCE (CVE-2026-28446)", "category": "remote-code-execution", "phase": "execution", "severity": "critical", "description": "voice-call 확장의 빈 Caller ID 및 접미사 매칭으로 인바운드 허용목록 우회 → 인증 없이 원격 코드 실행. CVSS 9.8. 42,000+ 인스턴스 영향", "reference": "DEV Community", "tags": ["voice-call", "pre-auth", "rce", "cvss-9.8"], "threat_ids": ["remote-code-execution"], "control_ids": ["input-validation", "network-egress-control", "sandboxing"], "mitre_ids": ["ATTACK-T1059"], "timeline_event_ids": [38], "cve_ids": ["CVE-2026-28446"] },
-    { "id": 35, "name": "PATH Hijacking via Project Bootstrap (CVE-2026-29610)", "category": "remote-code-execution", "phase": "execution", "severity": "high", "description": "공격자 제어 디렉토리에서 OpenClaw 실행 시 PATH 조작 → allowlisted safe-bin 명령을 악성 바이너리로 대체하여 임의 명령 실행", "reference": "RedPacket Security", "tags": ["path-hijacking", "command-hijacking", "safe-bin"], "threat_ids": ["remote-code-execution", "privilege-escalation"], "control_ids": ["sandboxing", "capability-scoping", "input-validation"], "mitre_ids": ["ATTACK-T1574.007", "ATTACK-T1059"], "timeline_event_ids": [40], "cve_ids": ["CVE-2026-29610"] },
-    { "id": 36, "name": "Browser Control Auth Bypass (CVE-2026-28485)", "category": "hijacking", "phase": "execution", "severity": "high", "description": "/agent/act 브라우저 제어 라우트에 인증 미적용 → 로컬 네트워크의 비인가 호출자가 에이전트 권한 작업 수행. CI 러너 및 개발 워크스테이션 위험", "reference": "RedPacket Security / THREATINT", "tags": ["auth-bypass", "browser-control", "local-network"], "threat_ids": ["remote-code-execution", "privilege-escalation"], "control_ids": ["network-egress-control", "least-privilege", "sandboxing"], "mitre_ids": ["ATTACK-T1059", "ATTACK-T1068"], "timeline_event_ids": [41], "cve_ids": ["CVE-2026-28485"] },
-    { "id": 37, "name": "Pre-commit Hook Option Injection (CVE-2026-28484)", "category": "supply-chain-attack", "phase": "initial_access", "severity": "high", "description": "대시(-)로 시작하는 악성 파일명 → pre-commit 훅이 git 플래그로 해석 → .gitignore 파일 포함 전체 파일 스테이징. 비밀정보 유출 가능", "reference": "SentinelOne", "tags": ["pre-commit", "option-injection", "git-hooks"], "threat_ids": ["supply-chain-attack", "data-exfiltration"], "control_ids": ["input-validation", "secrets-isolation"], "mitre_ids": ["ATTACK-T1195", "ATTACK-T1552"], "timeline_event_ids": [42], "cve_ids": ["CVE-2026-28484"] },
-    { "id": 38, "name": "Mass Instance Exposure Attack", "category": "credential-theft", "phase": "reconnaissance", "severity": "critical", "description": "공개 인터넷에 노출된 135,000+ OpenClaw 인스턴스 스캔 → 63% 취약, 12,812개 RCE 공격 가능. 549개 인스턴스에서 기존 침해 활동 확인", "reference": "SecurityScorecard STRIKE", "tags": ["shodan", "mass-exposure", "135k-instances", "misconfiguration"], "threat_ids": ["credential-theft", "remote-code-execution", "data-exfiltration"], "control_ids": ["network-egress-control", "least-privilege", "runtime-monitoring"], "mitre_ids": ["ATTACK-T1595", "ATTACK-T1552", "ATLAS-AML.T0024"], "timeline_event_ids": [39], "cve_ids": [] },
-    { "id": 39, "name": "Nostr Profile Tampering (CVE-2026-28450)", "category": "hijacking", "phase": "persistence", "severity": "high", "description": "Nostr 채널 플러그인의 비인증 프로필 엔드포인트 → 원격 프로필/설정 변조 → 에이전트 아이덴티티 하이재킹. CVSS 8.3", "reference": "GitLab Advisory / dCERT", "tags": ["nostr", "profile-tampering", "config-manipulation"], "threat_ids": ["credential-theft", "indirect-prompt-injection"], "control_ids": ["input-validation", "least-privilege", "network-egress-control"], "mitre_ids": ["ATLAS-AML.T0051", "ATTACK-T1098"], "timeline_event_ids": [43], "cve_ids": ["CVE-2026-28450"] },
-    { "id": 40, "name": "ClawHavoc Expanded Campaign (1,184+ Skills)", "category": "supply-chain-attack", "phase": "initial_access", "severity": "critical", "description": "ClawHavoc 캠페인 확대 → 1,184+ 악성 스킬 식별 (전체 10,700개 중 ~11%). ClickFix 소셜 엔지니어링, VirusTotal 우회, 오프레지스트리 페이로드 호스팅 기법 사용. $100M+ 암호화폐 도난 위험", "reference": "CyberPress / VirusTotal Blog / AInvest", "tags": ["clawhavoc-expanded", "1184-skills", "clickfix", "vt-bypass"], "threat_ids": ["supply-chain-attack", "credential-theft", "remote-code-execution"], "control_ids": ["signed-skill-packages", "provenance-verification", "dependency-scanning", "registry-integrity"], "mitre_ids": ["ATTACK-T1195", "ATLAS-AML.T0010", "ATTACK-T1204"], "timeline_event_ids": [44], "cve_ids": [] },
-    { "id": 41, "name": "Cline CLI Supply Chain Attack", "category": "supply-chain-attack", "phase": "initial_access", "severity": "critical", "description": "탈취된 npm 토큰으로 cline@2.3.0 배포 → post-install 훅이 ~4,000개 개발자 머신에 OpenClaw 자동 설치. 8시간 동안 진행", "reference": "The Hacker News / The Register / Snyk", "tags": ["npm", "supply-chain", "cline", "postinstall"], "threat_ids": ["supply-chain-attack", "remote-code-execution"], "control_ids": ["provenance-verification", "dependency-scanning", "registry-integrity"], "mitre_ids": ["ATTACK-T1195", "ATLAS-AML.T0010"], "timeline_event_ids": [48], "cve_ids": [] },
-    { "id": 42, "name": "Perplexity Comet Zero-Click Agent Hijack", "category": "hijacking", "phase": "execution", "severity": "critical", "description": "공격자 제어 콘텐츠(캘린더 초대 등)가 에이전트 자율 실행 트리거 → 사용자 상호작용 없이 인증정보 탈취 및 파일 유출. 1Password 볼트 탈취 가능", "reference": "Zenity Labs / CyberNews", "tags": ["zero-click", "browser-agent", "credential-theft", "file-exfiltration"], "threat_ids": ["indirect-prompt-injection", "credential-theft", "data-exfiltration"], "control_ids": ["sandboxing", "capability-scoping", "human-approval"], "mitre_ids": ["ATLAS-AML.T0051.001", "ATTACK-T1552"], "timeline_event_ids": [50], "cve_ids": [] },
-    { "id": 43, "name": "Promptware Kill Chain (Multi-Stage)", "category": "multi-stage", "phase": "execution", "severity": "critical", "description": "프롬프트 인젝션을 초기 접근으로 활용하는 다단계 킬체인 — 전통적 맬웨어 캠페인과 동일한 패턴. Bruce Schneier 공식화", "reference": "Lawfare / Schneier on Security", "tags": ["promptware", "kill-chain", "multi-stage", "schneier"], "threat_ids": ["indirect-prompt-injection", "remote-code-execution"], "control_ids": ["prompt-filtering", "runtime-monitoring", "sandboxing"], "mitre_ids": ["ATLAS-AML.T0051", "ATLAS-AML.T0051.001"], "timeline_event_ids": [51], "cve_ids": [] },
-    { "id": 44, "name": "MCP Sampling Prompt Injection", "category": "prompt-injection", "phase": "execution", "severity": "high", "description": "MCP 서버가 sampling 요청의 프롬프트 내용과 응답 처리를 제어 → 새로운 프롬프트 인젝션 벡터. Palo Alto Unit 42 문서화", "reference": "Unit 42 / Palo Alto Networks", "tags": ["mcp", "sampling", "prompt-injection", "server-control"], "threat_ids": ["indirect-prompt-injection", "unsafe-tool-use"], "control_ids": ["input-validation", "content-filtering", "capability-scoping"], "mitre_ids": ["ATLAS-AML.T0051.001"], "timeline_event_ids": [], "cve_ids": [] },
-    { "id": 45, "name": "Delayed Tool Invocation Attack", "category": "prompt-injection", "phase": "persistence", "severity": "high", "description": "LLM이 삽입된 명령을 지연 타이밍으로 실행하도록 유도 — Google Calendar 초대에 악성 프롬프트 삽입, workspace 장기 메모리에 지속", "reference": "IEEE Spectrum", "tags": ["delayed-execution", "calendar", "memory-persistence", "timing"], "threat_ids": ["indirect-prompt-injection", "memory-poisoning"], "control_ids": ["memory-integrity-checks", "content-filtering", "periodic-audit"], "mitre_ids": ["ATLAS-AML.T0051.001", "ATLAS-AML.T0020"], "timeline_event_ids": [], "cve_ids": [] },
-    { "id": 46, "name": "SKILL.md to Shell Access (3 Lines)", "category": "remote-code-execution", "phase": "execution", "severity": "critical", "description": "3줄의 마크다운만으로 SKILL.md에서 셸 접근 획득. Snyk 데모 — 에이전트 스킬 시스템의 근본적 보안 취약성 증명", "reference": "Snyk", "tags": ["skillmd", "shell-access", "3-lines", "minimal-exploit"], "threat_ids": ["indirect-prompt-injection", "remote-code-execution"], "control_ids": ["sandboxing", "input-validation", "capability-scoping"], "mitre_ids": ["ATLAS-AML.T0051.001", "ATTACK-T1059"], "timeline_event_ids": [], "cve_ids": [] }
+    {
+      "id": 1,
+      "name": "ClawHub Supply-Chain Poisoning",
+      "category": "supply-chain-attack",
+      "phase": "initial_access",
+      "severity": "critical",
+      "description": "생산성 도구로 위장한 악성 스킬 업로드 → 인증정보 탈취, 악성코드 설치",
+      "reference": "Koi.ai ClawHavoc campaign",
+      "tags": [
+        "clawhub",
+        "trojan",
+        "credential-theft"
+      ],
+      "threat_ids": [
+        "supply-chain-attack",
+        "credential-theft"
+      ],
+      "control_ids": [
+        "signed-skill-packages",
+        "provenance-verification",
+        "dependency-scanning"
+      ],
+      "mitre_ids": [
+        "ATTACK-T1195",
+        "ATLAS-AML.T0010"
+      ],
+      "timeline_event_ids": [
+        11,
+        21,
+        25
+      ],
+      "cve_ids": [],
+      "flow_path": [
+        "external",
+        "C",
+        "B"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Atomic macOS Stealer (AMOS)",
+      "category": "malware",
+      "phase": "execution",
+      "severity": "critical",
+      "description": "악성 스킬 → 터미널 명령 → AMOS 다운로드. macOS 비밀번호, 브라우저 데이터, 암호화폐 지갑 탈취",
+      "reference": "Trend Micro",
+      "tags": [
+        "macos",
+        "stealer",
+        "crypto"
+      ],
+      "threat_ids": [
+        "supply-chain-attack",
+        "remote-code-execution"
+      ],
+      "control_ids": [
+        "sandboxing",
+        "container-isolation",
+        "dependency-scanning"
+      ],
+      "mitre_ids": [
+        "ATTACK-T1059"
+      ],
+      "timeline_event_ids": [
+        17,
+        18
+      ],
+      "cve_ids": [],
+      "flow_path": [
+        "external",
+        "C",
+        "B",
+        "local"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Fake Crypto Trading Bot",
+      "category": "credential-theft",
+      "phase": "persistence",
+      "severity": "critical",
+      "description": "지갑 연동 → 개인키 유출. 14개 악성 암호화폐 스킬 식별",
+      "reference": "Tom's Hardware",
+      "tags": [
+        "crypto",
+        "wallet",
+        "private-key"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "data-exfiltration"
+      ],
+      "control_ids": [
+        "secrets-isolation",
+        "vault-integration"
+      ],
+      "mitre_ids": [
+        "ATLAS-AML.T0024"
+      ],
+      "timeline_event_ids": [
+        17
+      ],
+      "cve_ids": [],
+      "flow_path": [
+        "B",
+        "C",
+        "A",
+        "external"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Fake OpenClaw GitHub Repository",
+      "category": "malware",
+      "phase": "initial_access",
+      "severity": "high",
+      "description": "GitHub 업로드 + Bing 검색 광고로 배포 → Vidar 인포스틸러 설치",
+      "reference": "TechRadar",
+      "tags": [
+        "github",
+        "vidar",
+        "search-ads"
+      ],
+      "threat_ids": [
+        "supply-chain-attack",
+        "remote-code-execution"
+      ],
+      "control_ids": [
+        "provenance-verification",
+        "registry-integrity"
+      ],
+      "mitre_ids": [
+        "ATTACK-T1195"
+      ],
+      "timeline_event_ids": [],
+      "cve_ids": [],
+      "flow_path": [
+        "external",
+        "C",
+        "B"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "ClawJacked WebSocket Exploit",
+      "category": "hijacking",
+      "phase": "execution",
+      "severity": "critical",
+      "description": "WebSocket 브루트포스 → 로컬 에이전트 인증 우회 → 에이전트 제어권 탈취",
+      "reference": "TechRadar",
+      "tags": [
+        "websocket",
+        "brute-force",
+        "local"
+      ],
+      "threat_ids": [
+        "remote-code-execution",
+        "credential-theft"
+      ],
+      "control_ids": [
+        "sandboxing",
+        "network-egress-control"
+      ],
+      "mitre_ids": [
+        "ATTACK-T1059"
+      ],
+      "timeline_event_ids": [
+        30
+      ],
+      "cve_ids": [],
+      "flow_path": [
+        "A",
+        "B",
+        "local"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "One-Click RCE (CVE-2026-25253)",
+      "category": "remote-code-execution",
+      "phase": "execution",
+      "severity": "critical",
+      "description": "gatewayUrl 파라미터 인젝션 → WebSocket → 토큰 유출 → 원격 코드 실행",
+      "reference": "Immersive Labs",
+      "tags": [
+        "cve",
+        "websocket",
+        "rce"
+      ],
+      "threat_ids": [
+        "remote-code-execution"
+      ],
+      "control_ids": [
+        "sandboxing",
+        "network-egress-control",
+        "runtime-monitoring"
+      ],
+      "mitre_ids": [
+        "ATTACK-T1059"
+      ],
+      "timeline_event_ids": [
+        19
+      ],
+      "cve_ids": [
+        "CVE-2026-25253"
+      ],
+      "flow_path": [
+        "A",
+        "B",
+        "C",
+        "local"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Command Injection (CVE-2026-25157)",
+      "category": "remote-code-execution",
+      "phase": "execution",
+      "severity": "critical",
+      "description": "스킬 내 직접 명령 인젝션을 통한 임의 코드 실행",
+      "reference": "Immersive Labs",
+      "tags": [
+        "cve",
+        "command-injection"
+      ],
+      "threat_ids": [
+        "remote-code-execution"
+      ],
+      "control_ids": [
+        "sandboxing",
+        "capability-scoping",
+        "input-validation"
+      ],
+      "mitre_ids": [
+        "ATTACK-T1059"
+      ],
+      "timeline_event_ids": [
+        19
+      ],
+      "cve_ids": [
+        "CVE-2026-25157"
+      ],
+      "flow_path": [
+        "A",
+        "B",
+        "C",
+        "local"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Prompt Injection via Browser Skill",
+      "category": "prompt-injection",
+      "phase": "execution",
+      "severity": "high",
+      "description": "악성 웹페이지 → 브라우저 스킬 → 주입된 프롬프트 → 비인가 명령 실행",
+      "reference": "",
+      "tags": [
+        "browser",
+        "prompt-injection",
+        "web"
+      ],
+      "threat_ids": [
+        "indirect-prompt-injection",
+        "remote-code-execution"
+      ],
+      "control_ids": [
+        "content-filtering",
+        "sandboxing",
+        "prompt-filtering"
+      ],
+      "mitre_ids": [
+        "ATLAS-AML.T0051.001"
+      ],
+      "timeline_event_ids": [
+        13
+      ],
+      "cve_ids": [],
+      "flow_path": [
+        "user",
+        "A",
+        "B"
+      ]
+    },
+    {
+      "id": 9,
+      "name": "Hidden SKILL.md Instructions",
+      "category": "prompt-injection",
+      "phase": "persistence",
+      "severity": "high",
+      "description": "숨겨진 마크다운 인스트럭션 → 에이전트가 공격자 명령 수행. 사용자 인식 불가",
+      "reference": "Snyk",
+      "tags": [
+        "skillmd",
+        "hidden",
+        "markdown"
+      ],
+      "threat_ids": [
+        "indirect-prompt-injection"
+      ],
+      "control_ids": [
+        "input-validation",
+        "content-filtering"
+      ],
+      "mitre_ids": [
+        "ATLAS-AML.T0051.001"
+      ],
+      "timeline_event_ids": [],
+      "cve_ids": [],
+      "flow_path": [
+        "user",
+        "A",
+        "B"
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Tool-Calling Chain Exploit (ClawDrain)",
+      "category": "resource-abuse",
+      "phase": "impact",
+      "severity": "medium",
+      "description": "멀티 도구 루프 → 토큰 증폭 → 대규모 API 비용 폭증",
+      "reference": "arXiv 2603.00902",
+      "tags": [
+        "token-drain",
+        "loop",
+        "cost"
+      ],
+      "threat_ids": [
+        "unsafe-tool-use"
+      ],
+      "control_ids": [
+        "runtime-monitoring",
+        "workflow-constraints"
+      ],
+      "mitre_ids": [
+        "ATLAS-AML.T0011"
+      ],
+      "timeline_event_ids": [
+        32
+      ],
+      "cve_ids": [],
+      "flow_path": [
+        "B",
+        "C",
+        "B"
+      ]
+    },
+    {
+      "id": 11,
+      "name": "Credential Theft via Filesystem Skill",
+      "category": "credential-theft",
+      "phase": "persistence",
+      "severity": "critical",
+      "description": "파일시스템 스킬이 ~/.aws 읽기 → 인증정보 외부 업로드",
+      "reference": "Snyk",
+      "tags": [
+        "filesystem",
+        "aws",
+        "credentials"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "data-exfiltration"
+      ],
+      "control_ids": [
+        "secrets-isolation",
+        "capability-scoping",
+        "least-privilege"
+      ],
+      "mitre_ids": [
+        "ATTACK-T1552",
+        "ATTACK-T1041"
+      ],
+      "timeline_event_ids": [],
+      "cve_ids": [],
+      "flow_path": [
+        "B",
+        "C",
+        "A",
+        "external"
+      ]
+    },
+    {
+      "id": 12,
+      "name": "SSH Key Harvesting",
+      "category": "credential-theft",
+      "phase": "lateral_movement",
+      "severity": "critical",
+      "description": "파일시스템 스킬로 ~/.ssh 접근 → 인프라 전체 침해 가능",
+      "reference": "",
+      "tags": [
+        "ssh",
+        "keys",
+        "lateral-movement"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "data-exfiltration"
+      ],
+      "control_ids": [
+        "secrets-isolation",
+        "capability-scoping",
+        "least-privilege"
+      ],
+      "mitre_ids": [
+        "ATTACK-T1552"
+      ],
+      "timeline_event_ids": [],
+      "cve_ids": [],
+      "flow_path": [
+        "B",
+        "C",
+        "A",
+        "external"
+      ]
+    },
+    {
+      "id": 13,
+      "name": "API Key Exfiltration",
+      "category": "credential-theft",
+      "phase": "impact",
+      "severity": "critical",
+      "description": "OpenAI 키, GitHub 토큰, AWS 인증정보 등 클라우드 자격증명 탈취",
+      "reference": "",
+      "tags": [
+        "api-keys",
+        "cloud",
+        "exfiltration"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "data-exfiltration"
+      ],
+      "control_ids": [
+        "secrets-isolation",
+        "vault-integration",
+        "network-egress-control"
+      ],
+      "mitre_ids": [
+        "ATLAS-AML.T0024",
+        "ATTACK-T1552"
+      ],
+      "timeline_event_ids": [],
+      "cve_ids": [],
+      "flow_path": [
+        "B",
+        "C",
+        "A",
+        "external"
+      ]
+    },
+    {
+      "id": 14,
+      "name": "Browser Session Hijacking",
+      "category": "hijacking",
+      "phase": "persistence",
+      "severity": "high",
+      "description": "브라우저 자동화로 쿠키 추출 → 세션 탈취 → 신원 도용",
+      "reference": "",
+      "tags": [
+        "browser",
+        "cookies",
+        "session"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "data-exfiltration"
+      ],
+      "control_ids": [
+        "sandboxing",
+        "network-egress-control"
+      ],
+      "mitre_ids": [
+        "ATTACK-T1539"
+      ],
+      "timeline_event_ids": [],
+      "cve_ids": [],
+      "flow_path": [
+        "B",
+        "C",
+        "A",
+        "external"
+      ]
+    },
+    {
+      "id": 15,
+      "name": "RAG Knowledge Poisoning",
+      "category": "data-poisoning",
+      "phase": "persistence",
+      "severity": "high",
+      "description": "악성 문서 → RAG 수집 → 잘못된 정보 기반 의사결정 유도",
+      "reference": "",
+      "tags": [
+        "rag",
+        "knowledge",
+        "poisoning"
+      ],
+      "threat_ids": [
+        "data-poisoning",
+        "knowledge-manipulation"
+      ],
+      "control_ids": [
+        "memory-integrity-checks",
+        "provenance-verification"
+      ],
+      "mitre_ids": [
+        "ATLAS-AML.T0020"
+      ],
+      "timeline_event_ids": [],
+      "cve_ids": [],
+      "flow_path": [
+        "B",
+        "E",
+        "B"
+      ]
+    },
+    {
+      "id": 16,
+      "name": "Tool Metadata Manipulation",
+      "category": "hijacking",
+      "phase": "execution",
+      "severity": "high",
+      "description": "악성 메타데이터 → 에이전트가 잘못된 도구 선택. 성공률 81-95%",
+      "reference": "",
+      "tags": [
+        "metadata",
+        "tool-selection",
+        "81-95%"
+      ],
+      "threat_ids": [
+        "indirect-prompt-injection",
+        "unsafe-tool-use"
+      ],
+      "control_ids": [
+        "input-validation",
+        "runtime-monitoring"
+      ],
+      "mitre_ids": [
+        "ATLAS-AML.T0051"
+      ],
+      "timeline_event_ids": [],
+      "cve_ids": [],
+      "flow_path": [
+        "user",
+        "A",
+        "B",
+        "C"
+      ]
+    },
+    {
+      "id": 17,
+      "name": "Skill Dependency Attack",
+      "category": "supply-chain-attack",
+      "phase": "initial_access",
+      "severity": "critical",
+      "description": "스킬 → npm/pip 의존성 → 악성 패키지 실행",
+      "reference": "",
+      "tags": [
+        "npm",
+        "pip",
+        "dependency"
+      ],
+      "threat_ids": [
+        "supply-chain-attack"
+      ],
+      "control_ids": [
+        "dependency-scanning",
+        "registry-integrity",
+        "provenance-verification"
+      ],
+      "mitre_ids": [
+        "ATTACK-T1195"
+      ],
+      "timeline_event_ids": [],
+      "cve_ids": [],
+      "flow_path": [
+        "external",
+        "C",
+        "B"
+      ]
+    },
+    {
+      "id": 18,
+      "name": "Token Drain Attack",
+      "category": "resource-abuse",
+      "phase": "impact",
+      "severity": "medium",
+      "description": "반복 에이전트 태스크로 과도한 토큰 사용 → 빌링 공격",
+      "reference": "",
+      "tags": [
+        "token",
+        "billing",
+        "loop"
+      ],
+      "threat_ids": [
+        "unsafe-tool-use"
+      ],
+      "control_ids": [
+        "runtime-monitoring",
+        "workflow-constraints"
+      ],
+      "mitre_ids": [
+        "ATLAS-AML.T0011"
+      ],
+      "timeline_event_ids": [],
+      "cve_ids": [],
+      "flow_path": [
+        "B",
+        "C",
+        "B"
+      ]
+    },
+    {
+      "id": 19,
+      "name": "Agent Memory Poisoning",
+      "category": "data-poisoning",
+      "phase": "persistence",
+      "severity": "high",
+      "description": "프롬프트 인젝션 → 영구 행동 저장 → 장기적 행동 변조",
+      "reference": "",
+      "tags": [
+        "memory",
+        "persistent",
+        "behavioral"
+      ],
+      "threat_ids": [
+        "memory-poisoning",
+        "data-poisoning"
+      ],
+      "control_ids": [
+        "memory-integrity-checks",
+        "memory-access-control",
+        "periodic-audit"
+      ],
+      "mitre_ids": [
+        "ATLAS-AML.T0020"
+      ],
+      "timeline_event_ids": [],
+      "cve_ids": [],
+      "flow_path": [
+        "B",
+        "E",
+        "B"
+      ]
+    },
+    {
+      "id": 20,
+      "name": "Multi-Skill Attack Chain",
+      "category": "multi-stage",
+      "phase": "execution",
+      "severity": "critical",
+      "description": "브라우저 스킬(인젝션) → 셸 스킬(악성코드 설치) 다단계 공격",
+      "reference": "",
+      "tags": [
+        "multi-skill",
+        "chain",
+        "browser-to-shell"
+      ],
+      "threat_ids": [
+        "indirect-prompt-injection",
+        "remote-code-execution"
+      ],
+      "control_ids": [
+        "sandboxing",
+        "capability-scoping",
+        "runtime-monitoring"
+      ],
+      "mitre_ids": [
+        "ATLAS-AML.T0051.001",
+        "ATTACK-T1059"
+      ],
+      "timeline_event_ids": [],
+      "cve_ids": [],
+      "flow_path": [
+        "user",
+        "A",
+        "B",
+        "C",
+        "local"
+      ]
+    },
+    {
+      "id": 21,
+      "name": "Cloud Credential Theft",
+      "category": "credential-theft",
+      "phase": "lateral_movement",
+      "severity": "critical",
+      "description": "AWS, GCP 서비스 계정 탈취 → 클라우드 인프라 침해",
+      "reference": "",
+      "tags": [
+        "aws",
+        "gcp",
+        "cloud"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "privilege-escalation"
+      ],
+      "control_ids": [
+        "secrets-isolation",
+        "least-privilege",
+        "vault-integration"
+      ],
+      "mitre_ids": [
+        "ATLAS-AML.T0024",
+        "ATTACK-T1552"
+      ],
+      "timeline_event_ids": [
+        15
+      ],
+      "cve_ids": [],
+      "flow_path": [
+        "B",
+        "C",
+        "A",
+        "external"
+      ]
+    },
+    {
+      "id": 22,
+      "name": "IoT Device Control Attack",
+      "category": "physical",
+      "phase": "impact",
+      "severity": "high",
+      "description": "IoT 스킬 → 디바이스 API → 물리적 장치 제어",
+      "reference": "",
+      "tags": [
+        "iot",
+        "physical",
+        "device"
+      ],
+      "threat_ids": [
+        "unsafe-tool-use",
+        "privilege-escalation"
+      ],
+      "control_ids": [
+        "capability-scoping",
+        "human-approval",
+        "network-egress-control"
+      ],
+      "mitre_ids": [
+        "ATLAS-AML.T0011"
+      ],
+      "timeline_event_ids": [],
+      "cve_ids": [],
+      "flow_path": [
+        "B",
+        "C",
+        "H",
+        "external"
+      ]
+    },
+    {
+      "id": 23,
+      "name": "Trojanized VSCode Extension",
+      "category": "supply-chain-attack",
+      "phase": "initial_access",
+      "severity": "high",
+      "description": "가짜 VSCode 확장 배포 → 개발 환경 침해",
+      "reference": "TechRadar (Moltbot)",
+      "tags": [
+        "vscode",
+        "extension",
+        "trojan"
+      ],
+      "threat_ids": [
+        "supply-chain-attack",
+        "remote-code-execution"
+      ],
+      "control_ids": [
+        "provenance-verification",
+        "dependency-scanning"
+      ],
+      "mitre_ids": [
+        "ATTACK-T1195"
+      ],
+      "timeline_event_ids": [
+        27
+      ],
+      "cve_ids": [],
+      "flow_path": [
+        "external",
+        "C",
+        "B"
+      ]
+    },
+    {
+      "id": 24,
+      "name": "AI Agent Worm Propagation",
+      "category": "multi-stage",
+      "phase": "persistence",
+      "severity": "critical",
+      "description": "감염된 에이전트 → 스킬 설치 → 다른 에이전트로 전파",
+      "reference": "",
+      "tags": [
+        "worm",
+        "propagation",
+        "self-spreading"
+      ],
+      "threat_ids": [
+        "remote-code-execution",
+        "supply-chain-attack"
+      ],
+      "control_ids": [
+        "sandboxing",
+        "network-egress-control",
+        "container-isolation"
+      ],
+      "mitre_ids": [
+        "ATTACK-T1059"
+      ],
+      "timeline_event_ids": [],
+      "cve_ids": [],
+      "flow_path": [
+        "B",
+        "B",
+        "C"
+      ]
+    },
+    {
+      "id": 25,
+      "name": "Data Harvesting Botnet",
+      "category": "malware",
+      "phase": "impact",
+      "severity": "critical",
+      "description": "악성 스킬 → 감염 머신 → 프록시 네트워크 구축",
+      "reference": "",
+      "tags": [
+        "botnet",
+        "proxy",
+        "harvesting"
+      ],
+      "threat_ids": [
+        "remote-code-execution",
+        "data-exfiltration"
+      ],
+      "control_ids": [
+        "sandboxing",
+        "network-egress-control"
+      ],
+      "mitre_ids": [
+        "ATTACK-T1059"
+      ],
+      "timeline_event_ids": [],
+      "cve_ids": [],
+      "flow_path": [
+        "external",
+        "C",
+        "B",
+        "local"
+      ]
+    },
+    {
+      "id": 26,
+      "name": "GhostSocks Proxy Deployment",
+      "category": "malware",
+      "phase": "impact",
+      "severity": "high",
+      "description": "감염 디바이스를 레지덴셜 프록시 노드로 전환",
+      "reference": "TechRadar",
+      "tags": [
+        "ghostsocks",
+        "proxy",
+        "residential"
+      ],
+      "threat_ids": [
+        "remote-code-execution"
+      ],
+      "control_ids": [
+        "sandboxing",
+        "network-egress-control",
+        "container-isolation"
+      ],
+      "mitre_ids": [
+        "ATTACK-T1059"
+      ],
+      "timeline_event_ids": [],
+      "cve_ids": [],
+      "flow_path": [
+        "external",
+        "C",
+        "B",
+        "local"
+      ]
+    },
+    {
+      "id": 27,
+      "name": "Social Engineering via Agent",
+      "category": "user-manipulation",
+      "phase": "execution",
+      "severity": "medium",
+      "description": "에이전트 메시지로 사용자를 속여 위험한 명령 실행 승인 유도",
+      "reference": "",
+      "tags": [
+        "social-engineering",
+        "user",
+        "approval"
+      ],
+      "threat_ids": [
+        "user-manipulation"
+      ],
+      "control_ids": [
+        "human-approval",
+        "transparency-logging",
+        "action-explanation"
+      ],
+      "mitre_ids": [
+        "ATLAS-AML.T0048"
+      ],
+      "timeline_event_ids": [],
+      "cve_ids": [],
+      "flow_path": [
+        "B",
+        "F",
+        "user"
+      ]
+    },
+    {
+      "id": 28,
+      "name": "Multi-Agent Coordination Attack",
+      "category": "multi-stage",
+      "phase": "lateral_movement",
+      "severity": "high",
+      "description": "Agent A가 Agent B에 명령 전송 → 분산 공격 수행",
+      "reference": "",
+      "tags": [
+        "multi-agent",
+        "coordination",
+        "distributed"
+      ],
+      "threat_ids": [
+        "privilege-escalation",
+        "remote-code-execution"
+      ],
+      "control_ids": [
+        "capability-scoping",
+        "runtime-monitoring",
+        "policy-enforcement"
+      ],
+      "mitre_ids": [
+        "ATTACK-T1068"
+      ],
+      "timeline_event_ids": [],
+      "cve_ids": [],
+      "flow_path": [
+        "B",
+        "B",
+        "C"
+      ]
+    },
+    {
+      "id": 29,
+      "name": "Agent Planner Hijacking",
+      "category": "prompt-injection",
+      "phase": "execution",
+      "severity": "high",
+      "description": "추론/계획 레이어 조작 → 악성 태스크 계획 수립",
+      "reference": "",
+      "tags": [
+        "planner",
+        "reasoning",
+        "hijack"
+      ],
+      "threat_ids": [
+        "indirect-prompt-injection",
+        "user-manipulation"
+      ],
+      "control_ids": [
+        "prompt-filtering",
+        "input-validation",
+        "capability-scoping"
+      ],
+      "mitre_ids": [
+        "ATLAS-AML.T0051"
+      ],
+      "timeline_event_ids": [],
+      "cve_ids": [],
+      "flow_path": [
+        "user",
+        "A",
+        "B"
+      ]
+    },
+    {
+      "id": 30,
+      "name": "Enterprise Shadow-AI Compromise",
+      "category": "credential-theft",
+      "phase": "impact",
+      "severity": "critical",
+      "description": "엔터프라이즈 시스템 권한으로 실행되는 AI 에이전트 → 기업 전체 침해",
+      "reference": "Cyera Labs",
+      "tags": [
+        "enterprise",
+        "shadow-ai",
+        "privileges"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "privilege-escalation",
+        "data-exfiltration"
+      ],
+      "control_ids": [
+        "least-privilege",
+        "policy-enforcement",
+        "secrets-isolation",
+        "runtime-monitoring"
+      ],
+      "mitre_ids": [
+        "ATLAS-AML.T0024",
+        "ATTACK-T1068"
+      ],
+      "timeline_event_ids": [
+        15,
+        16
+      ],
+      "cve_ids": [],
+      "flow_path": [
+        "B",
+        "C",
+        "A",
+        "external"
+      ]
+    },
+    {
+      "id": 31,
+      "name": "MCP Server Exposure Attack",
+      "category": "credential-theft",
+      "phase": "reconnaissance",
+      "severity": "critical",
+      "description": "인증 없이 노출된 MCP 서버 스캔 → 관리자 패널, API 키, DB 인증정보, 에이전트 대화 기록 탈취. 8,000+ 서버 영향",
+      "reference": "Medium / r/cybersecurity",
+      "tags": [
+        "mcp",
+        "no-auth",
+        "mass-exposure",
+        "credential-harvest"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "data-exfiltration",
+        "remote-code-execution"
+      ],
+      "control_ids": [
+        "network-egress-control",
+        "secrets-isolation",
+        "least-privilege"
+      ],
+      "mitre_ids": [
+        "ATTACK-T1552",
+        "ATTACK-T1041",
+        "ATLAS-AML.T0024"
+      ],
+      "timeline_event_ids": [
+        34,
+        35
+      ],
+      "cve_ids": [],
+      "flow_path": [
+        "external",
+        "A",
+        "B",
+        "C"
+      ]
+    },
+    {
+      "id": 32,
+      "name": "MCP Tool Poisoning via Rug Pull",
+      "category": "supply-chain-attack",
+      "phase": "execution",
+      "severity": "critical",
+      "description": "MCP 도구 디스크립터를 승인 후 변경(Rug Pull) → 신뢰된 도구가 악성 행동 수행. 도구 메타데이터 조작으로 에이전트 도구 선택 하이재킹",
+      "reference": "arXiv 2602.19555",
+      "tags": [
+        "mcp",
+        "rug-pull",
+        "tool-poisoning",
+        "descriptor-manipulation"
+      ],
+      "threat_ids": [
+        "supply-chain-attack",
+        "indirect-prompt-injection",
+        "unsafe-tool-use"
+      ],
+      "control_ids": [
+        "provenance-verification",
+        "runtime-monitoring",
+        "signed-skill-packages",
+        "input-validation"
+      ],
+      "mitre_ids": [
+        "ATLAS-AML.T0010",
+        "ATLAS-AML.T0051"
+      ],
+      "timeline_event_ids": [
+        33
+      ],
+      "cve_ids": [],
+      "flow_path": [
+        "external",
+        "C",
+        "B"
+      ]
+    },
+    {
+      "id": 33,
+      "name": "AI Coding Assistant Prompt Injection",
+      "category": "prompt-injection",
+      "phase": "execution",
+      "severity": "critical",
+      "description": "악성 코드 저장소/문서/API 응답에 숨겨진 명령 삽입 → AI 코딩 어시스턴트가 악성 명령 실행. auto-approve 설정 변경으로 RAT화 가능",
+      "reference": "TechBuzz / WebAsha",
+      "tags": [
+        "coding-assistant",
+        "repository-injection",
+        "auto-approve",
+        "rat"
+      ],
+      "threat_ids": [
+        "indirect-prompt-injection",
+        "remote-code-execution",
+        "supply-chain-attack"
+      ],
+      "control_ids": [
+        "content-filtering",
+        "sandboxing",
+        "human-approval",
+        "capability-scoping"
+      ],
+      "mitre_ids": [
+        "ATLAS-AML.T0051.001",
+        "ATTACK-T1059",
+        "ATTACK-T1195"
+      ],
+      "timeline_event_ids": [],
+      "cve_ids": [],
+      "flow_path": [
+        "user",
+        "A",
+        "B",
+        "C",
+        "local"
+      ]
+    },
+    {
+      "id": 34,
+      "name": "Voice Extension Pre-Auth RCE (CVE-2026-28446)",
+      "category": "remote-code-execution",
+      "phase": "execution",
+      "severity": "critical",
+      "description": "voice-call 확장의 빈 Caller ID 및 접미사 매칭으로 인바운드 허용목록 우회 → 인증 없이 원격 코드 실행. CVSS 9.8. 42,000+ 인스턴스 영향",
+      "reference": "DEV Community",
+      "tags": [
+        "voice-call",
+        "pre-auth",
+        "rce",
+        "cvss-9.8"
+      ],
+      "threat_ids": [
+        "remote-code-execution"
+      ],
+      "control_ids": [
+        "input-validation",
+        "network-egress-control",
+        "sandboxing"
+      ],
+      "mitre_ids": [
+        "ATTACK-T1059"
+      ],
+      "timeline_event_ids": [
+        38
+      ],
+      "cve_ids": [
+        "CVE-2026-28446"
+      ],
+      "flow_path": [
+        "H",
+        "A",
+        "B",
+        "local"
+      ]
+    },
+    {
+      "id": 35,
+      "name": "PATH Hijacking via Project Bootstrap (CVE-2026-29610)",
+      "category": "remote-code-execution",
+      "phase": "execution",
+      "severity": "high",
+      "description": "공격자 제어 디렉토리에서 OpenClaw 실행 시 PATH 조작 → allowlisted safe-bin 명령을 악성 바이너리로 대체하여 임의 명령 실행",
+      "reference": "RedPacket Security",
+      "tags": [
+        "path-hijacking",
+        "command-hijacking",
+        "safe-bin"
+      ],
+      "threat_ids": [
+        "remote-code-execution",
+        "privilege-escalation"
+      ],
+      "control_ids": [
+        "sandboxing",
+        "capability-scoping",
+        "input-validation"
+      ],
+      "mitre_ids": [
+        "ATTACK-T1574.007",
+        "ATTACK-T1059"
+      ],
+      "timeline_event_ids": [
+        40
+      ],
+      "cve_ids": [
+        "CVE-2026-29610"
+      ],
+      "flow_path": [
+        "A",
+        "B",
+        "C",
+        "local"
+      ]
+    },
+    {
+      "id": 36,
+      "name": "Browser Control Auth Bypass (CVE-2026-28485)",
+      "category": "hijacking",
+      "phase": "execution",
+      "severity": "high",
+      "description": "/agent/act 브라우저 제어 라우트에 인증 미적용 → 로컬 네트워크의 비인가 호출자가 에이전트 권한 작업 수행. CI 러너 및 개발 워크스테이션 위험",
+      "reference": "RedPacket Security / THREATINT",
+      "tags": [
+        "auth-bypass",
+        "browser-control",
+        "local-network"
+      ],
+      "threat_ids": [
+        "remote-code-execution",
+        "privilege-escalation"
+      ],
+      "control_ids": [
+        "network-egress-control",
+        "least-privilege",
+        "sandboxing"
+      ],
+      "mitre_ids": [
+        "ATTACK-T1059",
+        "ATTACK-T1068"
+      ],
+      "timeline_event_ids": [
+        41
+      ],
+      "cve_ids": [
+        "CVE-2026-28485"
+      ],
+      "flow_path": [
+        "A",
+        "B",
+        "D"
+      ]
+    },
+    {
+      "id": 37,
+      "name": "Pre-commit Hook Option Injection (CVE-2026-28484)",
+      "category": "supply-chain-attack",
+      "phase": "initial_access",
+      "severity": "high",
+      "description": "대시(-)로 시작하는 악성 파일명 → pre-commit 훅이 git 플래그로 해석 → .gitignore 파일 포함 전체 파일 스테이징. 비밀정보 유출 가능",
+      "reference": "SentinelOne",
+      "tags": [
+        "pre-commit",
+        "option-injection",
+        "git-hooks"
+      ],
+      "threat_ids": [
+        "supply-chain-attack",
+        "data-exfiltration"
+      ],
+      "control_ids": [
+        "input-validation",
+        "secrets-isolation"
+      ],
+      "mitre_ids": [
+        "ATTACK-T1195",
+        "ATTACK-T1552"
+      ],
+      "timeline_event_ids": [
+        42
+      ],
+      "cve_ids": [
+        "CVE-2026-28484"
+      ],
+      "flow_path": [
+        "external",
+        "C",
+        "B"
+      ]
+    },
+    {
+      "id": 38,
+      "name": "Mass Instance Exposure Attack",
+      "category": "credential-theft",
+      "phase": "reconnaissance",
+      "severity": "critical",
+      "description": "공개 인터넷에 노출된 135,000+ OpenClaw 인스턴스 스캔 → 63% 취약, 12,812개 RCE 공격 가능. 549개 인스턴스에서 기존 침해 활동 확인",
+      "reference": "SecurityScorecard STRIKE",
+      "tags": [
+        "shodan",
+        "mass-exposure",
+        "135k-instances",
+        "misconfiguration"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "remote-code-execution",
+        "data-exfiltration"
+      ],
+      "control_ids": [
+        "network-egress-control",
+        "least-privilege",
+        "runtime-monitoring"
+      ],
+      "mitre_ids": [
+        "ATTACK-T1595",
+        "ATTACK-T1552",
+        "ATLAS-AML.T0024"
+      ],
+      "timeline_event_ids": [
+        39
+      ],
+      "cve_ids": [],
+      "flow_path": [
+        "external",
+        "A",
+        "B"
+      ]
+    },
+    {
+      "id": 39,
+      "name": "Nostr Profile Tampering (CVE-2026-28450)",
+      "category": "hijacking",
+      "phase": "persistence",
+      "severity": "high",
+      "description": "Nostr 채널 플러그인의 비인증 프로필 엔드포인트 → 원격 프로필/설정 변조 → 에이전트 아이덴티티 하이재킹. CVSS 8.3",
+      "reference": "GitLab Advisory / dCERT",
+      "tags": [
+        "nostr",
+        "profile-tampering",
+        "config-manipulation"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "indirect-prompt-injection"
+      ],
+      "control_ids": [
+        "input-validation",
+        "least-privilege",
+        "network-egress-control"
+      ],
+      "mitre_ids": [
+        "ATLAS-AML.T0051",
+        "ATTACK-T1098"
+      ],
+      "timeline_event_ids": [
+        43
+      ],
+      "cve_ids": [
+        "CVE-2026-28450"
+      ],
+      "flow_path": [
+        "H",
+        "A",
+        "B"
+      ]
+    },
+    {
+      "id": 40,
+      "name": "ClawHavoc Expanded Campaign (1,184+ Skills)",
+      "category": "supply-chain-attack",
+      "phase": "initial_access",
+      "severity": "critical",
+      "description": "ClawHavoc 캠페인 확대 → 1,184+ 악성 스킬 식별 (전체 10,700개 중 ~11%). ClickFix 소셜 엔지니어링, VirusTotal 우회, 오프레지스트리 페이로드 호스팅 기법 사용. $100M+ 암호화폐 도난 위험",
+      "reference": "CyberPress / VirusTotal Blog / AInvest",
+      "tags": [
+        "clawhavoc-expanded",
+        "1184-skills",
+        "clickfix",
+        "vt-bypass"
+      ],
+      "threat_ids": [
+        "supply-chain-attack",
+        "credential-theft",
+        "remote-code-execution"
+      ],
+      "control_ids": [
+        "signed-skill-packages",
+        "provenance-verification",
+        "dependency-scanning",
+        "registry-integrity"
+      ],
+      "mitre_ids": [
+        "ATTACK-T1195",
+        "ATLAS-AML.T0010",
+        "ATTACK-T1204"
+      ],
+      "timeline_event_ids": [
+        44
+      ],
+      "cve_ids": [],
+      "flow_path": [
+        "external",
+        "C",
+        "B"
+      ]
+    },
+    {
+      "id": 41,
+      "name": "Cline CLI Supply Chain Attack",
+      "category": "supply-chain-attack",
+      "phase": "initial_access",
+      "severity": "critical",
+      "description": "탈취된 npm 토큰으로 cline@2.3.0 배포 → post-install 훅이 ~4,000개 개발자 머신에 OpenClaw 자동 설치. 8시간 동안 진행",
+      "reference": "The Hacker News / The Register / Snyk",
+      "tags": [
+        "npm",
+        "supply-chain",
+        "cline",
+        "postinstall"
+      ],
+      "threat_ids": [
+        "supply-chain-attack",
+        "remote-code-execution"
+      ],
+      "control_ids": [
+        "provenance-verification",
+        "dependency-scanning",
+        "registry-integrity"
+      ],
+      "mitre_ids": [
+        "ATTACK-T1195",
+        "ATLAS-AML.T0010"
+      ],
+      "timeline_event_ids": [
+        48
+      ],
+      "cve_ids": [],
+      "flow_path": [
+        "external",
+        "C",
+        "B"
+      ]
+    },
+    {
+      "id": 42,
+      "name": "Perplexity Comet Zero-Click Agent Hijack",
+      "category": "hijacking",
+      "phase": "execution",
+      "severity": "critical",
+      "description": "공격자 제어 콘텐츠(캘린더 초대 등)가 에이전트 자율 실행 트리거 → 사용자 상호작용 없이 인증정보 탈취 및 파일 유출. 1Password 볼트 탈취 가능",
+      "reference": "Zenity Labs / CyberNews",
+      "tags": [
+        "zero-click",
+        "browser-agent",
+        "credential-theft",
+        "file-exfiltration"
+      ],
+      "threat_ids": [
+        "indirect-prompt-injection",
+        "credential-theft",
+        "data-exfiltration"
+      ],
+      "control_ids": [
+        "sandboxing",
+        "capability-scoping",
+        "human-approval"
+      ],
+      "mitre_ids": [
+        "ATLAS-AML.T0051.001",
+        "ATTACK-T1552"
+      ],
+      "timeline_event_ids": [
+        50
+      ],
+      "cve_ids": [],
+      "flow_path": [
+        "user",
+        "A",
+        "B",
+        "C"
+      ]
+    },
+    {
+      "id": 43,
+      "name": "Promptware Kill Chain (Multi-Stage)",
+      "category": "multi-stage",
+      "phase": "execution",
+      "severity": "critical",
+      "description": "프롬프트 인젝션을 초기 접근으로 활용하는 다단계 킬체인 — 전통적 맬웨어 캠페인과 동일한 패턴. Bruce Schneier 공식화",
+      "reference": "Lawfare / Schneier on Security",
+      "tags": [
+        "promptware",
+        "kill-chain",
+        "multi-stage",
+        "schneier"
+      ],
+      "threat_ids": [
+        "indirect-prompt-injection",
+        "remote-code-execution"
+      ],
+      "control_ids": [
+        "prompt-filtering",
+        "runtime-monitoring",
+        "sandboxing"
+      ],
+      "mitre_ids": [
+        "ATLAS-AML.T0051",
+        "ATLAS-AML.T0051.001"
+      ],
+      "timeline_event_ids": [
+        51
+      ],
+      "cve_ids": [],
+      "flow_path": [
+        "user",
+        "A",
+        "B",
+        "C",
+        "local"
+      ]
+    },
+    {
+      "id": 44,
+      "name": "MCP Sampling Prompt Injection",
+      "category": "prompt-injection",
+      "phase": "execution",
+      "severity": "high",
+      "description": "MCP 서버가 sampling 요청의 프롬프트 내용과 응답 처리를 제어 → 새로운 프롬프트 인젝션 벡터. Palo Alto Unit 42 문서화",
+      "reference": "Unit 42 / Palo Alto Networks",
+      "tags": [
+        "mcp",
+        "sampling",
+        "prompt-injection",
+        "server-control"
+      ],
+      "threat_ids": [
+        "indirect-prompt-injection",
+        "unsafe-tool-use"
+      ],
+      "control_ids": [
+        "input-validation",
+        "content-filtering",
+        "capability-scoping"
+      ],
+      "mitre_ids": [
+        "ATLAS-AML.T0051.001"
+      ],
+      "timeline_event_ids": [],
+      "cve_ids": [],
+      "flow_path": [
+        "user",
+        "A",
+        "B"
+      ]
+    },
+    {
+      "id": 45,
+      "name": "Delayed Tool Invocation Attack",
+      "category": "prompt-injection",
+      "phase": "persistence",
+      "severity": "high",
+      "description": "LLM이 삽입된 명령을 지연 타이밍으로 실행하도록 유도 — Google Calendar 초대에 악성 프롬프트 삽입, workspace 장기 메모리에 지속",
+      "reference": "IEEE Spectrum",
+      "tags": [
+        "delayed-execution",
+        "calendar",
+        "memory-persistence",
+        "timing"
+      ],
+      "threat_ids": [
+        "indirect-prompt-injection",
+        "memory-poisoning"
+      ],
+      "control_ids": [
+        "memory-integrity-checks",
+        "content-filtering",
+        "periodic-audit"
+      ],
+      "mitre_ids": [
+        "ATLAS-AML.T0051.001",
+        "ATLAS-AML.T0020"
+      ],
+      "timeline_event_ids": [],
+      "cve_ids": [],
+      "flow_path": [
+        "user",
+        "A",
+        "B",
+        "E"
+      ]
+    },
+    {
+      "id": 46,
+      "name": "SKILL.md to Shell Access (3 Lines)",
+      "category": "remote-code-execution",
+      "phase": "execution",
+      "severity": "critical",
+      "description": "3줄의 마크다운만으로 SKILL.md에서 셸 접근 획득. Snyk 데모 — 에이전트 스킬 시스템의 근본적 보안 취약성 증명",
+      "reference": "Snyk",
+      "tags": [
+        "skillmd",
+        "shell-access",
+        "3-lines",
+        "minimal-exploit"
+      ],
+      "threat_ids": [
+        "indirect-prompt-injection",
+        "remote-code-execution"
+      ],
+      "control_ids": [
+        "sandboxing",
+        "input-validation",
+        "capability-scoping"
+      ],
+      "mitre_ids": [
+        "ATLAS-AML.T0051.001",
+        "ATTACK-T1059"
+      ],
+      "timeline_event_ids": [],
+      "cve_ids": [],
+      "flow_path": [
+        "user",
+        "A",
+        "B",
+        "C",
+        "local"
+      ]
+    }
   ],
   "mitre_mapping": [
-    { "skill_type": "Browser automation", "attack_vector": "Web prompt injection", "technique": "Prompt Injection", "mitre_ids": ["ATLAS-AML.T0051", "ATLAS-AML.T0051.001"] },
-    { "skill_type": "Web scraper", "attack_vector": "Poisoned content", "technique": "Data Poisoning", "mitre_ids": ["ATLAS-AML.T0020"] },
-    { "skill_type": "Filesystem", "attack_vector": "File reading", "technique": "Data Exfiltration", "mitre_ids": ["ATTACK-T1041", "ATTACK-T1552"] },
-    { "skill_type": "Shell execution", "attack_vector": "Command running", "technique": "Remote Code Execution", "mitre_ids": ["ATTACK-T1059", "ATLAS-AML.T0011"] },
-    { "skill_type": "Crypto trading", "attack_vector": "Wallet integration", "technique": "Credential Theft", "mitre_ids": ["ATLAS-AML.T0024", "ATTACK-T1552"] },
-    { "skill_type": "RAG knowledge", "attack_vector": "Memory pollution", "technique": "Knowledge Manipulation", "mitre_ids": ["ATLAS-AML.T0020"] },
-    { "skill_type": "Calendar/email", "attack_vector": "Social engineering", "technique": "User Manipulation", "mitre_ids": ["ATLAS-AML.T0048"] },
-    { "skill_type": "DevOps", "attack_vector": "CI/CD compromise", "technique": "Supply Chain Attack", "mitre_ids": ["ATTACK-T1195", "ATLAS-AML.T0010"] },
-    { "skill_type": "API integration", "attack_vector": "Key theft", "technique": "Credential Access", "mitre_ids": ["ATLAS-AML.T0024", "ATTACK-T1552"] },
-    { "skill_type": "Automation", "attack_vector": "Privilege escalation", "technique": "Privilege Escalation", "mitre_ids": ["ATTACK-T1068"] }
+    {
+      "skill_type": "Browser automation",
+      "attack_vector": "Web prompt injection",
+      "technique": "Prompt Injection",
+      "mitre_ids": [
+        "ATLAS-AML.T0051",
+        "ATLAS-AML.T0051.001"
+      ]
+    },
+    {
+      "skill_type": "Web scraper",
+      "attack_vector": "Poisoned content",
+      "technique": "Data Poisoning",
+      "mitre_ids": [
+        "ATLAS-AML.T0020"
+      ]
+    },
+    {
+      "skill_type": "Filesystem",
+      "attack_vector": "File reading",
+      "technique": "Data Exfiltration",
+      "mitre_ids": [
+        "ATTACK-T1041",
+        "ATTACK-T1552"
+      ]
+    },
+    {
+      "skill_type": "Shell execution",
+      "attack_vector": "Command running",
+      "technique": "Remote Code Execution",
+      "mitre_ids": [
+        "ATTACK-T1059",
+        "ATLAS-AML.T0011"
+      ]
+    },
+    {
+      "skill_type": "Crypto trading",
+      "attack_vector": "Wallet integration",
+      "technique": "Credential Theft",
+      "mitre_ids": [
+        "ATLAS-AML.T0024",
+        "ATTACK-T1552"
+      ]
+    },
+    {
+      "skill_type": "RAG knowledge",
+      "attack_vector": "Memory pollution",
+      "technique": "Knowledge Manipulation",
+      "mitre_ids": [
+        "ATLAS-AML.T0020"
+      ]
+    },
+    {
+      "skill_type": "Calendar/email",
+      "attack_vector": "Social engineering",
+      "technique": "User Manipulation",
+      "mitre_ids": [
+        "ATLAS-AML.T0048"
+      ]
+    },
+    {
+      "skill_type": "DevOps",
+      "attack_vector": "CI/CD compromise",
+      "technique": "Supply Chain Attack",
+      "mitre_ids": [
+        "ATTACK-T1195",
+        "ATLAS-AML.T0010"
+      ]
+    },
+    {
+      "skill_type": "API integration",
+      "attack_vector": "Key theft",
+      "technique": "Credential Access",
+      "mitre_ids": [
+        "ATLAS-AML.T0024",
+        "ATTACK-T1552"
+      ]
+    },
+    {
+      "skill_type": "Automation",
+      "attack_vector": "Privilege escalation",
+      "technique": "Privilege Escalation",
+      "mitre_ids": [
+        "ATTACK-T1068"
+      ]
+    }
   ],
   "references": [
-    { "source": "Koi.ai", "topic": "ClawHavoc — 341개 악성 스킬 캠페인" },
-    { "source": "Trend Micro", "topic": "Atomic macOS Stealer 배포 연구" },
-    { "source": "Tom's Hardware", "topic": "Moltbot/MoltBot 암호화폐 사용자 타겟" },
-    { "source": "TechRadar", "topic": "ClawJacked, 가짜 저장소, Moltbot 취약점 공개" },
-    { "source": "Snyk", "topic": "ToxicSkills 연구, SKILL.md 취약점, 26% 취약점 비율" },
-    { "source": "Immersive Labs", "topic": "OpenClaw CVE 분석" },
-    { "source": "arXiv", "topic": "2601.10338, 2602.08412, 2603.00902" },
-    { "source": "Cisco Blogs", "topic": "Personal AI agents are a security nightmare" },
-    { "source": "Cyera Labs", "topic": "Enterprise Shadow-AI 침해 연구" },
-    { "source": "Microsoft Security Blog", "topic": "OpenClaw 런타임 리스크 분석" },
-    { "source": "MITRE ATLAS", "topic": "AI/ML 공격 분류 프레임워크" },
-    { "source": "SecurityScorecard STRIKE", "topic": "135,000+ 노출 인스턴스 분석, 63% 취약" },
-    { "source": "SentinelOne", "topic": "CVE-2026-28484 Pre-commit Hook Option Injection" },
-    { "source": "Palo Alto Networks", "topic": "Moltbot AI 보안 위기 분석" },
-    { "source": "Bitdefender", "topic": "Moltbot/Clawdbot 제어 패널 노출 경고" },
-    { "source": "CyberPress", "topic": "ClawHavoc 1,184+ 악성 스킬 캠페인" },
-    { "source": "VirusTotal Blog", "topic": "OpenClaw 스킬 무기화 분석" },
-    { "source": "Penligent", "topic": "220,000+ 노출 인스턴스 분석" },
-    { "source": "Bruce Schneier / Lawfare", "topic": "Promptware Kill Chain 프레임워크 정의" },
-    { "source": "Unit 42 / Palo Alto Networks", "topic": "MCP Sampling 프롬프트 인젝션 벡터" },
-    { "source": "Zenity Labs", "topic": "Perplexity Comet PleaseFix 제로클릭 에이전트 하이재킹" },
-    { "source": "IEEE Spectrum", "topic": "Delayed Tool Invocation 지연 실행 공격" },
-    { "source": "The Hacker News", "topic": "Cline CLI 공급망 공격" }
+    {
+      "source": "Koi.ai",
+      "topic": "ClawHavoc — 341개 악성 스킬 캠페인"
+    },
+    {
+      "source": "Trend Micro",
+      "topic": "Atomic macOS Stealer 배포 연구"
+    },
+    {
+      "source": "Tom's Hardware",
+      "topic": "Moltbot/MoltBot 암호화폐 사용자 타겟"
+    },
+    {
+      "source": "TechRadar",
+      "topic": "ClawJacked, 가짜 저장소, Moltbot 취약점 공개"
+    },
+    {
+      "source": "Snyk",
+      "topic": "ToxicSkills 연구, SKILL.md 취약점, 26% 취약점 비율"
+    },
+    {
+      "source": "Immersive Labs",
+      "topic": "OpenClaw CVE 분석"
+    },
+    {
+      "source": "arXiv",
+      "topic": "2601.10338, 2602.08412, 2603.00902"
+    },
+    {
+      "source": "Cisco Blogs",
+      "topic": "Personal AI agents are a security nightmare"
+    },
+    {
+      "source": "Cyera Labs",
+      "topic": "Enterprise Shadow-AI 침해 연구"
+    },
+    {
+      "source": "Microsoft Security Blog",
+      "topic": "OpenClaw 런타임 리스크 분석"
+    },
+    {
+      "source": "MITRE ATLAS",
+      "topic": "AI/ML 공격 분류 프레임워크"
+    },
+    {
+      "source": "SecurityScorecard STRIKE",
+      "topic": "135,000+ 노출 인스턴스 분석, 63% 취약"
+    },
+    {
+      "source": "SentinelOne",
+      "topic": "CVE-2026-28484 Pre-commit Hook Option Injection"
+    },
+    {
+      "source": "Palo Alto Networks",
+      "topic": "Moltbot AI 보안 위기 분석"
+    },
+    {
+      "source": "Bitdefender",
+      "topic": "Moltbot/Clawdbot 제어 패널 노출 경고"
+    },
+    {
+      "source": "CyberPress",
+      "topic": "ClawHavoc 1,184+ 악성 스킬 캠페인"
+    },
+    {
+      "source": "VirusTotal Blog",
+      "topic": "OpenClaw 스킬 무기화 분석"
+    },
+    {
+      "source": "Penligent",
+      "topic": "220,000+ 노출 인스턴스 분석"
+    },
+    {
+      "source": "Bruce Schneier / Lawfare",
+      "topic": "Promptware Kill Chain 프레임워크 정의"
+    },
+    {
+      "source": "Unit 42 / Palo Alto Networks",
+      "topic": "MCP Sampling 프롬프트 인젝션 벡터"
+    },
+    {
+      "source": "Zenity Labs",
+      "topic": "Perplexity Comet PleaseFix 제로클릭 에이전트 하이재킹"
+    },
+    {
+      "source": "IEEE Spectrum",
+      "topic": "Delayed Tool Invocation 지연 실행 공격"
+    },
+    {
+      "source": "The Hacker News",
+      "topic": "Cline CLI 공급망 공격"
+    }
   ]
 }

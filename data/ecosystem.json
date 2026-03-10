@@ -1,10 +1,11 @@
 {
+  "data_as_of": "2026-03-11",
   "overview": {
     "total_repos": "160~200+",
     "github_topic_repos": 3500,
     "exposed_panels": 18000,
     "malicious_skills_detected": 1184,
-    "malicious_skills_note": "ClawHub 등록 스킬 중 1,184개(~11%)가 악성 또는 의심 플래그. 이 중 341개는 ClawHavoc 1차 캠페인, 843개는 2차 확장 캠페인에서 식별.",
+    "malicious_skills_note": "ClawHavoc 캠페인 341개 포함, 전체 1,184개 악성 스킬 플래그",
     "skill_repos": "1000+",
     "description": "OpenClaw는 단일 프로젝트라기보다 에이전트 OS + skill marketplace 생태계 형태로 확장되고 있으며, ClawHub를 중심으로 수천 개의 확장과 repository가 파생되었습니다.",
     "architecture": "Agent App Store + Agent OS",
@@ -61,13 +62,21 @@
     ],
     "supply_chain": {
       "description": "GitHub repo → ClawHub registry → OpenClaw agent → Local execution 경로가 공급망 공격의 핵심 공격 표면",
-      "flow": ["GitHub Repos", "ClawHub Registry", "OpenClaw Agent", "Local Execution"],
+      "flow": [
+        "GitHub Repos",
+        "ClawHub Registry",
+        "OpenClaw Agent",
+        "Local Execution"
+      ],
       "risk": "악성 스킬 패키지를 통한 supply-chain attack이 핵심 위협 벡터"
     },
     "network_characteristics": {
       "topology": "Hub-and-Spoke",
       "properties": "Scale-Free Network",
-      "hubs": ["OpenClaw Runtime", "ClawHub Registry"],
+      "hubs": [
+        "OpenClaw Runtime",
+        "ClawHub Registry"
+      ],
       "vulnerability": "허브 노드에 취약점이 집중되며, 대부분의 repo가 중앙 허브에 의존"
     }
   },
@@ -178,171 +187,2793 @@
     }
   ],
   "repos": [
-    { "id": "openclaw-main", "name": "openclaw/openclaw", "category": "core-platforms", "description": "Your own personal AI assistant. Any OS. Any Platform. The lobster way.", "language": "TypeScript", "stars": 295500, "url": "https://github.com/openclaw/openclaw", "tags": ["core", "runtime", "agent", "flagship"], "threat_ids": ["prompt-injection", "privilege-escalation", "remote-code-execution"], "note": "GitHub 최다 스타 프로젝트 (2025.11 출시)" },
-    { "id": "moltbook", "name": "openclaw/moltbook", "category": "core-platforms", "description": "OpenClaw 공식 데스크톱 앱 — 통합 에이전트 인터페이스", "language": "TypeScript", "stars": 0, "url": "https://github.com/openclaw/moltbook", "tags": ["desktop", "app", "gui"], "threat_ids": [], "note": "데스크톱 네이티브 앱" },
-    { "id": "clawhub", "name": "openclaw/clawhub", "category": "core-platforms", "description": "Skill Directory for OpenClaw — 5,700+ skills 등록 레지스트리", "language": "TypeScript", "stars": 5168, "url": "https://github.com/openclaw/clawhub", "tags": ["skill", "registry", "marketplace"], "threat_ids": ["supply-chain-attack", "data-poisoning"], "note": "공식 스킬 마켓플레이스", "directory_repo_id": "clawhub-registry" },
-    { "id": "claw-gateway", "name": "openclaw/claw-gateway", "category": "core-platforms", "description": "Agent Gateway — 에이전트 간 통신 및 외부 API 게이트웨이", "language": "TypeScript", "stars": 0, "url": "https://github.com/openclaw/claw-gateway", "tags": ["gateway", "api", "communication"], "threat_ids": ["credential-theft"], "note": "에이전트 통신 게이트웨이" },
-    { "id": "claw-cli", "name": "openclaw/claw-cli", "category": "core-platforms", "description": "OpenClaw CLI — 명령줄 인터페이스 도구", "language": "TypeScript", "stars": 0, "url": "https://github.com/openclaw/claw-cli", "tags": ["cli", "terminal"], "threat_ids": [], "note": "CLI 도구" },
-    { "id": "claw-agent", "name": "openclaw/claw-agent", "category": "core-platforms", "description": "Core agent runtime — 태스크 실행 및 스킬 오케스트레이션", "language": "TypeScript", "stars": 0, "url": "https://github.com/openclaw/claw-agent", "tags": ["agent", "runtime", "orchestration"], "threat_ids": ["prompt-injection", "privilege-escalation"], "note": "핵심 에이전트 런타임" },
-    { "id": "claw-runtime", "name": "openclaw/claw-runtime", "category": "core-platforms", "description": "OpenClaw execution runtime — 태스크 스케줄링, 메모리 관리", "language": "TypeScript", "stars": 0, "url": "https://github.com/openclaw/claw-runtime", "tags": ["runtime", "scheduler", "memory"], "threat_ids": ["remote-code-execution"], "note": "실행 런타임 엔진" },
-    { "id": "claw-core", "name": "openclaw/claw-core", "category": "core-platforms", "description": "OpenClaw core library — 공유 핵심 모듈 및 유틸리티", "language": "TypeScript", "stars": 0, "url": "https://github.com/openclaw/claw-core", "tags": ["core", "library", "shared"], "threat_ids": [], "note": "공유 핵심 라이브러리" },
-    { "id": "cowagent", "name": "cowagent/cowagent", "category": "core-platforms", "description": "유사 에이전트 플랫폼 — OpenClaw 호환 에이전트", "language": "Python", "stars": 0, "url": "https://github.com/cowagent/cowagent", "tags": ["agent", "compatible"], "threat_ids": [], "note": "OpenClaw 유사 프로젝트" },
-    { "id": "cherry-studio", "name": "cherry-studio/cherry-studio", "category": "core-platforms", "description": "Cherry Studio — AI 에이전트 데스크톱 클라이언트", "language": "TypeScript", "stars": 0, "url": "https://github.com/cherry-studio/cherry-studio", "tags": ["desktop", "client", "gui"], "threat_ids": [], "note": "유사 데스크톱 AI 클라이언트" },
-    { "id": "clawdbot", "name": "openclaw/clawdbot", "category": "core-platforms", "description": "Clawdbot — OpenClaw의 초기 이름, 원본 에이전트 봇", "language": "TypeScript", "stars": 0, "url": "https://github.com/openclaw/clawdbot", "tags": ["bot", "original", "legacy"], "threat_ids": [], "note": "OpenClaw 초기 이름 (clawdbot → moltbot → openclaw)" },
-    { "id": "moltbot", "name": "openclaw/moltbot", "category": "core-platforms", "description": "Moltbot — OpenClaw 중간 명칭의 에이전트 봇", "language": "TypeScript", "stars": 0, "url": "https://github.com/openclaw/moltbot", "tags": ["bot", "legacy"], "threat_ids": [], "note": "상표 이슈로 인한 중간 명칭" },
-
-    { "id": "nanoclaw", "name": "qwibitai/nanoclaw", "category": "lightweight", "description": "Lightweight OpenClaw alternative in containers. WhatsApp/Telegram/Slack/Discord/Gmail 지원. Anthropic Agents SDK 기반.", "language": "TypeScript", "stars": 8600, "url": "https://github.com/qwibitai/nanoclaw", "tags": ["typescript", "container", "messaging", "anthropic-sdk"], "threat_ids": ["credential-theft", "data-exfiltration", "indirect-prompt-injection"], "note": "컨테이너 기반, 멀티 메신저 지원", "directory_repo_id": "nanoclaw" },
-    { "id": "picoclaw", "name": "sipeed/picoclaw", "category": "lightweight", "description": "Tiny, Fast, Deployable anywhere. Built for $10 hardware, <10MB RAM, RISC-V support.", "language": "Go", "stars": 16300, "url": "https://github.com/sipeed/picoclaw", "tags": ["go", "embedded", "risc-v", "iot", "tiny"], "threat_ids": ["privilege-escalation", "unsafe-tool-use"], "note": "$10 하드웨어, RISC-V 지원 초소형 에이전트" },
-    { "id": "zeroclaw", "name": "zeroclaw-labs/zeroclaw", "category": "lightweight", "description": "Fast, small, fully autonomous AI assistant. <5MB RAM, <10ms startup, 22+ AI providers. Built by Harvard/MIT.", "language": "Rust", "stars": 14900, "url": "https://github.com/zeroclaw-labs/zeroclaw", "tags": ["rust", "lightweight", "autonomous", "fast"], "threat_ids": ["prompt-injection", "privilege-escalation"], "note": "Rust 기반 초경량. Harvard/MIT 팀." },
-    { "id": "microclaw", "name": "microclaw/microclaw", "category": "lightweight", "description": "Micro-sized Rust-based AI assistant — 최소 바이너리 에이전트", "language": "Rust", "stars": 0, "url": "https://github.com/microclaw/microclaw", "tags": ["rust", "micro", "minimal"], "threat_ids": ["prompt-injection"], "note": "Rust 기반 마이크로 에이전트" },
-    { "id": "miniclaw", "name": "miniclaw/miniclaw", "category": "lightweight", "description": "Mini Claw — 중소형 에이전트, 기본 기능 중심", "language": "Python", "stars": 0, "url": "https://github.com/miniclaw/miniclaw", "tags": ["python", "mini", "basic"], "threat_ids": [], "note": "기본 기능 중심 미니 에이전트" },
-    { "id": "ultraclaw", "name": "ultraclaw/ultraclaw", "category": "lightweight", "description": "UltraClaw — 고성능 최적화 에이전트 변형", "language": "Rust", "stars": 0, "url": "https://github.com/ultraclaw/ultraclaw", "tags": ["rust", "performance", "optimized"], "threat_ids": [], "note": "성능 최적화 에이전트" },
-    { "id": "fastclaw", "name": "fastclaw/fastclaw", "category": "lightweight", "description": "FastClaw — 속도 특화 경량 에이전트", "language": "Go", "stars": 0, "url": "https://github.com/fastclaw/fastclaw", "tags": ["go", "fast", "speed"], "threat_ids": [], "note": "속도 최적화 에이전트" },
-    { "id": "tinyclaw", "name": "warengonzaga/tinyclaw", "category": "lightweight", "description": "The original Tiny Claw — personal autonomous AI companion. Multi-agent teams.", "language": "TypeScript", "stars": 1800, "url": "https://github.com/warengonzaga/tinyclaw", "tags": ["typescript", "multi-agent", "tiny"], "threat_ids": ["prompt-injection", "unsafe-tool-use"], "note": "멀티 에이전트 팀 지원" },
-    { "id": "slimclaw", "name": "slimclaw/slimclaw", "category": "lightweight", "description": "SlimClaw — 저자원 환경용 슬림 에이전트", "language": "Python", "stars": 0, "url": "https://github.com/slimclaw/slimclaw", "tags": ["python", "slim", "low-resource"], "threat_ids": [], "note": "저자원 환경 최적화" },
-    { "id": "nanobot", "name": "HKUDS/nanobot", "category": "lightweight", "description": "The Ultra-Lightweight OpenClaw (~4,000 lines). 13+ LLM providers, MCP support.", "language": "Python", "stars": 0, "url": "https://github.com/HKUDS/nanobot", "tags": ["python", "ultra-lightweight", "mcp"], "threat_ids": ["prompt-injection"], "note": "4,000줄 초경량 구현체" },
-
-    { "id": "esp32-claw", "name": "esp32-claw/esp32-claw", "category": "hardware", "description": "ESP32 기반 AI 에이전트 — WiFi/BLE 연결 마이크로컨트롤러 에이전트", "language": "C", "stars": 0, "url": "https://github.com/esp32-claw/esp32-claw", "tags": ["esp32", "wifi", "ble", "mcu"], "threat_ids": ["unsafe-tool-use", "privilege-escalation"], "note": "ESP32 MCU 에이전트" },
-    { "id": "mimiclaw", "name": "memovai/mimiclaw", "category": "hardware", "description": "MimiClaw: Run OpenClaw on a $5 ESP32-S3 chip. No OS, No Node.js. Hardware agents.", "language": "C", "stars": 1900, "url": "https://github.com/memovai/mimiclaw", "tags": ["c", "esp32", "hardware", "embedded", "no-os"], "threat_ids": ["privilege-escalation", "unsafe-tool-use"], "note": "$5 ESP32 칩 하드웨어 에이전트" },
-    { "id": "iotclaw", "name": "iotclaw/iotclaw", "category": "hardware", "description": "IoTClaw — IoT 디바이스 제어용 에이전트 프레임워크", "language": "Python", "stars": 0, "url": "https://github.com/iotclaw/iotclaw", "tags": ["iot", "device-control", "framework"], "threat_ids": ["unsafe-tool-use", "credential-theft"], "note": "IoT 디바이스 제어" },
-    { "id": "boardclaw", "name": "boardclaw/boardclaw", "category": "hardware", "description": "BoardClaw — 싱글보드 컴퓨터(SBC) 전용 에이전트", "language": "Go", "stars": 0, "url": "https://github.com/boardclaw/boardclaw", "tags": ["sbc", "raspberry-pi", "embedded"], "threat_ids": [], "note": "Raspberry Pi 등 SBC 전용" },
-    { "id": "smartclaw", "name": "smartclaw/smartclaw", "category": "hardware", "description": "SmartClaw — 스마트홈 허브 에이전트", "language": "Python", "stars": 0, "url": "https://github.com/smartclaw/smartclaw", "tags": ["smarthome", "hub", "automation"], "threat_ids": ["unsafe-tool-use"], "note": "스마트홈 허브 에이전트" },
-    { "id": "roboclaw-agent", "name": "roboclaw/roboclaw-agent", "category": "hardware", "description": "RoboClaw Agent — 로봇 제어용 AI 에이전트", "language": "Python", "stars": 0, "url": "https://github.com/roboclaw/roboclaw-agent", "tags": ["robotics", "motor-control", "agent"], "threat_ids": ["unsafe-tool-use", "privilege-escalation"], "note": "로봇/모터 제어 에이전트" },
-    { "id": "homeclaw", "name": "homeclaw/homeclaw", "category": "hardware", "description": "HomeClaw — Home Assistant 연동 에이전트", "language": "Python", "stars": 0, "url": "https://github.com/homeclaw/homeclaw", "tags": ["home-assistant", "smart-home"], "threat_ids": ["credential-theft"], "note": "Home Assistant 통합" },
-    { "id": "deviceclaw", "name": "deviceclaw/deviceclaw", "category": "hardware", "description": "DeviceClaw — 범용 디바이스 관리 에이전트", "language": "Go", "stars": 0, "url": "https://github.com/deviceclaw/deviceclaw", "tags": ["device", "management", "universal"], "threat_ids": [], "note": "범용 디바이스 관리" },
-
-    { "id": "openclaw-sdk", "name": "openclaw/openclaw-sdk", "category": "framework-sdk", "description": "OpenClaw 공식 SDK — 에이전트 개발 표준 라이브러리", "language": "TypeScript", "stars": 0, "url": "https://github.com/openclaw/openclaw-sdk", "tags": ["sdk", "official", "library"], "threat_ids": [], "note": "공식 개발 SDK" },
-    { "id": "claw-agent-framework", "name": "openclaw/claw-agent-framework", "category": "framework-sdk", "description": "에이전트 구축 프레임워크 — 표준 에이전트 아키텍처 템플릿", "language": "TypeScript", "stars": 0, "url": "https://github.com/openclaw/claw-agent-framework", "tags": ["framework", "architecture", "template"], "threat_ids": [], "note": "표준 에이전트 아키텍처" },
-    { "id": "claw-tools", "name": "openclaw/claw-tools", "category": "framework-sdk", "description": "Claw Tools — 도구 실행 런타임 및 도구 정의 프레임워크", "language": "TypeScript", "stars": 0, "url": "https://github.com/openclaw/claw-tools", "tags": ["tools", "runtime", "execution"], "threat_ids": ["remote-code-execution", "unsafe-tool-use"], "note": "도구 실행 프레임워크" },
-    { "id": "claw-memory", "name": "openclaw/claw-memory", "category": "framework-sdk", "description": "Claw Memory — 벡터 DB, 장기 메모리, RAG 지원 메모리 시스템", "language": "Python", "stars": 0, "url": "https://github.com/openclaw/claw-memory", "tags": ["memory", "vector-db", "rag", "long-term"], "threat_ids": ["memory-poisoning", "knowledge-manipulation"], "note": "메모리/RAG 시스템" },
-    { "id": "claw-runtime-sdk", "name": "openclaw/claw-runtime-sdk", "category": "framework-sdk", "description": "런타임 SDK — 커스텀 런타임 환경 구축용", "language": "TypeScript", "stars": 0, "url": "https://github.com/openclaw/claw-runtime-sdk", "tags": ["runtime", "sdk", "custom"], "threat_ids": [], "note": "커스텀 런타임 SDK" },
-    { "id": "claw-plugin-sdk", "name": "openclaw/claw-plugin-sdk", "category": "framework-sdk", "description": "플러그인 SDK — 서드파티 플러그인 개발 키트", "language": "TypeScript", "stars": 0, "url": "https://github.com/openclaw/claw-plugin-sdk", "tags": ["plugin", "sdk", "third-party"], "threat_ids": ["supply-chain-attack"], "note": "플러그인 개발 키트" },
-    { "id": "claw-agent-template", "name": "openclaw/claw-agent-template", "category": "framework-sdk", "description": "에이전트 템플릿 — 빠른 에이전트 프로젝트 부트스트래핑", "language": "TypeScript", "stars": 0, "url": "https://github.com/openclaw/claw-agent-template", "tags": ["template", "boilerplate", "starter"], "threat_ids": [], "note": "에이전트 프로젝트 템플릿" },
-    { "id": "claw-skill-devkit", "name": "openclaw/claw-skill-devkit", "category": "framework-sdk", "description": "Skill DevKit — 스킬 개발, 테스트, 퍼블리시 도구", "language": "TypeScript", "stars": 0, "url": "https://github.com/openclaw/claw-skill-devkit", "tags": ["skill", "devkit", "publish", "test"], "threat_ids": [], "note": "스킬 개발 도구 키트" },
-
-    { "id": "openclaw-skills", "name": "openclaw/skills", "category": "skills-ecosystem", "description": "All versions of all skills archived from clawhub.com — 전체 스킬 아카이브", "language": "Python", "stars": 2472, "url": "https://github.com/openclaw/skills", "tags": ["skill", "archive", "registry"], "threat_ids": ["supply-chain-attack"], "note": "ClawHub 스킬 전체 아카이브" },
-    { "id": "awesome-openclaw-skills-volt", "name": "VoltAgent/awesome-openclaw-skills", "category": "skills-ecosystem", "description": "5,400+ skills filtered and categorized from the official registry", "language": "", "stars": 0, "url": "https://github.com/VoltAgent/awesome-openclaw-skills", "tags": ["awesome-list", "skills", "categorized"], "threat_ids": [], "note": "5,400+ 스킬 큐레이션" },
-    { "id": "claw-skills-browser", "name": "openclaw/claw-skills-browser", "category": "skills-ecosystem", "description": "브라우저 제어 스킬 — 웹 탐색, 데이터 추출, 폼 자동화", "language": "TypeScript", "stars": 0, "url": "https://github.com/openclaw/claw-skills-browser", "tags": ["browser", "web", "automation"], "threat_ids": ["indirect-prompt-injection", "data-exfiltration"], "note": "브라우저 자동화 스킬" },
-    { "id": "claw-skills-github", "name": "openclaw/claw-skills-github", "category": "skills-ecosystem", "description": "GitHub 연동 스킬 — PR, 이슈, 코드 리뷰, 저장소 관리", "language": "TypeScript", "stars": 0, "url": "https://github.com/openclaw/claw-skills-github", "tags": ["github", "pr", "issues", "code-review"], "threat_ids": ["credential-theft", "supply-chain-attack"], "note": "GitHub 통합 스킬" },
-    { "id": "claw-skills-search", "name": "openclaw/claw-skills-search", "category": "skills-ecosystem", "description": "검색 스킬 — 웹 검색, 문서 검색, 시맨틱 검색", "language": "TypeScript", "stars": 0, "url": "https://github.com/openclaw/claw-skills-search", "tags": ["search", "web", "semantic"], "threat_ids": ["indirect-prompt-injection"], "note": "검색 통합 스킬" },
-    { "id": "claw-skills-terminal", "name": "openclaw/claw-skills-terminal", "category": "skills-ecosystem", "description": "터미널/셸 스킬 — 명령 실행, 프로세스 관리", "language": "TypeScript", "stars": 0, "url": "https://github.com/openclaw/claw-skills-terminal", "tags": ["terminal", "shell", "command"], "threat_ids": ["remote-code-execution", "privilege-escalation"], "note": "셸 명령 실행 스킬" },
-    { "id": "claw-skills-email", "name": "openclaw/claw-skills-email", "category": "skills-ecosystem", "description": "이메일 스킬 — Gmail/SMTP 연동, 메일 읽기/쓰기/관리", "language": "TypeScript", "stars": 0, "url": "https://github.com/openclaw/claw-skills-email", "tags": ["email", "gmail", "smtp"], "threat_ids": ["credential-theft", "data-exfiltration"], "note": "이메일 자동화 스킬" },
-    { "id": "claw-skills-filesystem", "name": "openclaw/claw-skills-filesystem", "category": "skills-ecosystem", "description": "파일시스템 스킬 — 파일 읽기/쓰기, 디렉토리 탐색", "language": "TypeScript", "stars": 0, "url": "https://github.com/openclaw/claw-skills-filesystem", "tags": ["filesystem", "file", "directory"], "threat_ids": ["data-exfiltration", "remote-code-execution"], "note": "파일시스템 접근 스킬" },
-    { "id": "claw-skills-crypto", "name": "openclaw/claw-skills-crypto", "category": "skills-ecosystem", "description": "암호화폐 스킬 — 시세 조회, 트레이딩, 지갑 연동", "language": "TypeScript", "stars": 0, "url": "https://github.com/openclaw/claw-skills-crypto", "tags": ["crypto", "trading", "wallet", "defi"], "threat_ids": ["credential-theft", "data-exfiltration", "unsafe-tool-use"], "note": "암호화폐/DeFi 스킬" },
-    { "id": "claw-skills-trading", "name": "openclaw/claw-skills-trading", "category": "skills-ecosystem", "description": "트레이딩 스킬 — 주식/선물/암호화폐 자동 매매", "language": "Python", "stars": 0, "url": "https://github.com/openclaw/claw-skills-trading", "tags": ["trading", "stock", "automation"], "threat_ids": ["credential-theft", "unsafe-tool-use"], "note": "자동 트레이딩 스킬" },
-    { "id": "claw-skills-homeassistant", "name": "openclaw/claw-skills-homeassistant", "category": "skills-ecosystem", "description": "Home Assistant 연동 스킬 — 조명, 온도, 보안 제어", "language": "Python", "stars": 0, "url": "https://github.com/openclaw/claw-skills-homeassistant", "tags": ["homeassistant", "smart-home", "iot"], "threat_ids": ["unsafe-tool-use", "credential-theft"], "note": "스마트홈 제어 스킬" },
-    { "id": "claw-skills-devops", "name": "openclaw/claw-skills-devops", "category": "skills-ecosystem", "description": "DevOps 스킬 — CI/CD, 배포, 모니터링 자동화", "language": "Python", "stars": 0, "url": "https://github.com/openclaw/claw-skills-devops", "tags": ["devops", "cicd", "deployment"], "threat_ids": ["remote-code-execution", "credential-theft"], "note": "DevOps 자동화 스킬" },
-    { "id": "claw-skills-kubernetes", "name": "openclaw/claw-skills-kubernetes", "category": "skills-ecosystem", "description": "Kubernetes 스킬 — 클러스터 관리, 배포, 스케일링", "language": "Go", "stars": 0, "url": "https://github.com/openclaw/claw-skills-kubernetes", "tags": ["kubernetes", "k8s", "cluster"], "threat_ids": ["privilege-escalation", "remote-code-execution"], "note": "Kubernetes 관리 스킬" },
-    { "id": "claw-skills-docker", "name": "openclaw/claw-skills-docker", "category": "skills-ecosystem", "description": "Docker 스킬 — 컨테이너 빌드, 실행, 관리", "language": "Go", "stars": 0, "url": "https://github.com/openclaw/claw-skills-docker", "tags": ["docker", "container", "build"], "threat_ids": ["privilege-escalation", "remote-code-execution"], "note": "Docker 컨테이너 관리 스킬" },
-    { "id": "claw-skills-aws", "name": "openclaw/claw-skills-aws", "category": "skills-ecosystem", "description": "AWS 스킬 — EC2, S3, Lambda, CloudFormation 관리", "language": "Python", "stars": 0, "url": "https://github.com/openclaw/claw-skills-aws", "tags": ["aws", "cloud", "ec2", "s3", "lambda"], "threat_ids": ["credential-theft", "privilege-escalation"], "note": "AWS 클라우드 관리 스킬" },
-    { "id": "claw-skills-gcp", "name": "openclaw/claw-skills-gcp", "category": "skills-ecosystem", "description": "GCP 스킬 — Compute, Storage, BigQuery, Cloud Functions", "language": "Python", "stars": 0, "url": "https://github.com/openclaw/claw-skills-gcp", "tags": ["gcp", "cloud", "bigquery"], "threat_ids": ["credential-theft", "privilege-escalation"], "note": "Google Cloud 관리 스킬" },
-    { "id": "claw-skills-twitter", "name": "openclaw/claw-skills-twitter", "category": "skills-ecosystem", "description": "Twitter/X 스킬 — 트윗, 검색, 분석, 자동화", "language": "TypeScript", "stars": 0, "url": "https://github.com/openclaw/claw-skills-twitter", "tags": ["twitter", "x", "social-media"], "threat_ids": ["credential-theft", "user-manipulation"], "note": "Twitter/X 소셜 스킬" },
-    { "id": "claw-skills-telegram", "name": "openclaw/claw-skills-telegram", "category": "skills-ecosystem", "description": "Telegram 스킬 — 메시지, 봇 관리, 채널 자동화", "language": "TypeScript", "stars": 0, "url": "https://github.com/openclaw/claw-skills-telegram", "tags": ["telegram", "bot", "messaging"], "threat_ids": ["credential-theft", "data-exfiltration"], "note": "Telegram 메시징 스킬" },
-    { "id": "claw-skills-whatsapp", "name": "openclaw/claw-skills-whatsapp", "category": "skills-ecosystem", "description": "WhatsApp 스킬 — 메시지 송수신, 그룹 관리", "language": "TypeScript", "stars": 0, "url": "https://github.com/openclaw/claw-skills-whatsapp", "tags": ["whatsapp", "messaging"], "threat_ids": ["credential-theft", "data-exfiltration"], "note": "WhatsApp 메시징 스킬" },
-
-    { "id": "github-claw", "name": "github-claw/github-claw", "category": "tool-integration", "description": "GitHub 완전 통합 — 저장소, PR, 이슈, Actions, Pages 관리", "language": "TypeScript", "stars": 0, "url": "https://github.com/github-claw/github-claw", "tags": ["github", "integration", "full"], "threat_ids": ["credential-theft", "supply-chain-attack"], "note": "GitHub 완전 통합" },
-    { "id": "gitlab-claw", "name": "gitlab-claw/gitlab-claw", "category": "tool-integration", "description": "GitLab 통합 — 프로젝트, MR, CI/CD 파이프라인 관리", "language": "TypeScript", "stars": 0, "url": "https://github.com/gitlab-claw/gitlab-claw", "tags": ["gitlab", "integration", "cicd"], "threat_ids": ["credential-theft"], "note": "GitLab 통합" },
-    { "id": "jira-claw", "name": "jira-claw/jira-claw", "category": "tool-integration", "description": "Jira 통합 — 이슈 추적, 스프린트 관리, 보고서", "language": "TypeScript", "stars": 0, "url": "https://github.com/jira-claw/jira-claw", "tags": ["jira", "project-management", "issues"], "threat_ids": ["credential-theft"], "note": "Jira 프로젝트 관리" },
-    { "id": "slack-claw", "name": "slack-claw/slack-claw", "category": "tool-integration", "description": "Slack 통합 — 메시지, 채널, 워크스페이스 자동화", "language": "TypeScript", "stars": 0, "url": "https://github.com/slack-claw/slack-claw", "tags": ["slack", "messaging", "workspace"], "threat_ids": ["credential-theft", "data-exfiltration"], "note": "Slack 워크스페이스 통합" },
-    { "id": "discord-claw", "name": "discord-claw/discord-claw", "category": "tool-integration", "description": "Discord 통합 — 서버 관리, 봇, 메시지 자동화", "language": "TypeScript", "stars": 0, "url": "https://github.com/discord-claw/discord-claw", "tags": ["discord", "bot", "server"], "threat_ids": ["credential-theft"], "note": "Discord 서버 통합" },
-    { "id": "notion-claw", "name": "notion-claw/notion-claw", "category": "tool-integration", "description": "Notion 통합 — 데이터베이스, 페이지, 블록 자동화", "language": "TypeScript", "stars": 0, "url": "https://github.com/notion-claw/notion-claw", "tags": ["notion", "database", "wiki"], "threat_ids": ["credential-theft", "data-exfiltration"], "note": "Notion 위키/DB 통합" },
-    { "id": "obsidian-claw", "name": "obsidian-claw/obsidian-claw", "category": "tool-integration", "description": "Obsidian 통합 — 볼트 접근, 노트 생성/검색, 그래프 탐색", "language": "TypeScript", "stars": 0, "url": "https://github.com/obsidian-claw/obsidian-claw", "tags": ["obsidian", "notes", "pkm"], "threat_ids": ["data-exfiltration"], "note": "Obsidian PKM 통합" },
-    { "id": "browser-claw", "name": "browser-claw/browser-claw", "category": "tool-integration", "description": "Browser 통합 — 크로미움 기반 브라우저 자동화 에이전트", "language": "TypeScript", "stars": 0, "url": "https://github.com/browser-claw/browser-claw", "tags": ["browser", "chromium", "automation"], "threat_ids": ["indirect-prompt-injection", "data-exfiltration", "credential-theft"], "note": "크로미움 브라우저 통합" },
-    { "id": "vscode-claw", "name": "vscode-claw/vscode-claw", "category": "tool-integration", "description": "VS Code 통합 — 에디터 내 에이전트 실행, 코드 지원", "language": "TypeScript", "stars": 0, "url": "https://github.com/vscode-claw/vscode-claw", "tags": ["vscode", "editor", "ide"], "threat_ids": ["remote-code-execution"], "note": "VS Code IDE 통합" },
-    { "id": "cursor-claw", "name": "cursor-claw/cursor-claw", "category": "tool-integration", "description": "Cursor IDE 통합 — AI 코딩 어시스턴트 연동", "language": "TypeScript", "stars": 0, "url": "https://github.com/cursor-claw/cursor-claw", "tags": ["cursor", "ide", "ai-coding"], "threat_ids": ["remote-code-execution"], "note": "Cursor IDE 통합" },
-
-    { "id": "secureclaw", "name": "adversa-ai/secureclaw", "category": "security-sandbox", "description": "SecureClaw: Security Plugin for OpenClaw. OWASP-aligned. 56 automated checks across 8 categories.", "language": "Python", "stars": 0, "url": "https://github.com/adversa-ai/secureclaw", "tags": ["owasp", "security-checks", "plugin"], "threat_ids": ["prompt-injection", "credential-theft", "data-exfiltration", "supply-chain-attack"], "note": "OWASP 정렬 56개 자동 보안 점검", "directory_repo_id": "secureclaw" },
-    { "id": "guardclaw", "name": "viruswami5511/guardclaw", "category": "security-sandbox", "description": "Cryptographic accountability ledger for AI agents. GEF-SPEC-1.0, tamper-evident, offline-verifiable.", "language": "TypeScript", "stars": 0, "url": "https://github.com/viruswami5511/guardclaw", "tags": ["cryptographic", "ledger", "accountability"], "threat_ids": ["privilege-escalation"], "note": "암호학적 AI 에이전트 감사 레저", "directory_repo_id": "guardclaw" },
-    { "id": "sandboxclaw", "name": "openclaw/sandboxclaw", "category": "security-sandbox", "description": "샌드박스 실행 환경 — 컨테이너 격리, 리소스 제한, 네트워크 정책", "language": "Go", "stars": 2700, "url": "https://github.com/openclaw/sandboxclaw", "tags": ["sandbox", "container", "isolation"], "threat_ids": [], "note": "컨테이너 기반 샌드박스", "directory_repo_id": "sandboxclaw" },
-    { "id": "safelaw", "name": "safelaw/safelaw", "category": "security-sandbox", "description": "SafeLaw — 안전 정책 엔진, 행동 제약 및 가드레일", "language": "Python", "stars": 0, "url": "https://github.com/safelaw/safelaw", "tags": ["safety", "policy", "guardrail"], "threat_ids": ["prompt-injection", "user-manipulation"], "note": "안전 정책 가드레일" },
-    { "id": "nano-secure-claw", "name": "nano-secure-claw/nano-secure-claw", "category": "security-sandbox", "description": "NanoClaw 보안 강화 버전 — 보안 레이어 추가 경량 에이전트", "language": "TypeScript", "stars": 0, "url": "https://github.com/nano-secure-claw/nano-secure-claw", "tags": ["nanoclaw", "secure", "hardened"], "threat_ids": [], "note": "NanoClaw 보안 강화 버전" },
-    { "id": "container-claw", "name": "container-claw/container-claw", "category": "security-sandbox", "description": "ContainerClaw — OCI 호환 에이전트 컨테이너 런타임", "language": "Go", "stars": 0, "url": "https://github.com/container-claw/container-claw", "tags": ["container", "oci", "runtime"], "threat_ids": [], "note": "OCI 호환 컨테이너 런타임" },
-    { "id": "claw-jail", "name": "claw-jail/claw-jail", "category": "security-sandbox", "description": "ClawJail — 에이전트 실행 격리 감옥, seccomp/AppArmor 지원", "language": "Rust", "stars": 0, "url": "https://github.com/claw-jail/claw-jail", "tags": ["jail", "seccomp", "apparmor", "isolation"], "threat_ids": [], "note": "seccomp/AppArmor 격리 감옥" },
-    { "id": "claw-firewall", "name": "claw-firewall/claw-firewall", "category": "security-sandbox", "description": "ClawFirewall — 에이전트 네트워크 트래픽 필터링 및 제어", "language": "Go", "stars": 0, "url": "https://github.com/claw-firewall/claw-firewall", "tags": ["firewall", "network", "filtering"], "threat_ids": [], "note": "네트워크 트래픽 방화벽" },
-    { "id": "clawsec", "name": "prompt-security/clawsec", "category": "security-sandbox", "description": "Complete security skill suite — SOUL.md drift detection, automated audits, skill integrity verification.", "language": "TypeScript", "stars": 0, "url": "https://github.com/prompt-security/clawsec", "tags": ["security", "audit", "drift-detection"], "threat_ids": ["supply-chain-attack", "prompt-injection"], "note": "보안 스킬 스위트" },
-
-    { "id": "claw-daemon", "name": "openclaw/claw-daemon", "category": "infrastructure", "description": "Claw Daemon — 백그라운드 에이전트 프로세스 관리", "language": "Go", "stars": 0, "url": "https://github.com/openclaw/claw-daemon", "tags": ["daemon", "background", "process"], "threat_ids": ["privilege-escalation"], "note": "백그라운드 데몬" },
-    { "id": "claw-worker", "name": "openclaw/claw-worker", "category": "infrastructure", "description": "Claw Worker — 분산 태스크 실행 워커 노드", "language": "Go", "stars": 0, "url": "https://github.com/openclaw/claw-worker", "tags": ["worker", "distributed", "task"], "threat_ids": [], "note": "분산 태스크 워커" },
-    { "id": "claw-queue", "name": "openclaw/claw-queue", "category": "infrastructure", "description": "Claw Queue — 태스크 큐 및 메시지 브로커", "language": "Go", "stars": 0, "url": "https://github.com/openclaw/claw-queue", "tags": ["queue", "message-broker", "task"], "threat_ids": [], "note": "태스크 큐 시스템" },
-    { "id": "claw-scheduler", "name": "openclaw/claw-scheduler", "category": "infrastructure", "description": "Claw Scheduler — 태스크 스케줄링 및 크론잡 관리", "language": "Go", "stars": 0, "url": "https://github.com/openclaw/claw-scheduler", "tags": ["scheduler", "cron", "task"], "threat_ids": [], "note": "스케줄러 엔진" },
-    { "id": "claw-orchestrator", "name": "openclaw/claw-orchestrator", "category": "infrastructure", "description": "Claw Orchestrator — 멀티 에이전트 오케스트레이션 엔진", "language": "TypeScript", "stars": 0, "url": "https://github.com/openclaw/claw-orchestrator", "tags": ["orchestration", "multi-agent", "coordination"], "threat_ids": ["privilege-escalation"], "note": "멀티 에이전트 오케스트레이터" },
-    { "id": "claw-executor", "name": "openclaw/claw-executor", "category": "infrastructure", "description": "Claw Executor — 격리된 코드/명령 실행 엔진", "language": "Rust", "stars": 0, "url": "https://github.com/openclaw/claw-executor", "tags": ["executor", "isolated", "code-execution"], "threat_ids": ["remote-code-execution"], "note": "격리 실행 엔진" },
-    { "id": "claw-task-engine", "name": "openclaw/claw-task-engine", "category": "infrastructure", "description": "Claw Task Engine — 태스크 분해, 의존성 관리, 실행 추적", "language": "TypeScript", "stars": 0, "url": "https://github.com/openclaw/claw-task-engine", "tags": ["task", "engine", "dependency"], "threat_ids": [], "note": "태스크 분해/추적 엔진" },
-
-    { "id": "oneclaw", "name": "oneclaw/oneclaw", "category": "control-monitoring", "description": "OneClaw — 통합 에이전트 관리 콘솔, 멀티 인스턴스 제어", "language": "TypeScript", "stars": 0, "url": "https://github.com/oneclaw/oneclaw", "tags": ["console", "management", "multi-instance"], "threat_ids": ["credential-theft"], "note": "통합 에이전트 관리 콘솔" },
-    { "id": "claw-dashboard", "name": "openclaw/claw-dashboard", "category": "control-monitoring", "description": "Claw Dashboard — 에이전트 상태, 태스크, 성능 모니터링 대시보드", "language": "TypeScript", "stars": 0, "url": "https://github.com/openclaw/claw-dashboard", "tags": ["dashboard", "monitoring", "status"], "threat_ids": [], "note": "모니터링 대시보드" },
-    { "id": "claw-admin", "name": "openclaw/claw-admin", "category": "control-monitoring", "description": "Claw Admin — 관리자 패널, 설정 관리, 권한 제어", "language": "TypeScript", "stars": 0, "url": "https://github.com/openclaw/claw-admin", "tags": ["admin", "settings", "permissions"], "threat_ids": ["privilege-escalation"], "note": "관리자 패널" },
-    { "id": "claw-console", "name": "openclaw/claw-console", "category": "control-monitoring", "description": "Claw Console — 인터랙티브 에이전트 제어 콘솔", "language": "TypeScript", "stars": 0, "url": "https://github.com/openclaw/claw-console", "tags": ["console", "interactive", "control"], "threat_ids": [], "note": "인터랙티브 콘솔" },
-    { "id": "claw-monitor", "name": "openclaw/claw-monitor", "category": "control-monitoring", "description": "Claw Monitor — 실시간 에이전트 행동 모니터링 및 알림", "language": "Go", "stars": 0, "url": "https://github.com/openclaw/claw-monitor", "tags": ["monitor", "real-time", "alerts"], "threat_ids": [], "note": "실시간 모니터링" },
-    { "id": "claw-observability", "name": "openclaw/claw-observability", "category": "control-monitoring", "description": "Claw Observability — 분산 추적, 로그 집계, 메트릭 수집", "language": "Go", "stars": 0, "url": "https://github.com/openclaw/claw-observability", "tags": ["observability", "tracing", "logs", "metrics"], "threat_ids": [], "note": "관측성 플랫폼" },
-    { "id": "claw-telemetry", "name": "openclaw/claw-telemetry", "category": "control-monitoring", "description": "Claw Telemetry — 에이전트 사용량, 성능 텔레메트리 수집", "language": "Go", "stars": 0, "url": "https://github.com/openclaw/claw-telemetry", "tags": ["telemetry", "usage", "performance"], "threat_ids": [], "note": "텔레메트리 수집" },
-
-    { "id": "cloudclaw", "name": "cloudclaw/cloudclaw", "category": "cloud-hosted", "description": "CloudClaw — 완전 관리형 클라우드 에이전트 플랫폼", "language": "TypeScript", "stars": 0, "url": "https://github.com/cloudclaw/cloudclaw", "tags": ["cloud", "managed", "platform"], "threat_ids": ["credential-theft", "data-exfiltration"], "note": "클라우드 관리형 플랫폼" },
-    { "id": "serverless-claw", "name": "serverless-claw/serverless-claw", "category": "cloud-hosted", "description": "ServerlessClaw — Lambda/Cloud Functions 기반 서버리스 에이전트", "language": "TypeScript", "stars": 0, "url": "https://github.com/serverless-claw/serverless-claw", "tags": ["serverless", "lambda", "cloud-functions"], "threat_ids": ["credential-theft"], "note": "서버리스 에이전트" },
-    { "id": "kimi-claw", "name": "moonshot-ai/kimi-claw", "category": "china-ecosystem", "description": "KimiClaw — Moonshot AI의 OpenClaw 포크. Kimi k2 모델 기반 128K 컨텍스트 에이전트, 중국 내 WeChat/DingTalk/Feishu 통합", "language": "Python", "stars": 12400, "url": "https://github.com/moonshot-ai/kimi-claw", "tags": ["moonshot", "kimi", "china", "wechat", "long-context"], "threat_ids": ["credential-theft", "data-exfiltration", "prompt-injection"], "security_risk": "high", "note": "Moonshot AI 개발. 중국 내 가장 빠르게 성장하는 에이전트 포크. WeChat Mini Program 통합으로 수억 사용자 접근. 데이터 현지화(중국 내 서버) 필수" },
-    { "id": "hosted-claw", "name": "hosted-claw/hosted-claw", "category": "cloud-hosted", "description": "HostedClaw — 호스팅형 에이전트 서비스 (SaaS)", "language": "TypeScript", "stars": 0, "url": "https://github.com/hosted-claw/hosted-claw", "tags": ["hosted", "saas", "service"], "threat_ids": ["credential-theft", "data-exfiltration"], "note": "호스팅형 SaaS 에이전트" },
-    { "id": "claw-saas", "name": "claw-saas/claw-saas", "category": "cloud-hosted", "description": "Claw SaaS — 멀티테넌트 에이전트 플랫폼 템플릿", "language": "TypeScript", "stars": 0, "url": "https://github.com/claw-saas/claw-saas", "tags": ["saas", "multi-tenant", "template"], "threat_ids": ["credential-theft", "privilege-escalation"], "note": "멀티테넌트 SaaS 템플릿" },
-    { "id": "claw-api-server", "name": "openclaw/claw-api-server", "category": "cloud-hosted", "description": "Claw API Server — REST/GraphQL 에이전트 API 서버", "language": "TypeScript", "stars": 0, "url": "https://github.com/openclaw/claw-api-server", "tags": ["api", "rest", "graphql", "server"], "threat_ids": ["credential-theft", "remote-code-execution"], "note": "에이전트 API 서버" },
-
-    { "id": "clawdrain", "name": "clawdrain/clawdrain", "category": "research", "description": "ClawDrain — 에이전트 지식 증류 및 모델 경량화 연구", "language": "Python", "stars": 0, "url": "https://github.com/clawdrain/clawdrain", "tags": ["distillation", "lightweight", "research"], "threat_ids": ["data-poisoning"], "note": "지식 증류 연구" },
-    { "id": "claw-agent-lab", "name": "openclaw/claw-agent-lab", "category": "research", "description": "Claw Agent Lab — 에이전트 행동 실험 및 벤치마크 환경", "language": "Python", "stars": 0, "url": "https://github.com/openclaw/claw-agent-lab", "tags": ["lab", "experiment", "benchmark"], "threat_ids": [], "note": "에이전트 실험 환경" },
-    { "id": "claw-research", "name": "openclaw/claw-research", "category": "research", "description": "Claw Research — 에이전트 아키텍처, 안전성, 확장성 연구 논문/코드", "language": "Python", "stars": 0, "url": "https://github.com/openclaw/claw-research", "tags": ["research", "papers", "architecture"], "threat_ids": [], "note": "에이전트 연구 논문/코드" },
-    { "id": "claw-rl-agent", "name": "openclaw/claw-rl-agent", "category": "research", "description": "Claw RL Agent — 강화학습 기반 에이전트 학습 프레임워크", "language": "Python", "stars": 0, "url": "https://github.com/openclaw/claw-rl-agent", "tags": ["rl", "reinforcement-learning", "training"], "threat_ids": ["data-poisoning"], "note": "강화학습 에이전트" },
-    { "id": "claw-planning", "name": "openclaw/claw-planning", "category": "research", "description": "Claw Planning — 에이전트 계획 수립, 태스크 분해 연구", "language": "Python", "stars": 0, "url": "https://github.com/openclaw/claw-planning", "tags": ["planning", "task-decomposition"], "threat_ids": [], "note": "계획 수립 연구" },
-    { "id": "claw-multiagent", "name": "openclaw/claw-multiagent", "category": "research", "description": "Claw MultiAgent — 멀티 에이전트 협업, 경쟁, 통신 연구", "language": "Python", "stars": 0, "url": "https://github.com/openclaw/claw-multiagent", "tags": ["multi-agent", "collaboration", "competition"], "threat_ids": ["user-manipulation"], "note": "멀티에이전트 연구" },
-
-    { "id": "awesome-openclaw", "name": "SamurAIGPT/awesome-openclaw", "category": "curated-lists", "description": "Curated list of OpenClaw resources, tools, skills, tutorials, articles", "language": "", "stars": 0, "url": "https://github.com/SamurAIGPT/awesome-openclaw", "tags": ["awesome-list", "resources", "tutorials"], "threat_ids": [], "note": "OpenClaw 리소스 큐레이션" },
-    { "id": "awesome-openclaw-skills", "name": "sundial-org/awesome-openclaw-skills", "category": "curated-lists", "description": "913 top/most popular skills curated from ClawHub registry", "language": "", "stars": 0, "url": "https://github.com/sundial-org/awesome-openclaw-skills", "tags": ["awesome-list", "skills", "popular"], "threat_ids": [], "note": "인기 스킬 913개 큐레이션" },
-    { "id": "awesome-clawhub", "name": "awesome-clawhub/awesome-clawhub", "category": "curated-lists", "description": "ClawHub 생태계 종합 가이드 및 추천 스킬 목록", "language": "", "stars": 0, "url": "https://github.com/awesome-clawhub/awesome-clawhub", "tags": ["awesome-list", "clawhub", "guide"], "threat_ids": [], "note": "ClawHub 종합 가이드" },
-    { "id": "openclaw-datasets", "name": "openclaw/openclaw-datasets", "category": "curated-lists", "description": "OpenClaw 학습·평가용 데이터셋 모음", "language": "Python", "stars": 0, "url": "https://github.com/openclaw/openclaw-datasets", "tags": ["datasets", "evaluation", "training"], "threat_ids": [], "note": "학습/평가 데이터셋" },
-    { "id": "claw-evaluation", "name": "openclaw/claw-evaluation", "category": "curated-lists", "description": "Claw Evaluation — 에이전트 벤치마크 및 성능 평가 프레임워크", "language": "Python", "stars": 0, "url": "https://github.com/openclaw/claw-evaluation", "tags": ["benchmark", "evaluation", "performance"], "threat_ids": [], "note": "벤치마크 평가 프레임워크" },
-
-    { "id": "claw-agent-scan", "name": "snyk/claw-agent-scan", "category": "security-sandbox", "description": "AI 에이전트, MCP 서버, 에이전트 스킬을 위한 보안 스캐너 — 15개 이상의 보안 위험 탐지", "language": "Python", "stars": 1700, "url": "https://github.com/snyk/agent-scan", "tags": ["scanner", "mcp", "security", "snyk", "invariant"], "threat_ids": ["supply-chain-attack", "prompt-injection", "data-exfiltration"], "note": "Snyk/Invariant Labs 합병 후 공식 에이전트 보안 스캐너. Tool Poisoning, Tool Shadowing, Rug Pull 등 15+ 위험 탐지" },
-    { "id": "safe-mcp-framework", "name": "safe-agentic-framework/safe-mcp", "category": "security-sandbox", "description": "SAFE-MCP — MITRE ATT&CK 방법론 기반 MCP 에코시스템 위협 문서화 및 완화 프레임워크", "language": "Python", "stars": 800, "url": "https://github.com/safe-agentic-framework/safe-mcp", "tags": ["mitre", "mcp", "threat-model", "linux-foundation"], "threat_ids": ["supply-chain-attack", "prompt-injection", "privilege-escalation", "remote-code-execution"], "note": "Linux Foundation/OpenID Foundation 공식 채택. 14개 전술 카테고리의 공격 기법 문서화" },
-    { "id": "agentic-radar", "name": "splx-ai/agentic-radar", "category": "security-sandbox", "description": "Agentic Radar — LLM 에이전트 워크플로우 정적 보안 스캐너, OWASP Agentic Top 10 매핑", "language": "Python", "stars": 3200, "url": "https://github.com/splx-ai/agentic-radar", "tags": ["scanner", "static-analysis", "owasp", "prompt-hardening"], "threat_ids": ["prompt-injection", "unsafe-tool-use", "privilege-escalation"], "note": "49개 규칙, OWASP Agentic Top 10 (2026) 매핑. LangGraph/CrewAI/n8n/AutoGen 지원" },
-    { "id": "mcp-security-standard", "name": "mcp-security-standard/mcp-server-security-standard", "category": "security-sandbox", "description": "MCP Server Security Standard (MSSS) — 6개 배포 프로파일, 23개 보안 컨트롤의 인증 표준", "language": "", "stars": 450, "url": "https://github.com/mcp-security-standard/mcp-server-security-standard", "tags": ["standard", "mcp", "certification", "compliance"], "threat_ids": ["supply-chain-attack", "credential-theft"], "note": "2026.01 Community Review Draft 발표. JSON 보고 스키마 포함" },
-    { "id": "guardrails-ai", "name": "guardrails-ai/guardrails", "category": "security-sandbox", "description": "Guardrails AI — LLM 입출력 가드레일 프레임워크, 24개 가드레일 벤치마크", "language": "Python", "stars": 5200, "url": "https://github.com/guardrails-ai/guardrails", "tags": ["guardrails", "input-validation", "output-validation", "llm-safety"], "threat_ids": ["prompt-injection", "data-exfiltration", "user-manipulation"], "note": "Guardrails Index: 24개 가드레일 성능·지연시간 벤치마크 제공" },
-    { "id": "nemo-guardrails", "name": "NVIDIA-NeMo/Guardrails", "category": "security-sandbox", "description": "NeMo Guardrails — NVIDIA의 LLM 대화형 시스템용 프로그래밍 가능 가드레일 툴킷", "language": "Python", "stars": 4800, "url": "https://github.com/NVIDIA-NeMo/Guardrails", "tags": ["nvidia", "guardrails", "dialog-rails", "llm-safety"], "threat_ids": ["prompt-injection", "user-manipulation"], "note": "Input/Dialog/Retrieval 레일 지원. 대화형 에이전트 안전성 확보" },
-    { "id": "mcp-security-hub", "name": "FuzzingLabs/mcp-security-hub", "category": "tool-integration", "description": "MCP Security Hub — Nmap, Ghidra, Nuclei, SQLMap, Hashcat 등 공격 보안 도구의 Dockerized MCP 서버", "language": "Python", "stars": 600, "url": "https://github.com/FuzzingLabs/mcp-security-hub", "tags": ["offensive-security", "nmap", "nuclei", "mcp", "docker"], "threat_ids": ["remote-code-execution", "unsafe-tool-use", "privilege-escalation"], "note": "AI 어시스턴트를 통한 보안 평가, 취약점 스캐닝, 바이너리 분석 수행" },
-    { "id": "google-mcp-security", "name": "google/mcp-security", "category": "tool-integration", "description": "Google MCP Security — Chronicle, SOAR, GTI, SCC 등 Google 보안 제품 연동 MCP 서버", "language": "Python", "stars": 1200, "url": "https://github.com/google/mcp-security", "tags": ["google", "chronicle", "soar", "threat-intelligence", "mcp"], "threat_ids": ["credential-theft", "data-exfiltration"], "note": "Google Security Operations 제품군의 공식 MCP 서버" },
-    { "id": "agentic-trust-framework", "name": "massivescale-ai/agentic-trust-framework", "category": "framework-sdk", "description": "Agentic Trust Framework — AI 에이전트를 위한 Zero Trust 거버넌스 프레임워크 (CSA 발표)", "language": "", "stars": 350, "url": "https://github.com/massivescale-ai/agentic-trust-framework", "tags": ["zero-trust", "governance", "csa", "specification"], "threat_ids": ["privilege-escalation", "credential-theft"], "note": "Cloud Security Alliance 발표. 성숙도 모델, 구현 가이드 포함" },
-    { "id": "claw-codeguard", "name": "openclaw/claw-codeguard", "category": "security-sandbox", "description": "Project CodeGuard — AI 코딩 워크플로우에 보안 기본값을 내장하는 모델 비종속 보안 프레임워크", "language": "TypeScript", "stars": 900, "url": "https://github.com/openclaw/claw-codeguard", "tags": ["code-security", "coding-agent", "secure-by-default", "rules"], "threat_ids": ["remote-code-execution", "supply-chain-attack"], "note": "AI 코딩 에이전트용 보안 규칙셋, 번역기, 검증기 포함" },
-    { "id": "claw-mcphammer", "name": "praetorian-inc/claw-mcphammer", "category": "research", "description": "MCPHammer — MCP 서버 체이닝 공격 데모, 콘텐츠 인젝션, 데이터 유출 PoC 도구", "language": "Python", "stars": 500, "url": "https://github.com/praetorian-inc/mcphammer", "tags": ["offensive", "poc", "mcp", "chaining-attack", "research"], "threat_ids": ["prompt-injection", "data-exfiltration", "remote-code-execution"], "note": "Praetorian 연구팀 제작. MCP 서버 공격 체이닝 및 데이터 유출 PoC" },
-    { "id": "rebuff-claw", "name": "protectai/rebuff", "category": "security-sandbox", "description": "Rebuff — 다층 방어 기반 프롬프트 인젝션 탐지기 (휴리스틱, LLM, 벡터DB, 카나리 토큰)", "language": "Python", "stars": 1100, "url": "https://github.com/protectai/rebuff", "tags": ["prompt-injection", "defense", "canary-token", "vector-db"], "threat_ids": ["prompt-injection", "indirect-prompt-injection"], "note": "다층 방어: 휴리스틱 필터링 + LLM 탐지 + 이전 공격 벡터DB + 카나리 토큰 누출 탐지" },
-
-    { "id": "alphaclaw", "name": "chrysb/alphaclaw", "category": "infrastructure", "description": "AlphaClaw — OpenClaw 셋업 하니스. 브라우저 기반 배포/관리, 자동 복구, Git 백업, 프롬프트 하드닝", "language": "JavaScript", "stars": 385, "url": "https://github.com/chrysb/alphaclaw", "tags": ["setup", "wrapper", "deployment", "dashboard", "watchdog"], "threat_ids": ["credential-theft", "privilege-escalation"], "security_risk": "medium", "note": "OpenClaw 래핑 셋업 도구. 보안 주의: 기본 하드닝을 편의를 위해 일부 완화 (단일 패스워드 인증, 쿼리스트링 토큰, 자동 CLI 페어링 승인). 프로덕션 보안이 필요하면 OpenClaw 직접 사용 권장" },
-    { "id": "skyclaw", "name": "nagisanzenin/skyclaw", "category": "lightweight", "description": "SkyClaw — 클라우드 자립형 초경량 Rust 에이전트. 44K LoC, 1095 테스트, 20개 자율 모듈, 6 LLM 프로바이더, 정적 바이너리", "language": "Rust", "stars": 146, "url": "https://github.com/nagisanzenin/skyclaw", "tags": ["rust", "cloud", "lightweight", "autonomous", "static-binary"], "threat_ids": ["remote-code-execution", "privilege-escalation", "credential-theft"], "security_risk": "high", "note": "13-crate Cargo workspace. 셸/브라우저/파일/Git 도구 내장. ChaCha20-Poly1305 암호화, 경로 순회 보호. 자동 화이트리스트 메커니즘(첫 사용자 자동 등록)은 보안 위험" },
-    { "id": "openclaw-mission-control", "name": "abhi1693/openclaw-mission-control", "category": "control-monitoring", "description": "OpenClaw Mission Control — AI 에이전트 오케스트레이션 대시보드. 멀티에이전트 협업, 거버넌스, Gateway 통합", "language": "TypeScript", "stars": 1900, "url": "https://github.com/abhi1693/openclaw-mission-control", "tags": ["dashboard", "orchestration", "multi-agent", "governance"], "threat_ids": ["credential-theft", "privilege-escalation"], "security_risk": "medium", "note": "팀/조직용 중앙 관리 플랫폼. Gateway 연동 에이전트 관리, 승인 워크플로우" },
-    { "id": "clawwork", "name": "HKUDS/ClawWork", "category": "research", "description": "ClawWork — OpenClaw as Your AI Coworker. 220개 실무 태스크, 44개 직업군, 11시간에 $15K 수익 데모", "language": "Python", "stars": 6900, "url": "https://github.com/HKUDS/ClawWork", "tags": ["research", "coworker", "economic", "task-automation", "benchmark"], "threat_ids": ["unsafe-tool-use", "data-exfiltration"], "security_risk": "medium", "note": "HKU 연구팀. AI 에이전트의 경제적 가치 실증 연구. 자율 수익 창출 에이전트 PoC" },
-    { "id": "clawdeck", "name": "clawdeckio/clawdeck", "category": "control-monitoring", "description": "ClawDeck — 칸반 스타일 AI 에이전트 미션 컨트롤 대시보드. 태스크 추적, 에이전트 배정, 비동기 협업", "language": "HTML", "stars": 301, "url": "https://github.com/clawdeckio/clawdeck", "tags": ["kanban", "dashboard", "task-management", "mission-control"], "threat_ids": [], "security_risk": "low", "note": "오픈소스 에이전트 태스크 관리 대시보드" },
-    { "id": "clawhost", "name": "bfzli/clawhost", "category": "cloud-hosted", "description": "ClawHost — 원클릭 VPS 기반 OpenClaw 클라우드 호스팅. 자동 프로비저닝, DNS, SSL, 방화벽 설정", "language": "TypeScript", "stars": 235, "url": "https://github.com/bfzli/clawhost", "tags": ["hosting", "vps", "cloud", "one-click", "self-hosted"], "threat_ids": ["credential-theft", "privilege-escalation"], "security_risk": "medium", "note": "Hetzner/DigitalOcean/Vultr 지원. 자동 서버 프로비저닝 및 에이전트 배포" },
-    { "id": "k8s-operator", "name": "openclaw-rocks/k8s-operator", "category": "infrastructure", "description": "OpenClaw Kubernetes Operator — 프로덕션급 보안, 옵저버빌리티, 라이프사이클 관리를 갖춘 K8s 오퍼레이터", "language": "Go", "stars": 160, "url": "https://github.com/openclaw-rocks/k8s-operator", "tags": ["kubernetes", "operator", "k8s", "production", "infrastructure"], "threat_ids": ["privilege-escalation"], "security_risk": "medium", "note": "CRD 기반 선언적 에이전트 배포. 네트워킹, 스토리지, 모니터링 자동화" },
-    { "id": "openclaw-security-monitor", "name": "adibirzu/openclaw-security-monitor", "category": "security-sandbox", "description": "OpenClaw Security Monitor — 48포인트 보안 평가, ClawHavoc/AMOS/Vidar/GhostSocks 탐지, IOC DB, 자동 치료", "language": "Shell", "stars": 15, "url": "https://github.com/adibirzu/openclaw-security-monitor", "tags": ["security-monitor", "threat-detection", "ioc", "clawhavoc", "remediation"], "threat_ids": ["supply-chain-attack", "remote-code-execution", "credential-theft", "data-exfiltration"], "security_risk": "low", "note": "48포인트 위협 스캐너. C2 인프라, 메모리 포이즈닝, WebSocket 하이재킹 탐지. CVE-2026-25253 점검" },
-    { "id": "secure-openclaw", "name": "ComposioHQ/secure-openclaw", "category": "core-platforms", "description": "Secure-OpenClaw — 보안 강화 OpenClaw 포크. WhatsApp/Telegram/Signal/iMessage 지원, 500+ 앱 통합", "language": "JavaScript", "stars": 1400, "url": "https://github.com/ComposioHQ/secure-openclaw", "tags": ["fork", "security-hardened", "composio", "messaging", "integrations"], "threat_ids": ["prompt-injection", "credential-theft"], "security_risk": "medium", "note": "ComposioHQ의 보안 강화 OpenClaw 포크. 풀 도구 액세스, 영속 메모리, 예약 알림" },
-    { "id": "openclaw-helm", "name": "serhanekicii/openclaw-helm", "category": "infrastructure", "description": "OpenClaw Helm Chart — Kubernetes에서 OpenClaw 배포를 위한 Helm 차트", "language": "YAML", "stars": 45, "url": "https://github.com/serhanekicii/openclaw-helm", "tags": ["helm", "kubernetes", "chart", "deployment"], "threat_ids": [], "security_risk": "low", "note": "Kubernetes Helm 기반 OpenClaw 배포 자동화" },
-    { "id": "adversa-secureclaw", "name": "adversa-ai/secureclaw", "category": "security-sandbox", "description": "Adversa SecureClaw — OWASP 정렬 OpenClaw 보안 플러그인/스킬. 56개 자동 검사, 8개 카테고리", "language": "Python", "stars": 320, "url": "https://github.com/adversa-ai/secureclaw", "tags": ["security-plugin", "owasp", "audit", "hardening", "adversa"], "threat_ids": ["privilege-escalation", "credential-theft", "remote-code-execution"], "security_risk": "low", "note": "Adversa AI 개발. 7개 보안 프레임워크 매핑, 56개 자동 검사로 미설정/노출 감지" },
-
-    { "id": "max-claw", "name": "minimax-ai/max-claw", "category": "china-ecosystem", "description": "MaxClaw — MiniMax의 OpenClaw 호환 에이전트. MiniMax-01 모델 기반, 음성·영상 멀티모달 에이전트, Hailuo AI 통합", "language": "Python", "stars": 8700, "url": "https://github.com/minimax-ai/max-claw", "tags": ["minimax", "multimodal", "voice", "video", "china"], "threat_ids": ["credential-theft", "data-exfiltration", "unsafe-tool-use"], "security_risk": "high", "note": "MiniMax 개발. 음성합성·영상생성 에이전트로 차별화. Hailuo 영상 생성 API 내장. 멀티모달 입출력으로 인한 새로운 공격 표면(음성 인젝션, 딥페이크 생성)" },
-    { "id": "copaw", "name": "alibaba-ai/copaw", "category": "china-ecosystem", "description": "CoPaw — Alibaba의 Qwen 모델 기반 엔터프라이즈 에이전트 플랫폼. DingTalk/Alibaba Cloud/Taobao 생태계 통합, 전자상거래 자동화", "language": "Python", "stars": 15200, "url": "https://github.com/alibaba-ai/copaw", "tags": ["alibaba", "qwen", "enterprise", "ecommerce", "dingtalk", "china"], "threat_ids": ["credential-theft", "data-exfiltration", "privilege-escalation", "supply-chain-attack"], "security_risk": "critical", "note": "Alibaba Cloud 개발. Qwen2.5 모델 기반. DingTalk 10억+ 사용자 접근, Taobao/Tmall 전자상거래 자동화, Alibaba Cloud 인프라 관리. 광범위한 권한으로 Critical 리스크" },
-    { "id": "ark-claw", "name": "bytedance-ai/ark-claw", "category": "china-ecosystem", "description": "ArkClaw — ByteDance의 Doubao/Skylark 모델 기반 에이전트. 화산엔진(Volcano Engine) 통합, Coze 플랫폼 연동, 숏폼 콘텐츠 자동화", "language": "TypeScript", "stars": 11300, "url": "https://github.com/bytedance-ai/ark-claw", "tags": ["bytedance", "doubao", "volcano-engine", "coze", "tiktok", "china"], "threat_ids": ["credential-theft", "data-exfiltration", "unsafe-tool-use", "user-manipulation"], "security_risk": "high", "note": "ByteDance 개발. Coze(扣子) 봇 빌더 통합, Doubao(豆包) 모델 기반. TikTok/Douyin 콘텐츠 자동 생성·관리. 소셜미디어 조작 위험" },
-    { "id": "work-buddy", "name": "tencent-ai/work-buddy", "category": "china-ecosystem", "description": "WorkBuddy — Tencent의 Hunyuan 모델 기반 업무 에이전트. WeChat Work/QQ/Tencent Meeting/Tencent Docs 생태계 통합", "language": "TypeScript", "stars": 9800, "url": "https://github.com/tencent-ai/work-buddy", "tags": ["tencent", "hunyuan", "wechat-work", "enterprise", "china"], "threat_ids": ["credential-theft", "data-exfiltration", "privilege-escalation"], "security_risk": "high", "note": "Tencent 개발. Hunyuan 모델 기반. WeChat Work(企业微信) 12억 사용자 생태계 접근. 텐센트 회의·문서·클라우드 통합으로 기업 데이터 광범위 접근" },
-    { "id": "auto-claw", "name": "zhipu-ai/auto-claw", "category": "china-ecosystem", "description": "AutoClaw — Zhipu AI의 GLM 모델 기반 자율형 에이전트. AutoGLM 웹 에이전트, 코드 인터프리터, 학술 검색 통합", "language": "Python", "stars": 7600, "url": "https://github.com/zhipu-ai/auto-claw", "tags": ["zhipu", "glm", "autoglm", "autonomous", "academic", "china"], "threat_ids": ["credential-theft", "remote-code-execution", "prompt-injection"], "security_risk": "high", "note": "Zhipu AI(智谱) 개발. GLM-4 모델 기반. AutoGLM 웹 내비게이션 에이전트 내장으로 브라우저 자율 조작. 코드 실행 + 웹 탐색 조합으로 RCE 위험 증가" },
-
-    { "id": "lobster", "name": "openclaw/lobster", "url": "https://github.com/openclaw/lobster", "stars": 786, "description": "Workflow shell: 타입 기반 로컬 매크로 엔진, 스킬/도구를 composable pipeline으로 변환", "category": "framework-sdk", "language": "", "tags": ["workflow", "shell", "pipeline"], "threat_ids": [], "note": "" },
-    { "id": "acpx", "name": "openclaw/acpx", "url": "https://github.com/openclaw/acpx", "stars": 665, "description": "Headless CLI 클라이언트 — 상태 기반 Agent Client Protocol(ACP) 세션 지원. Codex, Claude, Gemini 등 호환", "category": "framework-sdk", "language": "", "tags": ["cli", "acp", "headless"], "threat_ids": [], "note": "" },
-    { "id": "nix-openclaw", "name": "openclaw/nix-openclaw", "url": "https://github.com/openclaw/nix-openclaw", "stars": 516, "description": "Nix 기반 OpenClaw 패키징 — 재현 가능한 빌드 및 선언적 설치", "category": "infrastructure", "language": "Nix", "tags": ["nix", "packaging", "reproducible"], "threat_ids": [], "note": "" },
-    { "id": "openclaw-ansible", "name": "openclaw/openclaw-ansible", "url": "https://github.com/openclaw/openclaw-ansible", "stars": 478, "description": "자동화된 보안 강화 설치 — Tailscale VPN, UFW 방화벽, Docker 격리", "category": "infrastructure", "language": "YAML", "tags": ["ansible", "deployment", "security-hardening"], "threat_ids": [], "note": "" },
-    { "id": "clawdinators", "name": "openclaw/clawdinators", "url": "https://github.com/openclaw/clawdinators", "stars": 137, "description": "선언적 인프라 + NixOS 모듈 — CLAWTINATOR 호스트용 (GitHub/Discord 모니터링 에이전트)", "category": "infrastructure", "language": "Nix", "tags": ["nixos", "monitoring", "infrastructure"], "threat_ids": [], "note": "" },
-    { "id": "openclaw-trust", "name": "openclaw/trust", "url": "https://github.com/openclaw/trust", "stars": 29, "description": "OpenClaw 신뢰 리소스 — 보안 거버넌스 및 정책 관리", "category": "security-sandbox", "language": "", "tags": ["trust", "governance", "policy"], "threat_ids": [], "note": "" },
-    { "id": "nullclaw", "name": "nullclaw/nullclaw", "url": "https://github.com/nullclaw/nullclaw", "stars": 450, "description": "Zig 기반 초경량 AI 어시스턴트 — 678KB 바이너리, 제로 런타임 의존성", "category": "lightweight", "language": "Zig", "tags": ["zig", "lightweight", "minimal"], "threat_ids": [], "note": "" },
-    { "id": "ironclaw", "name": "nearai/ironclaw", "url": "https://github.com/nearai/ironclaw", "stars": 380, "description": "Rust 기반 OpenClaw 구현 — 프라이버시/보안 중심, WASM 샌드박스 + capability-based 권한", "category": "lightweight", "language": "Rust", "tags": ["rust", "wasm", "sandbox", "privacy"], "threat_ids": [], "note": "" },
-    { "id": "superpowers", "name": "obra/superpowers", "url": "https://github.com/obra/superpowers", "stars": 27000, "description": "Agentic skills 프레임워크 — AI 코딩 에이전트용 설계/계획/구현 워크플로우 강제", "category": "framework-sdk", "language": "", "tags": ["agentic", "skills", "workflow", "coding-agent"], "threat_ids": [], "note": "" },
-    { "id": "moltworker", "name": "cloudflare/moltworker", "url": "https://github.com/cloudflare/moltworker", "stars": 520, "description": "Cloudflare Workers 기반 OpenClaw 배포 — 완전 관리형, always-on 서버리스", "category": "cloud-hosted", "language": "", "tags": ["cloudflare", "workers", "serverless"], "threat_ids": [], "note": "" },
-    { "id": "github-mcp-server", "name": "github/github-mcp-server", "url": "https://github.com/github/github-mcp-server", "stars": 4200, "description": "GitHub 공식 MCP 서버 — Projects 도구, OAuth 스코프 필터링", "category": "tool-integration", "language": "", "tags": ["github", "mcp", "official"], "threat_ids": [], "note": "" },
-    { "id": "microsoft-mcp", "name": "microsoft/mcp", "url": "https://github.com/microsoft/mcp", "stars": 1800, "description": "Microsoft 공식 MCP 서버 카탈로그 — Azure, Office 365, Teams 통합", "category": "tool-integration", "language": "", "tags": ["microsoft", "mcp", "azure", "office365"], "threat_ids": [], "note": "" },
-    { "id": "mcp-servers", "name": "modelcontextprotocol/servers", "url": "https://github.com/modelcontextprotocol/servers", "stars": 15200, "description": "Anthropic 공식 MCP 서버 레포지토리 — 표준 MCP 서버 구현체", "category": "framework-sdk", "language": "", "tags": ["anthropic", "mcp", "official", "reference"], "threat_ids": [], "note": "" },
-    { "id": "awesome-mcp-servers", "name": "punkpeye/awesome-mcp-servers", "url": "https://github.com/punkpeye/awesome-mcp-servers", "stars": 8900, "description": "커뮤니티 큐레이션 MCP 서버 목록 — 500+ MCP 서버 카탈로그", "category": "curated-lists", "language": "", "tags": ["awesome-list", "mcp", "catalog"], "threat_ids": [], "note": "" },
-    { "id": "denchclaw", "name": "DenchHQ/DenchClaw", "url": "https://github.com/DenchHQ/DenchClaw", "stars": 757, "description": "완전 관리형 OpenClaw 프레임워크 — CRM 자동화 및 아웃리치 에이전트", "category": "tool-integration", "language": "", "tags": ["crm", "automation", "outreach"], "threat_ids": [], "note": "" },
-    { "id": "cai", "name": "aliasrobotics/cai", "url": "https://github.com/aliasrobotics/cai", "stars": 320, "description": "사이버보안 AI(CAI) 프레임워크 — AI 기반 공격/방어 보안", "category": "security-sandbox", "language": "", "tags": ["cybersecurity", "offensive", "defensive"], "threat_ids": [], "note": "" }
+    {
+      "id": "openclaw-main",
+      "name": "openclaw/openclaw",
+      "category": "core-platforms",
+      "description": "Your own personal AI assistant. Any OS. Any Platform. The lobster way.",
+      "language": "TypeScript",
+      "stars": 295500,
+      "url": "https://github.com/openclaw/openclaw",
+      "tags": [
+        "core",
+        "runtime",
+        "agent",
+        "flagship"
+      ],
+      "threat_ids": [
+        "prompt-injection",
+        "privilege-escalation",
+        "remote-code-execution"
+      ],
+      "note": "GitHub 최다 스타 프로젝트 (2025.11 출시)"
+    },
+    {
+      "id": "moltbook",
+      "name": "openclaw/moltbook",
+      "category": "core-platforms",
+      "description": "OpenClaw 공식 데스크톱 앱 — 통합 에이전트 인터페이스",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/openclaw/moltbook",
+      "tags": [
+        "desktop",
+        "app",
+        "gui"
+      ],
+      "threat_ids": [],
+      "note": "데스크톱 네이티브 앱"
+    },
+    {
+      "id": "clawhub",
+      "name": "openclaw/clawhub",
+      "category": "core-platforms",
+      "description": "Skill Directory for OpenClaw — 5,700+ skills 등록 레지스트리",
+      "language": "TypeScript",
+      "stars": 5600,
+      "url": "https://github.com/openclaw/clawhub",
+      "tags": [
+        "skill",
+        "registry",
+        "marketplace"
+      ],
+      "threat_ids": [
+        "supply-chain-attack",
+        "data-poisoning"
+      ],
+      "note": "공식 스킬 마켓플레이스",
+      "directory_repo_id": "clawhub-registry"
+    },
+    {
+      "id": "claw-gateway",
+      "name": "openclaw/claw-gateway",
+      "category": "core-platforms",
+      "description": "Agent Gateway — 에이전트 간 통신 및 외부 API 게이트웨이",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-gateway",
+      "tags": [
+        "gateway",
+        "api",
+        "communication"
+      ],
+      "threat_ids": [
+        "credential-theft"
+      ],
+      "note": "에이전트 통신 게이트웨이"
+    },
+    {
+      "id": "claw-cli",
+      "name": "openclaw/claw-cli",
+      "category": "core-platforms",
+      "description": "OpenClaw CLI — 명령줄 인터페이스 도구",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-cli",
+      "tags": [
+        "cli",
+        "terminal"
+      ],
+      "threat_ids": [],
+      "note": "CLI 도구"
+    },
+    {
+      "id": "claw-agent",
+      "name": "openclaw/claw-agent",
+      "category": "core-platforms",
+      "description": "Core agent runtime — 태스크 실행 및 스킬 오케스트레이션",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-agent",
+      "tags": [
+        "agent",
+        "runtime",
+        "orchestration"
+      ],
+      "threat_ids": [
+        "prompt-injection",
+        "privilege-escalation"
+      ],
+      "note": "핵심 에이전트 런타임"
+    },
+    {
+      "id": "claw-runtime",
+      "name": "openclaw/claw-runtime",
+      "category": "core-platforms",
+      "description": "OpenClaw execution runtime — 태스크 스케줄링, 메모리 관리",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-runtime",
+      "tags": [
+        "runtime",
+        "scheduler",
+        "memory"
+      ],
+      "threat_ids": [
+        "remote-code-execution"
+      ],
+      "note": "실행 런타임 엔진"
+    },
+    {
+      "id": "claw-core",
+      "name": "openclaw/claw-core",
+      "category": "core-platforms",
+      "description": "OpenClaw core library — 공유 핵심 모듈 및 유틸리티",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-core",
+      "tags": [
+        "core",
+        "library",
+        "shared"
+      ],
+      "threat_ids": [],
+      "note": "공유 핵심 라이브러리"
+    },
+    {
+      "id": "cowagent",
+      "name": "cowagent/cowagent",
+      "category": "core-platforms",
+      "description": "유사 에이전트 플랫폼 — OpenClaw 호환 에이전트",
+      "language": "Python",
+      "stars": 0,
+      "url": "https://github.com/cowagent/cowagent",
+      "tags": [
+        "agent",
+        "compatible"
+      ],
+      "threat_ids": [],
+      "note": "OpenClaw 유사 프로젝트"
+    },
+    {
+      "id": "cherry-studio",
+      "name": "cherry-studio/cherry-studio",
+      "category": "core-platforms",
+      "description": "Cherry Studio — AI 에이전트 데스크톱 클라이언트",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/cherry-studio/cherry-studio",
+      "tags": [
+        "desktop",
+        "client",
+        "gui"
+      ],
+      "threat_ids": [],
+      "note": "유사 데스크톱 AI 클라이언트"
+    },
+    {
+      "id": "clawdbot",
+      "name": "openclaw/clawdbot",
+      "category": "core-platforms",
+      "description": "Clawdbot — OpenClaw의 초기 이름, 원본 에이전트 봇",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/openclaw/clawdbot",
+      "tags": [
+        "bot",
+        "original",
+        "legacy"
+      ],
+      "threat_ids": [],
+      "note": "OpenClaw 초기 이름 (clawdbot → moltbot → openclaw)"
+    },
+    {
+      "id": "moltbot",
+      "name": "openclaw/moltbot",
+      "category": "core-platforms",
+      "description": "Moltbot — OpenClaw 중간 명칭의 에이전트 봇",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/openclaw/moltbot",
+      "tags": [
+        "bot",
+        "legacy"
+      ],
+      "threat_ids": [],
+      "note": "상표 이슈로 인한 중간 명칭"
+    },
+    {
+      "id": "nanoclaw",
+      "name": "qwibitai/nanoclaw",
+      "category": "lightweight",
+      "description": "Lightweight OpenClaw alternative in containers. WhatsApp/Telegram/Slack/Discord/Gmail 지원. Anthropic Agents SDK 기반.",
+      "language": "TypeScript",
+      "stars": 8600,
+      "url": "https://github.com/qwibitai/nanoclaw",
+      "tags": [
+        "typescript",
+        "container",
+        "messaging",
+        "anthropic-sdk"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "data-exfiltration",
+        "indirect-prompt-injection"
+      ],
+      "note": "컨테이너 기반, 멀티 메신저 지원",
+      "directory_repo_id": "nanoclaw"
+    },
+    {
+      "id": "picoclaw",
+      "name": "sipeed/picoclaw",
+      "category": "lightweight",
+      "description": "Tiny, Fast, Deployable anywhere. Built for $10 hardware, <10MB RAM, RISC-V support.",
+      "language": "Go",
+      "stars": 16300,
+      "url": "https://github.com/sipeed/picoclaw",
+      "tags": [
+        "go",
+        "embedded",
+        "risc-v",
+        "iot",
+        "tiny"
+      ],
+      "threat_ids": [
+        "privilege-escalation",
+        "unsafe-tool-use"
+      ],
+      "note": "$10 하드웨어, RISC-V 지원 초소형 에이전트"
+    },
+    {
+      "id": "zeroclaw",
+      "name": "zeroclaw-labs/zeroclaw",
+      "category": "lightweight",
+      "description": "Fast, small, fully autonomous AI assistant. <5MB RAM, <10ms startup, 22+ AI providers. Built by Harvard/MIT.",
+      "language": "Rust",
+      "stars": 14900,
+      "url": "https://github.com/zeroclaw-labs/zeroclaw",
+      "tags": [
+        "rust",
+        "lightweight",
+        "autonomous",
+        "fast"
+      ],
+      "threat_ids": [
+        "prompt-injection",
+        "privilege-escalation"
+      ],
+      "note": "Rust 기반 초경량. Harvard/MIT 팀."
+    },
+    {
+      "id": "microclaw",
+      "name": "microclaw/microclaw",
+      "category": "lightweight",
+      "description": "Micro-sized Rust-based AI assistant — 최소 바이너리 에이전트",
+      "language": "Rust",
+      "stars": 0,
+      "url": "https://github.com/microclaw/microclaw",
+      "tags": [
+        "rust",
+        "micro",
+        "minimal"
+      ],
+      "threat_ids": [
+        "prompt-injection"
+      ],
+      "note": "Rust 기반 마이크로 에이전트"
+    },
+    {
+      "id": "miniclaw",
+      "name": "miniclaw/miniclaw",
+      "category": "lightweight",
+      "description": "Mini Claw — 중소형 에이전트, 기본 기능 중심",
+      "language": "Python",
+      "stars": 0,
+      "url": "https://github.com/miniclaw/miniclaw",
+      "tags": [
+        "python",
+        "mini",
+        "basic"
+      ],
+      "threat_ids": [],
+      "note": "기본 기능 중심 미니 에이전트"
+    },
+    {
+      "id": "ultraclaw",
+      "name": "ultraclaw/ultraclaw",
+      "category": "lightweight",
+      "description": "UltraClaw — 고성능 최적화 에이전트 변형",
+      "language": "Rust",
+      "stars": 0,
+      "url": "https://github.com/ultraclaw/ultraclaw",
+      "tags": [
+        "rust",
+        "performance",
+        "optimized"
+      ],
+      "threat_ids": [],
+      "note": "성능 최적화 에이전트"
+    },
+    {
+      "id": "fastclaw",
+      "name": "fastclaw/fastclaw",
+      "category": "lightweight",
+      "description": "FastClaw — 속도 특화 경량 에이전트",
+      "language": "Go",
+      "stars": 0,
+      "url": "https://github.com/fastclaw/fastclaw",
+      "tags": [
+        "go",
+        "fast",
+        "speed"
+      ],
+      "threat_ids": [],
+      "note": "속도 최적화 에이전트"
+    },
+    {
+      "id": "tinyclaw",
+      "name": "warengonzaga/tinyclaw",
+      "category": "lightweight",
+      "description": "The original Tiny Claw — personal autonomous AI companion. Multi-agent teams.",
+      "language": "TypeScript",
+      "stars": 1800,
+      "url": "https://github.com/warengonzaga/tinyclaw",
+      "tags": [
+        "typescript",
+        "multi-agent",
+        "tiny"
+      ],
+      "threat_ids": [
+        "prompt-injection",
+        "unsafe-tool-use"
+      ],
+      "note": "멀티 에이전트 팀 지원"
+    },
+    {
+      "id": "slimclaw",
+      "name": "slimclaw/slimclaw",
+      "category": "lightweight",
+      "description": "SlimClaw — 저자원 환경용 슬림 에이전트",
+      "language": "Python",
+      "stars": 0,
+      "url": "https://github.com/slimclaw/slimclaw",
+      "tags": [
+        "python",
+        "slim",
+        "low-resource"
+      ],
+      "threat_ids": [],
+      "note": "저자원 환경 최적화"
+    },
+    {
+      "id": "nanobot",
+      "name": "HKUDS/nanobot",
+      "category": "lightweight",
+      "description": "The Ultra-Lightweight OpenClaw (~4,000 lines). 13+ LLM providers, MCP support.",
+      "language": "Python",
+      "stars": 0,
+      "url": "https://github.com/HKUDS/nanobot",
+      "tags": [
+        "python",
+        "ultra-lightweight",
+        "mcp"
+      ],
+      "threat_ids": [
+        "prompt-injection"
+      ],
+      "note": "4,000줄 초경량 구현체"
+    },
+    {
+      "id": "esp32-claw",
+      "name": "esp32-claw/esp32-claw",
+      "category": "hardware",
+      "description": "ESP32 기반 AI 에이전트 — WiFi/BLE 연결 마이크로컨트롤러 에이전트",
+      "language": "C",
+      "stars": 0,
+      "url": "https://github.com/esp32-claw/esp32-claw",
+      "tags": [
+        "esp32",
+        "wifi",
+        "ble",
+        "mcu"
+      ],
+      "threat_ids": [
+        "unsafe-tool-use",
+        "privilege-escalation"
+      ],
+      "note": "ESP32 MCU 에이전트"
+    },
+    {
+      "id": "mimiclaw",
+      "name": "memovai/mimiclaw",
+      "category": "hardware",
+      "description": "MimiClaw: Run OpenClaw on a $5 ESP32-S3 chip. No OS, No Node.js. Hardware agents.",
+      "language": "C",
+      "stars": 1900,
+      "url": "https://github.com/memovai/mimiclaw",
+      "tags": [
+        "c",
+        "esp32",
+        "hardware",
+        "embedded",
+        "no-os"
+      ],
+      "threat_ids": [
+        "privilege-escalation",
+        "unsafe-tool-use"
+      ],
+      "note": "$5 ESP32 칩 하드웨어 에이전트"
+    },
+    {
+      "id": "iotclaw",
+      "name": "iotclaw/iotclaw",
+      "category": "hardware",
+      "description": "IoTClaw — IoT 디바이스 제어용 에이전트 프레임워크",
+      "language": "Python",
+      "stars": 0,
+      "url": "https://github.com/iotclaw/iotclaw",
+      "tags": [
+        "iot",
+        "device-control",
+        "framework"
+      ],
+      "threat_ids": [
+        "unsafe-tool-use",
+        "credential-theft"
+      ],
+      "note": "IoT 디바이스 제어"
+    },
+    {
+      "id": "boardclaw",
+      "name": "boardclaw/boardclaw",
+      "category": "hardware",
+      "description": "BoardClaw — 싱글보드 컴퓨터(SBC) 전용 에이전트",
+      "language": "Go",
+      "stars": 0,
+      "url": "https://github.com/boardclaw/boardclaw",
+      "tags": [
+        "sbc",
+        "raspberry-pi",
+        "embedded"
+      ],
+      "threat_ids": [],
+      "note": "Raspberry Pi 등 SBC 전용"
+    },
+    {
+      "id": "smartclaw",
+      "name": "smartclaw/smartclaw",
+      "category": "hardware",
+      "description": "SmartClaw — 스마트홈 허브 에이전트",
+      "language": "Python",
+      "stars": 0,
+      "url": "https://github.com/smartclaw/smartclaw",
+      "tags": [
+        "smarthome",
+        "hub",
+        "automation"
+      ],
+      "threat_ids": [
+        "unsafe-tool-use"
+      ],
+      "note": "스마트홈 허브 에이전트"
+    },
+    {
+      "id": "roboclaw-agent",
+      "name": "roboclaw/roboclaw-agent",
+      "category": "hardware",
+      "description": "RoboClaw Agent — 로봇 제어용 AI 에이전트",
+      "language": "Python",
+      "stars": 0,
+      "url": "https://github.com/roboclaw/roboclaw-agent",
+      "tags": [
+        "robotics",
+        "motor-control",
+        "agent"
+      ],
+      "threat_ids": [
+        "unsafe-tool-use",
+        "privilege-escalation"
+      ],
+      "note": "로봇/모터 제어 에이전트"
+    },
+    {
+      "id": "homeclaw",
+      "name": "homeclaw/homeclaw",
+      "category": "hardware",
+      "description": "HomeClaw — Home Assistant 연동 에이전트",
+      "language": "Python",
+      "stars": 0,
+      "url": "https://github.com/homeclaw/homeclaw",
+      "tags": [
+        "home-assistant",
+        "smart-home"
+      ],
+      "threat_ids": [
+        "credential-theft"
+      ],
+      "note": "Home Assistant 통합"
+    },
+    {
+      "id": "deviceclaw",
+      "name": "deviceclaw/deviceclaw",
+      "category": "hardware",
+      "description": "DeviceClaw — 범용 디바이스 관리 에이전트",
+      "language": "Go",
+      "stars": 0,
+      "url": "https://github.com/deviceclaw/deviceclaw",
+      "tags": [
+        "device",
+        "management",
+        "universal"
+      ],
+      "threat_ids": [],
+      "note": "범용 디바이스 관리"
+    },
+    {
+      "id": "openclaw-sdk",
+      "name": "openclaw/openclaw-sdk",
+      "category": "framework-sdk",
+      "description": "OpenClaw 공식 SDK — 에이전트 개발 표준 라이브러리",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/openclaw/openclaw-sdk",
+      "tags": [
+        "sdk",
+        "official",
+        "library"
+      ],
+      "threat_ids": [],
+      "note": "공식 개발 SDK"
+    },
+    {
+      "id": "claw-agent-framework",
+      "name": "openclaw/claw-agent-framework",
+      "category": "framework-sdk",
+      "description": "에이전트 구축 프레임워크 — 표준 에이전트 아키텍처 템플릿",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-agent-framework",
+      "tags": [
+        "framework",
+        "architecture",
+        "template"
+      ],
+      "threat_ids": [],
+      "note": "표준 에이전트 아키텍처"
+    },
+    {
+      "id": "claw-tools",
+      "name": "openclaw/claw-tools",
+      "category": "framework-sdk",
+      "description": "Claw Tools — 도구 실행 런타임 및 도구 정의 프레임워크",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-tools",
+      "tags": [
+        "tools",
+        "runtime",
+        "execution"
+      ],
+      "threat_ids": [
+        "remote-code-execution",
+        "unsafe-tool-use"
+      ],
+      "note": "도구 실행 프레임워크"
+    },
+    {
+      "id": "claw-memory",
+      "name": "openclaw/claw-memory",
+      "category": "framework-sdk",
+      "description": "Claw Memory — 벡터 DB, 장기 메모리, RAG 지원 메모리 시스템",
+      "language": "Python",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-memory",
+      "tags": [
+        "memory",
+        "vector-db",
+        "rag",
+        "long-term"
+      ],
+      "threat_ids": [
+        "memory-poisoning",
+        "knowledge-manipulation"
+      ],
+      "note": "메모리/RAG 시스템"
+    },
+    {
+      "id": "claw-runtime-sdk",
+      "name": "openclaw/claw-runtime-sdk",
+      "category": "framework-sdk",
+      "description": "런타임 SDK — 커스텀 런타임 환경 구축용",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-runtime-sdk",
+      "tags": [
+        "runtime",
+        "sdk",
+        "custom"
+      ],
+      "threat_ids": [],
+      "note": "커스텀 런타임 SDK"
+    },
+    {
+      "id": "claw-plugin-sdk",
+      "name": "openclaw/claw-plugin-sdk",
+      "category": "framework-sdk",
+      "description": "플러그인 SDK — 서드파티 플러그인 개발 키트",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-plugin-sdk",
+      "tags": [
+        "plugin",
+        "sdk",
+        "third-party"
+      ],
+      "threat_ids": [
+        "supply-chain-attack"
+      ],
+      "note": "플러그인 개발 키트"
+    },
+    {
+      "id": "claw-agent-template",
+      "name": "openclaw/claw-agent-template",
+      "category": "framework-sdk",
+      "description": "에이전트 템플릿 — 빠른 에이전트 프로젝트 부트스트래핑",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-agent-template",
+      "tags": [
+        "template",
+        "boilerplate",
+        "starter"
+      ],
+      "threat_ids": [],
+      "note": "에이전트 프로젝트 템플릿"
+    },
+    {
+      "id": "claw-skill-devkit",
+      "name": "openclaw/claw-skill-devkit",
+      "category": "framework-sdk",
+      "description": "Skill DevKit — 스킬 개발, 테스트, 퍼블리시 도구",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-skill-devkit",
+      "tags": [
+        "skill",
+        "devkit",
+        "publish",
+        "test"
+      ],
+      "threat_ids": [],
+      "note": "스킬 개발 도구 키트"
+    },
+    {
+      "id": "openclaw-skills",
+      "name": "openclaw/skills",
+      "category": "skills-ecosystem",
+      "description": "All versions of all skills archived from clawhub.com — 전체 스킬 아카이브",
+      "language": "Python",
+      "stars": 2472,
+      "url": "https://github.com/openclaw/skills",
+      "tags": [
+        "skill",
+        "archive",
+        "registry"
+      ],
+      "threat_ids": [
+        "supply-chain-attack"
+      ],
+      "note": "ClawHub 스킬 전체 아카이브"
+    },
+    {
+      "id": "awesome-openclaw-skills-volt",
+      "name": "VoltAgent/awesome-openclaw-skills",
+      "category": "skills-ecosystem",
+      "description": "5,400+ skills filtered and categorized from the official registry",
+      "language": "",
+      "stars": 0,
+      "url": "https://github.com/VoltAgent/awesome-openclaw-skills",
+      "tags": [
+        "awesome-list",
+        "skills",
+        "categorized"
+      ],
+      "threat_ids": [],
+      "note": "5,400+ 스킬 큐레이션"
+    },
+    {
+      "id": "claw-skills-browser",
+      "name": "openclaw/claw-skills-browser",
+      "category": "skills-ecosystem",
+      "description": "브라우저 제어 스킬 — 웹 탐색, 데이터 추출, 폼 자동화",
+      "language": "TypeScript",
+      "stars": 3400,
+      "url": "https://github.com/openclaw/claw-skills-browser",
+      "tags": [
+        "browser",
+        "web",
+        "automation"
+      ],
+      "threat_ids": [
+        "indirect-prompt-injection",
+        "data-exfiltration"
+      ],
+      "note": "브라우저 자동화 스킬",
+      "directory_repo_id": "skill-browser"
+    },
+    {
+      "id": "claw-skills-github",
+      "name": "openclaw/claw-skills-github",
+      "category": "skills-ecosystem",
+      "description": "GitHub 연동 스킬 — PR, 이슈, 코드 리뷰, 저장소 관리",
+      "language": "TypeScript",
+      "stars": 2900,
+      "url": "https://github.com/openclaw/claw-skills-github",
+      "tags": [
+        "github",
+        "pr",
+        "issues",
+        "code-review"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "supply-chain-attack"
+      ],
+      "note": "GitHub 통합 스킬",
+      "directory_repo_id": "skill-github"
+    },
+    {
+      "id": "claw-skills-search",
+      "name": "openclaw/claw-skills-search",
+      "category": "skills-ecosystem",
+      "description": "검색 스킬 — 웹 검색, 문서 검색, 시맨틱 검색",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-skills-search",
+      "tags": [
+        "search",
+        "web",
+        "semantic"
+      ],
+      "threat_ids": [
+        "indirect-prompt-injection"
+      ],
+      "note": "검색 통합 스킬"
+    },
+    {
+      "id": "claw-skills-terminal",
+      "name": "openclaw/claw-skills-terminal",
+      "category": "skills-ecosystem",
+      "description": "터미널/셸 스킬 — 명령 실행, 프로세스 관리",
+      "language": "TypeScript",
+      "stars": 4100,
+      "url": "https://github.com/openclaw/claw-skills-terminal",
+      "tags": [
+        "terminal",
+        "shell",
+        "command"
+      ],
+      "threat_ids": [
+        "remote-code-execution",
+        "privilege-escalation"
+      ],
+      "note": "셸 명령 실행 스킬",
+      "directory_repo_id": "skill-shell"
+    },
+    {
+      "id": "claw-skills-email",
+      "name": "openclaw/claw-skills-email",
+      "category": "skills-ecosystem",
+      "description": "이메일 스킬 — Gmail/SMTP 연동, 메일 읽기/쓰기/관리",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-skills-email",
+      "tags": [
+        "email",
+        "gmail",
+        "smtp"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "data-exfiltration"
+      ],
+      "note": "이메일 자동화 스킬"
+    },
+    {
+      "id": "claw-skills-filesystem",
+      "name": "openclaw/claw-skills-filesystem",
+      "category": "skills-ecosystem",
+      "description": "파일시스템 스킬 — 파일 읽기/쓰기, 디렉토리 탐색",
+      "language": "TypeScript",
+      "stars": 2800,
+      "url": "https://github.com/openclaw/claw-skills-filesystem",
+      "tags": [
+        "filesystem",
+        "file",
+        "directory"
+      ],
+      "threat_ids": [
+        "data-exfiltration",
+        "remote-code-execution"
+      ],
+      "note": "파일시스템 접근 스킬",
+      "directory_repo_id": "skill-filesystem"
+    },
+    {
+      "id": "claw-skills-crypto",
+      "name": "openclaw/claw-skills-crypto",
+      "category": "skills-ecosystem",
+      "description": "암호화폐 스킬 — 시세 조회, 트레이딩, 지갑 연동",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-skills-crypto",
+      "tags": [
+        "crypto",
+        "trading",
+        "wallet",
+        "defi"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "data-exfiltration",
+        "unsafe-tool-use"
+      ],
+      "note": "암호화폐/DeFi 스킬"
+    },
+    {
+      "id": "claw-skills-trading",
+      "name": "openclaw/claw-skills-trading",
+      "category": "skills-ecosystem",
+      "description": "트레이딩 스킬 — 주식/선물/암호화폐 자동 매매",
+      "language": "Python",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-skills-trading",
+      "tags": [
+        "trading",
+        "stock",
+        "automation"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "unsafe-tool-use"
+      ],
+      "note": "자동 트레이딩 스킬"
+    },
+    {
+      "id": "claw-skills-homeassistant",
+      "name": "openclaw/claw-skills-homeassistant",
+      "category": "skills-ecosystem",
+      "description": "Home Assistant 연동 스킬 — 조명, 온도, 보안 제어",
+      "language": "Python",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-skills-homeassistant",
+      "tags": [
+        "homeassistant",
+        "smart-home",
+        "iot"
+      ],
+      "threat_ids": [
+        "unsafe-tool-use",
+        "credential-theft"
+      ],
+      "note": "스마트홈 제어 스킬"
+    },
+    {
+      "id": "claw-skills-devops",
+      "name": "openclaw/claw-skills-devops",
+      "category": "skills-ecosystem",
+      "description": "DevOps 스킬 — CI/CD, 배포, 모니터링 자동화",
+      "language": "Python",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-skills-devops",
+      "tags": [
+        "devops",
+        "cicd",
+        "deployment"
+      ],
+      "threat_ids": [
+        "remote-code-execution",
+        "credential-theft"
+      ],
+      "note": "DevOps 자동화 스킬"
+    },
+    {
+      "id": "claw-skills-kubernetes",
+      "name": "openclaw/claw-skills-kubernetes",
+      "category": "skills-ecosystem",
+      "description": "Kubernetes 스킬 — 클러스터 관리, 배포, 스케일링",
+      "language": "Go",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-skills-kubernetes",
+      "tags": [
+        "kubernetes",
+        "k8s",
+        "cluster"
+      ],
+      "threat_ids": [
+        "privilege-escalation",
+        "remote-code-execution"
+      ],
+      "note": "Kubernetes 관리 스킬"
+    },
+    {
+      "id": "claw-skills-docker",
+      "name": "openclaw/claw-skills-docker",
+      "category": "skills-ecosystem",
+      "description": "Docker 스킬 — 컨테이너 빌드, 실행, 관리",
+      "language": "Go",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-skills-docker",
+      "tags": [
+        "docker",
+        "container",
+        "build"
+      ],
+      "threat_ids": [
+        "privilege-escalation",
+        "remote-code-execution"
+      ],
+      "note": "Docker 컨테이너 관리 스킬"
+    },
+    {
+      "id": "claw-skills-aws",
+      "name": "openclaw/claw-skills-aws",
+      "category": "skills-ecosystem",
+      "description": "AWS 스킬 — EC2, S3, Lambda, CloudFormation 관리",
+      "language": "Python",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-skills-aws",
+      "tags": [
+        "aws",
+        "cloud",
+        "ec2",
+        "s3",
+        "lambda"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "privilege-escalation"
+      ],
+      "note": "AWS 클라우드 관리 스킬"
+    },
+    {
+      "id": "claw-skills-gcp",
+      "name": "openclaw/claw-skills-gcp",
+      "category": "skills-ecosystem",
+      "description": "GCP 스킬 — Compute, Storage, BigQuery, Cloud Functions",
+      "language": "Python",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-skills-gcp",
+      "tags": [
+        "gcp",
+        "cloud",
+        "bigquery"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "privilege-escalation"
+      ],
+      "note": "Google Cloud 관리 스킬"
+    },
+    {
+      "id": "claw-skills-twitter",
+      "name": "openclaw/claw-skills-twitter",
+      "category": "skills-ecosystem",
+      "description": "Twitter/X 스킬 — 트윗, 검색, 분석, 자동화",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-skills-twitter",
+      "tags": [
+        "twitter",
+        "x",
+        "social-media"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "user-manipulation"
+      ],
+      "note": "Twitter/X 소셜 스킬"
+    },
+    {
+      "id": "claw-skills-telegram",
+      "name": "openclaw/claw-skills-telegram",
+      "category": "skills-ecosystem",
+      "description": "Telegram 스킬 — 메시지, 봇 관리, 채널 자동화",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-skills-telegram",
+      "tags": [
+        "telegram",
+        "bot",
+        "messaging"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "data-exfiltration"
+      ],
+      "note": "Telegram 메시징 스킬"
+    },
+    {
+      "id": "claw-skills-whatsapp",
+      "name": "openclaw/claw-skills-whatsapp",
+      "category": "skills-ecosystem",
+      "description": "WhatsApp 스킬 — 메시지 송수신, 그룹 관리",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-skills-whatsapp",
+      "tags": [
+        "whatsapp",
+        "messaging"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "data-exfiltration"
+      ],
+      "note": "WhatsApp 메시징 스킬"
+    },
+    {
+      "id": "github-claw",
+      "name": "github-claw/github-claw",
+      "category": "tool-integration",
+      "description": "GitHub 완전 통합 — 저장소, PR, 이슈, Actions, Pages 관리",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/github-claw/github-claw",
+      "tags": [
+        "github",
+        "integration",
+        "full"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "supply-chain-attack"
+      ],
+      "note": "GitHub 완전 통합"
+    },
+    {
+      "id": "gitlab-claw",
+      "name": "gitlab-claw/gitlab-claw",
+      "category": "tool-integration",
+      "description": "GitLab 통합 — 프로젝트, MR, CI/CD 파이프라인 관리",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/gitlab-claw/gitlab-claw",
+      "tags": [
+        "gitlab",
+        "integration",
+        "cicd"
+      ],
+      "threat_ids": [
+        "credential-theft"
+      ],
+      "note": "GitLab 통합"
+    },
+    {
+      "id": "jira-claw",
+      "name": "jira-claw/jira-claw",
+      "category": "tool-integration",
+      "description": "Jira 통합 — 이슈 추적, 스프린트 관리, 보고서",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/jira-claw/jira-claw",
+      "tags": [
+        "jira",
+        "project-management",
+        "issues"
+      ],
+      "threat_ids": [
+        "credential-theft"
+      ],
+      "note": "Jira 프로젝트 관리"
+    },
+    {
+      "id": "slack-claw",
+      "name": "slack-claw/slack-claw",
+      "category": "tool-integration",
+      "description": "Slack 통합 — 메시지, 채널, 워크스페이스 자동화",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/slack-claw/slack-claw",
+      "tags": [
+        "slack",
+        "messaging",
+        "workspace"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "data-exfiltration"
+      ],
+      "note": "Slack 워크스페이스 통합"
+    },
+    {
+      "id": "discord-claw",
+      "name": "discord-claw/discord-claw",
+      "category": "tool-integration",
+      "description": "Discord 통합 — 서버 관리, 봇, 메시지 자동화",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/discord-claw/discord-claw",
+      "tags": [
+        "discord",
+        "bot",
+        "server"
+      ],
+      "threat_ids": [
+        "credential-theft"
+      ],
+      "note": "Discord 서버 통합"
+    },
+    {
+      "id": "notion-claw",
+      "name": "notion-claw/notion-claw",
+      "category": "tool-integration",
+      "description": "Notion 통합 — 데이터베이스, 페이지, 블록 자동화",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/notion-claw/notion-claw",
+      "tags": [
+        "notion",
+        "database",
+        "wiki"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "data-exfiltration"
+      ],
+      "note": "Notion 위키/DB 통합"
+    },
+    {
+      "id": "obsidian-claw",
+      "name": "obsidian-claw/obsidian-claw",
+      "category": "tool-integration",
+      "description": "Obsidian 통합 — 볼트 접근, 노트 생성/검색, 그래프 탐색",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/obsidian-claw/obsidian-claw",
+      "tags": [
+        "obsidian",
+        "notes",
+        "pkm"
+      ],
+      "threat_ids": [
+        "data-exfiltration"
+      ],
+      "note": "Obsidian PKM 통합"
+    },
+    {
+      "id": "browser-claw",
+      "name": "browser-claw/browser-claw",
+      "category": "tool-integration",
+      "description": "Browser 통합 — 크로미움 기반 브라우저 자동화 에이전트",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/browser-claw/browser-claw",
+      "tags": [
+        "browser",
+        "chromium",
+        "automation"
+      ],
+      "threat_ids": [
+        "indirect-prompt-injection",
+        "data-exfiltration",
+        "credential-theft"
+      ],
+      "note": "크로미움 브라우저 통합"
+    },
+    {
+      "id": "vscode-claw",
+      "name": "vscode-claw/vscode-claw",
+      "category": "tool-integration",
+      "description": "VS Code 통합 — 에디터 내 에이전트 실행, 코드 지원",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/vscode-claw/vscode-claw",
+      "tags": [
+        "vscode",
+        "editor",
+        "ide"
+      ],
+      "threat_ids": [
+        "remote-code-execution"
+      ],
+      "note": "VS Code IDE 통합"
+    },
+    {
+      "id": "cursor-claw",
+      "name": "cursor-claw/cursor-claw",
+      "category": "tool-integration",
+      "description": "Cursor IDE 통합 — AI 코딩 어시스턴트 연동",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/cursor-claw/cursor-claw",
+      "tags": [
+        "cursor",
+        "ide",
+        "ai-coding"
+      ],
+      "threat_ids": [
+        "remote-code-execution"
+      ],
+      "note": "Cursor IDE 통합"
+    },
+    {
+      "id": "secureclaw",
+      "name": "adversa-ai/secureclaw",
+      "category": "security-sandbox",
+      "description": "SecureClaw: Security Plugin for OpenClaw. OWASP-aligned. 56 automated checks across 8 categories.",
+      "language": "Python",
+      "stars": 0,
+      "url": "https://github.com/adversa-ai/secureclaw",
+      "tags": [
+        "owasp",
+        "security-checks",
+        "plugin"
+      ],
+      "threat_ids": [
+        "prompt-injection",
+        "credential-theft",
+        "data-exfiltration",
+        "supply-chain-attack"
+      ],
+      "note": "OWASP 정렬 56개 자동 보안 점검",
+      "directory_repo_id": "secureclaw"
+    },
+    {
+      "id": "guardclaw",
+      "name": "viruswami5511/guardclaw",
+      "category": "security-sandbox",
+      "description": "Cryptographic accountability ledger for AI agents. GEF-SPEC-1.0, tamper-evident, offline-verifiable.",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/viruswami5511/guardclaw",
+      "tags": [
+        "cryptographic",
+        "ledger",
+        "accountability"
+      ],
+      "threat_ids": [
+        "privilege-escalation"
+      ],
+      "note": "암호학적 AI 에이전트 감사 레저",
+      "directory_repo_id": "guardclaw"
+    },
+    {
+      "id": "sandboxclaw",
+      "name": "openclaw/sandboxclaw",
+      "category": "security-sandbox",
+      "description": "샌드박스 실행 환경 — 컨테이너 격리, 리소스 제한, 네트워크 정책",
+      "language": "Go",
+      "stars": 2700,
+      "url": "https://github.com/openclaw/sandboxclaw",
+      "tags": [
+        "sandbox",
+        "container",
+        "isolation"
+      ],
+      "threat_ids": [],
+      "note": "컨테이너 기반 샌드박스",
+      "directory_repo_id": "sandboxclaw"
+    },
+    {
+      "id": "safelaw",
+      "name": "safelaw/safelaw",
+      "category": "security-sandbox",
+      "description": "SafeLaw — 안전 정책 엔진, 행동 제약 및 가드레일",
+      "language": "Python",
+      "stars": 0,
+      "url": "https://github.com/safelaw/safelaw",
+      "tags": [
+        "safety",
+        "policy",
+        "guardrail"
+      ],
+      "threat_ids": [
+        "prompt-injection",
+        "user-manipulation"
+      ],
+      "note": "안전 정책 가드레일"
+    },
+    {
+      "id": "nano-secure-claw",
+      "name": "nano-secure-claw/nano-secure-claw",
+      "category": "security-sandbox",
+      "description": "NanoClaw 보안 강화 버전 — 보안 레이어 추가 경량 에이전트",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/nano-secure-claw/nano-secure-claw",
+      "tags": [
+        "nanoclaw",
+        "secure",
+        "hardened"
+      ],
+      "threat_ids": [],
+      "note": "NanoClaw 보안 강화 버전"
+    },
+    {
+      "id": "container-claw",
+      "name": "container-claw/container-claw",
+      "category": "security-sandbox",
+      "description": "ContainerClaw — OCI 호환 에이전트 컨테이너 런타임",
+      "language": "Go",
+      "stars": 0,
+      "url": "https://github.com/container-claw/container-claw",
+      "tags": [
+        "container",
+        "oci",
+        "runtime"
+      ],
+      "threat_ids": [],
+      "note": "OCI 호환 컨테이너 런타임"
+    },
+    {
+      "id": "claw-jail",
+      "name": "claw-jail/claw-jail",
+      "category": "security-sandbox",
+      "description": "ClawJail — 에이전트 실행 격리 감옥, seccomp/AppArmor 지원",
+      "language": "Rust",
+      "stars": 0,
+      "url": "https://github.com/claw-jail/claw-jail",
+      "tags": [
+        "jail",
+        "seccomp",
+        "apparmor",
+        "isolation"
+      ],
+      "threat_ids": [],
+      "note": "seccomp/AppArmor 격리 감옥"
+    },
+    {
+      "id": "claw-firewall",
+      "name": "claw-firewall/claw-firewall",
+      "category": "security-sandbox",
+      "description": "ClawFirewall — 에이전트 네트워크 트래픽 필터링 및 제어",
+      "language": "Go",
+      "stars": 0,
+      "url": "https://github.com/claw-firewall/claw-firewall",
+      "tags": [
+        "firewall",
+        "network",
+        "filtering"
+      ],
+      "threat_ids": [],
+      "note": "네트워크 트래픽 방화벽"
+    },
+    {
+      "id": "clawsec",
+      "name": "prompt-security/clawsec",
+      "category": "security-sandbox",
+      "description": "Complete security skill suite — SOUL.md drift detection, automated audits, skill integrity verification.",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/prompt-security/clawsec",
+      "tags": [
+        "security",
+        "audit",
+        "drift-detection"
+      ],
+      "threat_ids": [
+        "supply-chain-attack",
+        "prompt-injection"
+      ],
+      "note": "보안 스킬 스위트"
+    },
+    {
+      "id": "claw-daemon",
+      "name": "openclaw/claw-daemon",
+      "category": "infrastructure",
+      "description": "Claw Daemon — 백그라운드 에이전트 프로세스 관리",
+      "language": "Go",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-daemon",
+      "tags": [
+        "daemon",
+        "background",
+        "process"
+      ],
+      "threat_ids": [
+        "privilege-escalation"
+      ],
+      "note": "백그라운드 데몬"
+    },
+    {
+      "id": "claw-worker",
+      "name": "openclaw/claw-worker",
+      "category": "infrastructure",
+      "description": "Claw Worker — 분산 태스크 실행 워커 노드",
+      "language": "Go",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-worker",
+      "tags": [
+        "worker",
+        "distributed",
+        "task"
+      ],
+      "threat_ids": [],
+      "note": "분산 태스크 워커"
+    },
+    {
+      "id": "claw-queue",
+      "name": "openclaw/claw-queue",
+      "category": "infrastructure",
+      "description": "Claw Queue — 태스크 큐 및 메시지 브로커",
+      "language": "Go",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-queue",
+      "tags": [
+        "queue",
+        "message-broker",
+        "task"
+      ],
+      "threat_ids": [],
+      "note": "태스크 큐 시스템"
+    },
+    {
+      "id": "claw-scheduler",
+      "name": "openclaw/claw-scheduler",
+      "category": "infrastructure",
+      "description": "Claw Scheduler — 태스크 스케줄링 및 크론잡 관리",
+      "language": "Go",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-scheduler",
+      "tags": [
+        "scheduler",
+        "cron",
+        "task"
+      ],
+      "threat_ids": [],
+      "note": "스케줄러 엔진"
+    },
+    {
+      "id": "claw-orchestrator",
+      "name": "openclaw/claw-orchestrator",
+      "category": "infrastructure",
+      "description": "Claw Orchestrator — 멀티 에이전트 오케스트레이션 엔진",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-orchestrator",
+      "tags": [
+        "orchestration",
+        "multi-agent",
+        "coordination"
+      ],
+      "threat_ids": [
+        "privilege-escalation"
+      ],
+      "note": "멀티 에이전트 오케스트레이터"
+    },
+    {
+      "id": "claw-executor",
+      "name": "openclaw/claw-executor",
+      "category": "infrastructure",
+      "description": "Claw Executor — 격리된 코드/명령 실행 엔진",
+      "language": "Rust",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-executor",
+      "tags": [
+        "executor",
+        "isolated",
+        "code-execution"
+      ],
+      "threat_ids": [
+        "remote-code-execution"
+      ],
+      "note": "격리 실행 엔진"
+    },
+    {
+      "id": "claw-task-engine",
+      "name": "openclaw/claw-task-engine",
+      "category": "infrastructure",
+      "description": "Claw Task Engine — 태스크 분해, 의존성 관리, 실행 추적",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-task-engine",
+      "tags": [
+        "task",
+        "engine",
+        "dependency"
+      ],
+      "threat_ids": [],
+      "note": "태스크 분해/추적 엔진"
+    },
+    {
+      "id": "oneclaw",
+      "name": "oneclaw/oneclaw",
+      "category": "control-monitoring",
+      "description": "OneClaw — 통합 에이전트 관리 콘솔, 멀티 인스턴스 제어",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/oneclaw/oneclaw",
+      "tags": [
+        "console",
+        "management",
+        "multi-instance"
+      ],
+      "threat_ids": [
+        "credential-theft"
+      ],
+      "note": "통합 에이전트 관리 콘솔"
+    },
+    {
+      "id": "claw-dashboard",
+      "name": "openclaw/claw-dashboard",
+      "category": "control-monitoring",
+      "description": "Claw Dashboard — 에이전트 상태, 태스크, 성능 모니터링 대시보드",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-dashboard",
+      "tags": [
+        "dashboard",
+        "monitoring",
+        "status"
+      ],
+      "threat_ids": [],
+      "note": "모니터링 대시보드"
+    },
+    {
+      "id": "claw-admin",
+      "name": "openclaw/claw-admin",
+      "category": "control-monitoring",
+      "description": "Claw Admin — 관리자 패널, 설정 관리, 권한 제어",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-admin",
+      "tags": [
+        "admin",
+        "settings",
+        "permissions"
+      ],
+      "threat_ids": [
+        "privilege-escalation"
+      ],
+      "note": "관리자 패널"
+    },
+    {
+      "id": "claw-console",
+      "name": "openclaw/claw-console",
+      "category": "control-monitoring",
+      "description": "Claw Console — 인터랙티브 에이전트 제어 콘솔",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-console",
+      "tags": [
+        "console",
+        "interactive",
+        "control"
+      ],
+      "threat_ids": [],
+      "note": "인터랙티브 콘솔"
+    },
+    {
+      "id": "claw-monitor",
+      "name": "openclaw/claw-monitor",
+      "category": "control-monitoring",
+      "description": "Claw Monitor — 실시간 에이전트 행동 모니터링 및 알림",
+      "language": "Go",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-monitor",
+      "tags": [
+        "monitor",
+        "real-time",
+        "alerts"
+      ],
+      "threat_ids": [],
+      "note": "실시간 모니터링"
+    },
+    {
+      "id": "claw-observability",
+      "name": "openclaw/claw-observability",
+      "category": "control-monitoring",
+      "description": "Claw Observability — 분산 추적, 로그 집계, 메트릭 수집",
+      "language": "Go",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-observability",
+      "tags": [
+        "observability",
+        "tracing",
+        "logs",
+        "metrics"
+      ],
+      "threat_ids": [],
+      "note": "관측성 플랫폼"
+    },
+    {
+      "id": "claw-telemetry",
+      "name": "openclaw/claw-telemetry",
+      "category": "control-monitoring",
+      "description": "Claw Telemetry — 에이전트 사용량, 성능 텔레메트리 수집",
+      "language": "Go",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-telemetry",
+      "tags": [
+        "telemetry",
+        "usage",
+        "performance"
+      ],
+      "threat_ids": [],
+      "note": "텔레메트리 수집"
+    },
+    {
+      "id": "cloudclaw",
+      "name": "cloudclaw/cloudclaw",
+      "category": "cloud-hosted",
+      "description": "CloudClaw — 완전 관리형 클라우드 에이전트 플랫폼",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/cloudclaw/cloudclaw",
+      "tags": [
+        "cloud",
+        "managed",
+        "platform"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "data-exfiltration"
+      ],
+      "note": "클라우드 관리형 플랫폼"
+    },
+    {
+      "id": "serverless-claw",
+      "name": "serverless-claw/serverless-claw",
+      "category": "cloud-hosted",
+      "description": "ServerlessClaw — Lambda/Cloud Functions 기반 서버리스 에이전트",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/serverless-claw/serverless-claw",
+      "tags": [
+        "serverless",
+        "lambda",
+        "cloud-functions"
+      ],
+      "threat_ids": [
+        "credential-theft"
+      ],
+      "note": "서버리스 에이전트"
+    },
+    {
+      "id": "kimi-claw",
+      "name": "moonshot-ai/kimi-claw",
+      "category": "china-ecosystem",
+      "description": "KimiClaw — Moonshot AI의 OpenClaw 포크. Kimi k2 모델 기반 128K 컨텍스트 에이전트, 중국 내 WeChat/DingTalk/Feishu 통합",
+      "language": "Python",
+      "stars": 12400,
+      "url": "https://github.com/moonshot-ai/kimi-claw",
+      "tags": [
+        "moonshot",
+        "kimi",
+        "china",
+        "wechat",
+        "long-context"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "data-exfiltration",
+        "prompt-injection"
+      ],
+      "security_risk": "high",
+      "note": "Moonshot AI 개발. 중국 내 가장 빠르게 성장하는 에이전트 포크. WeChat Mini Program 통합으로 수억 사용자 접근. 데이터 현지화(중국 내 서버) 필수"
+    },
+    {
+      "id": "hosted-claw",
+      "name": "hosted-claw/hosted-claw",
+      "category": "cloud-hosted",
+      "description": "HostedClaw — 호스팅형 에이전트 서비스 (SaaS)",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/hosted-claw/hosted-claw",
+      "tags": [
+        "hosted",
+        "saas",
+        "service"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "data-exfiltration"
+      ],
+      "note": "호스팅형 SaaS 에이전트"
+    },
+    {
+      "id": "claw-saas",
+      "name": "claw-saas/claw-saas",
+      "category": "cloud-hosted",
+      "description": "Claw SaaS — 멀티테넌트 에이전트 플랫폼 템플릿",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/claw-saas/claw-saas",
+      "tags": [
+        "saas",
+        "multi-tenant",
+        "template"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "privilege-escalation"
+      ],
+      "note": "멀티테넌트 SaaS 템플릿"
+    },
+    {
+      "id": "claw-api-server",
+      "name": "openclaw/claw-api-server",
+      "category": "cloud-hosted",
+      "description": "Claw API Server — REST/GraphQL 에이전트 API 서버",
+      "language": "TypeScript",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-api-server",
+      "tags": [
+        "api",
+        "rest",
+        "graphql",
+        "server"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "remote-code-execution"
+      ],
+      "note": "에이전트 API 서버"
+    },
+    {
+      "id": "clawdrain",
+      "name": "clawdrain/clawdrain",
+      "category": "research",
+      "description": "ClawDrain — 에이전트 지식 증류 및 모델 경량화 연구",
+      "language": "Python",
+      "stars": 0,
+      "url": "https://github.com/clawdrain/clawdrain",
+      "tags": [
+        "distillation",
+        "lightweight",
+        "research"
+      ],
+      "threat_ids": [
+        "data-poisoning"
+      ],
+      "note": "지식 증류 연구"
+    },
+    {
+      "id": "claw-agent-lab",
+      "name": "openclaw/claw-agent-lab",
+      "category": "research",
+      "description": "Claw Agent Lab — 에이전트 행동 실험 및 벤치마크 환경",
+      "language": "Python",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-agent-lab",
+      "tags": [
+        "lab",
+        "experiment",
+        "benchmark"
+      ],
+      "threat_ids": [],
+      "note": "에이전트 실험 환경"
+    },
+    {
+      "id": "claw-research",
+      "name": "openclaw/claw-research",
+      "category": "research",
+      "description": "Claw Research — 에이전트 아키텍처, 안전성, 확장성 연구 논문/코드",
+      "language": "Python",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-research",
+      "tags": [
+        "research",
+        "papers",
+        "architecture"
+      ],
+      "threat_ids": [],
+      "note": "에이전트 연구 논문/코드"
+    },
+    {
+      "id": "claw-rl-agent",
+      "name": "openclaw/claw-rl-agent",
+      "category": "research",
+      "description": "Claw RL Agent — 강화학습 기반 에이전트 학습 프레임워크",
+      "language": "Python",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-rl-agent",
+      "tags": [
+        "rl",
+        "reinforcement-learning",
+        "training"
+      ],
+      "threat_ids": [
+        "data-poisoning"
+      ],
+      "note": "강화학습 에이전트"
+    },
+    {
+      "id": "claw-planning",
+      "name": "openclaw/claw-planning",
+      "category": "research",
+      "description": "Claw Planning — 에이전트 계획 수립, 태스크 분해 연구",
+      "language": "Python",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-planning",
+      "tags": [
+        "planning",
+        "task-decomposition"
+      ],
+      "threat_ids": [],
+      "note": "계획 수립 연구"
+    },
+    {
+      "id": "claw-multiagent",
+      "name": "openclaw/claw-multiagent",
+      "category": "research",
+      "description": "Claw MultiAgent — 멀티 에이전트 협업, 경쟁, 통신 연구",
+      "language": "Python",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-multiagent",
+      "tags": [
+        "multi-agent",
+        "collaboration",
+        "competition"
+      ],
+      "threat_ids": [
+        "user-manipulation"
+      ],
+      "note": "멀티에이전트 연구"
+    },
+    {
+      "id": "awesome-openclaw",
+      "name": "SamurAIGPT/awesome-openclaw",
+      "category": "curated-lists",
+      "description": "Curated list of OpenClaw resources, tools, skills, tutorials, articles",
+      "language": "",
+      "stars": 0,
+      "url": "https://github.com/SamurAIGPT/awesome-openclaw",
+      "tags": [
+        "awesome-list",
+        "resources",
+        "tutorials"
+      ],
+      "threat_ids": [],
+      "note": "OpenClaw 리소스 큐레이션"
+    },
+    {
+      "id": "awesome-openclaw-skills",
+      "name": "sundial-org/awesome-openclaw-skills",
+      "category": "curated-lists",
+      "description": "913 top/most popular skills curated from ClawHub registry",
+      "language": "",
+      "stars": 0,
+      "url": "https://github.com/sundial-org/awesome-openclaw-skills",
+      "tags": [
+        "awesome-list",
+        "skills",
+        "popular"
+      ],
+      "threat_ids": [],
+      "note": "인기 스킬 913개 큐레이션"
+    },
+    {
+      "id": "awesome-clawhub",
+      "name": "awesome-clawhub/awesome-clawhub",
+      "category": "curated-lists",
+      "description": "ClawHub 생태계 종합 가이드 및 추천 스킬 목록",
+      "language": "",
+      "stars": 0,
+      "url": "https://github.com/awesome-clawhub/awesome-clawhub",
+      "tags": [
+        "awesome-list",
+        "clawhub",
+        "guide"
+      ],
+      "threat_ids": [],
+      "note": "ClawHub 종합 가이드"
+    },
+    {
+      "id": "openclaw-datasets",
+      "name": "openclaw/openclaw-datasets",
+      "category": "curated-lists",
+      "description": "OpenClaw 학습·평가용 데이터셋 모음",
+      "language": "Python",
+      "stars": 0,
+      "url": "https://github.com/openclaw/openclaw-datasets",
+      "tags": [
+        "datasets",
+        "evaluation",
+        "training"
+      ],
+      "threat_ids": [],
+      "note": "학습/평가 데이터셋"
+    },
+    {
+      "id": "claw-evaluation",
+      "name": "openclaw/claw-evaluation",
+      "category": "curated-lists",
+      "description": "Claw Evaluation — 에이전트 벤치마크 및 성능 평가 프레임워크",
+      "language": "Python",
+      "stars": 0,
+      "url": "https://github.com/openclaw/claw-evaluation",
+      "tags": [
+        "benchmark",
+        "evaluation",
+        "performance"
+      ],
+      "threat_ids": [],
+      "note": "벤치마크 평가 프레임워크"
+    },
+    {
+      "id": "claw-agent-scan",
+      "name": "snyk/claw-agent-scan",
+      "category": "security-sandbox",
+      "description": "AI 에이전트, MCP 서버, 에이전트 스킬을 위한 보안 스캐너 — 15개 이상의 보안 위험 탐지",
+      "language": "Python",
+      "stars": 1700,
+      "url": "https://github.com/snyk/agent-scan",
+      "tags": [
+        "scanner",
+        "mcp",
+        "security",
+        "snyk",
+        "invariant"
+      ],
+      "threat_ids": [
+        "supply-chain-attack",
+        "prompt-injection",
+        "data-exfiltration"
+      ],
+      "note": "Snyk/Invariant Labs 합병 후 공식 에이전트 보안 스캐너. Tool Poisoning, Tool Shadowing, Rug Pull 등 15+ 위험 탐지",
+      "directory_repo_id": "claw-agent-scan"
+    },
+    {
+      "id": "safe-mcp-framework",
+      "name": "safe-agentic-framework/safe-mcp",
+      "category": "security-sandbox",
+      "description": "SAFE-MCP — MITRE ATT&CK 방법론 기반 MCP 에코시스템 위협 문서화 및 완화 프레임워크",
+      "language": "Python",
+      "stars": 800,
+      "url": "https://github.com/safe-agentic-framework/safe-mcp",
+      "tags": [
+        "mitre",
+        "mcp",
+        "threat-model",
+        "linux-foundation"
+      ],
+      "threat_ids": [
+        "supply-chain-attack",
+        "prompt-injection",
+        "privilege-escalation",
+        "remote-code-execution"
+      ],
+      "note": "Linux Foundation/OpenID Foundation 공식 채택. 14개 전술 카테고리의 공격 기법 문서화",
+      "directory_repo_id": "safe-mcp"
+    },
+    {
+      "id": "agentic-radar",
+      "name": "splx-ai/agentic-radar",
+      "category": "security-sandbox",
+      "description": "Agentic Radar — LLM 에이전트 워크플로우 정적 보안 스캐너, OWASP Agentic Top 10 매핑",
+      "language": "Python",
+      "stars": 3200,
+      "url": "https://github.com/splx-ai/agentic-radar",
+      "tags": [
+        "scanner",
+        "static-analysis",
+        "owasp",
+        "prompt-hardening"
+      ],
+      "threat_ids": [
+        "prompt-injection",
+        "unsafe-tool-use",
+        "privilege-escalation"
+      ],
+      "note": "49개 규칙, OWASP Agentic Top 10 (2026) 매핑. LangGraph/CrewAI/n8n/AutoGen 지원",
+      "directory_repo_id": "agentic-radar"
+    },
+    {
+      "id": "mcp-security-standard",
+      "name": "mcp-security-standard/mcp-server-security-standard",
+      "category": "security-sandbox",
+      "description": "MCP Server Security Standard (MSSS) — 6개 배포 프로파일, 23개 보안 컨트롤의 인증 표준",
+      "language": "",
+      "stars": 450,
+      "url": "https://github.com/mcp-security-standard/mcp-server-security-standard",
+      "tags": [
+        "standard",
+        "mcp",
+        "certification",
+        "compliance"
+      ],
+      "threat_ids": [
+        "supply-chain-attack",
+        "credential-theft"
+      ],
+      "note": "2026.01 Community Review Draft 발표. JSON 보고 스키마 포함"
+    },
+    {
+      "id": "guardrails-ai",
+      "name": "guardrails-ai/guardrails",
+      "category": "security-sandbox",
+      "description": "Guardrails AI — LLM 입출력 가드레일 프레임워크, 24개 가드레일 벤치마크",
+      "language": "Python",
+      "stars": 5200,
+      "url": "https://github.com/guardrails-ai/guardrails",
+      "tags": [
+        "guardrails",
+        "input-validation",
+        "output-validation",
+        "llm-safety"
+      ],
+      "threat_ids": [
+        "prompt-injection",
+        "data-exfiltration",
+        "user-manipulation"
+      ],
+      "note": "Guardrails Index: 24개 가드레일 성능·지연시간 벤치마크 제공"
+    },
+    {
+      "id": "nemo-guardrails",
+      "name": "NVIDIA-NeMo/Guardrails",
+      "category": "security-sandbox",
+      "description": "NeMo Guardrails — NVIDIA의 LLM 대화형 시스템용 프로그래밍 가능 가드레일 툴킷",
+      "language": "Python",
+      "stars": 4800,
+      "url": "https://github.com/NVIDIA-NeMo/Guardrails",
+      "tags": [
+        "nvidia",
+        "guardrails",
+        "dialog-rails",
+        "llm-safety"
+      ],
+      "threat_ids": [
+        "prompt-injection",
+        "user-manipulation"
+      ],
+      "note": "Input/Dialog/Retrieval 레일 지원. 대화형 에이전트 안전성 확보"
+    },
+    {
+      "id": "mcp-security-hub",
+      "name": "FuzzingLabs/mcp-security-hub",
+      "category": "tool-integration",
+      "description": "MCP Security Hub — Nmap, Ghidra, Nuclei, SQLMap, Hashcat 등 공격 보안 도구의 Dockerized MCP 서버",
+      "language": "Python",
+      "stars": 600,
+      "url": "https://github.com/FuzzingLabs/mcp-security-hub",
+      "tags": [
+        "offensive-security",
+        "nmap",
+        "nuclei",
+        "mcp",
+        "docker"
+      ],
+      "threat_ids": [
+        "remote-code-execution",
+        "unsafe-tool-use",
+        "privilege-escalation"
+      ],
+      "note": "AI 어시스턴트를 통한 보안 평가, 취약점 스캐닝, 바이너리 분석 수행"
+    },
+    {
+      "id": "google-mcp-security",
+      "name": "google/mcp-security",
+      "category": "tool-integration",
+      "description": "Google MCP Security — Chronicle, SOAR, GTI, SCC 등 Google 보안 제품 연동 MCP 서버",
+      "language": "Python",
+      "stars": 1200,
+      "url": "https://github.com/google/mcp-security",
+      "tags": [
+        "google",
+        "chronicle",
+        "soar",
+        "threat-intelligence",
+        "mcp"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "data-exfiltration"
+      ],
+      "note": "Google Security Operations 제품군의 공식 MCP 서버"
+    },
+    {
+      "id": "agentic-trust-framework",
+      "name": "massivescale-ai/agentic-trust-framework",
+      "category": "framework-sdk",
+      "description": "Agentic Trust Framework — AI 에이전트를 위한 Zero Trust 거버넌스 프레임워크 (CSA 발표)",
+      "language": "",
+      "stars": 350,
+      "url": "https://github.com/massivescale-ai/agentic-trust-framework",
+      "tags": [
+        "zero-trust",
+        "governance",
+        "csa",
+        "specification"
+      ],
+      "threat_ids": [
+        "privilege-escalation",
+        "credential-theft"
+      ],
+      "note": "Cloud Security Alliance 발표. 성숙도 모델, 구현 가이드 포함"
+    },
+    {
+      "id": "claw-codeguard",
+      "name": "openclaw/claw-codeguard",
+      "category": "security-sandbox",
+      "description": "Project CodeGuard — AI 코딩 워크플로우에 보안 기본값을 내장하는 모델 비종속 보안 프레임워크",
+      "language": "TypeScript",
+      "stars": 900,
+      "url": "https://github.com/openclaw/claw-codeguard",
+      "tags": [
+        "code-security",
+        "coding-agent",
+        "secure-by-default",
+        "rules"
+      ],
+      "threat_ids": [
+        "remote-code-execution",
+        "supply-chain-attack"
+      ],
+      "note": "AI 코딩 에이전트용 보안 규칙셋, 번역기, 검증기 포함"
+    },
+    {
+      "id": "claw-mcphammer",
+      "name": "praetorian-inc/claw-mcphammer",
+      "category": "research",
+      "description": "MCPHammer — MCP 서버 체이닝 공격 데모, 콘텐츠 인젝션, 데이터 유출 PoC 도구",
+      "language": "Python",
+      "stars": 500,
+      "url": "https://github.com/praetorian-inc/mcphammer",
+      "tags": [
+        "offensive",
+        "poc",
+        "mcp",
+        "chaining-attack",
+        "research"
+      ],
+      "threat_ids": [
+        "prompt-injection",
+        "data-exfiltration",
+        "remote-code-execution"
+      ],
+      "note": "Praetorian 연구팀 제작. MCP 서버 공격 체이닝 및 데이터 유출 PoC"
+    },
+    {
+      "id": "rebuff-claw",
+      "name": "protectai/rebuff",
+      "category": "security-sandbox",
+      "description": "Rebuff — 다층 방어 기반 프롬프트 인젝션 탐지기 (휴리스틱, LLM, 벡터DB, 카나리 토큰)",
+      "language": "Python",
+      "stars": 1100,
+      "url": "https://github.com/protectai/rebuff",
+      "tags": [
+        "prompt-injection",
+        "defense",
+        "canary-token",
+        "vector-db"
+      ],
+      "threat_ids": [
+        "prompt-injection",
+        "indirect-prompt-injection"
+      ],
+      "note": "다층 방어: 휴리스틱 필터링 + LLM 탐지 + 이전 공격 벡터DB + 카나리 토큰 누출 탐지"
+    },
+    {
+      "id": "alphaclaw",
+      "name": "chrysb/alphaclaw",
+      "category": "infrastructure",
+      "description": "AlphaClaw — OpenClaw 셋업 하니스. 브라우저 기반 배포/관리, 자동 복구, Git 백업, 프롬프트 하드닝",
+      "language": "JavaScript",
+      "stars": 385,
+      "url": "https://github.com/chrysb/alphaclaw",
+      "tags": [
+        "setup",
+        "wrapper",
+        "deployment",
+        "dashboard",
+        "watchdog"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "privilege-escalation"
+      ],
+      "security_risk": "medium",
+      "note": "OpenClaw 래핑 셋업 도구. 보안 주의: 기본 하드닝을 편의를 위해 일부 완화 (단일 패스워드 인증, 쿼리스트링 토큰, 자동 CLI 페어링 승인). 프로덕션 보안이 필요하면 OpenClaw 직접 사용 권장",
+      "directory_repo_id": "alphaclaw"
+    },
+    {
+      "id": "skyclaw",
+      "name": "nagisanzenin/skyclaw",
+      "category": "lightweight",
+      "description": "SkyClaw — 클라우드 자립형 초경량 Rust 에이전트. 44K LoC, 1095 테스트, 20개 자율 모듈, 6 LLM 프로바이더, 정적 바이너리",
+      "language": "Rust",
+      "stars": 146,
+      "url": "https://github.com/nagisanzenin/skyclaw",
+      "tags": [
+        "rust",
+        "cloud",
+        "lightweight",
+        "autonomous",
+        "static-binary"
+      ],
+      "threat_ids": [
+        "remote-code-execution",
+        "privilege-escalation",
+        "credential-theft"
+      ],
+      "security_risk": "high",
+      "note": "13-crate Cargo workspace. 셸/브라우저/파일/Git 도구 내장. ChaCha20-Poly1305 암호화, 경로 순회 보호. 자동 화이트리스트 메커니즘(첫 사용자 자동 등록)은 보안 위험",
+      "directory_repo_id": "skyclaw"
+    },
+    {
+      "id": "openclaw-mission-control",
+      "name": "abhi1693/openclaw-mission-control",
+      "category": "control-monitoring",
+      "description": "OpenClaw Mission Control — AI 에이전트 오케스트레이션 대시보드. 멀티에이전트 협업, 거버넌스, Gateway 통합",
+      "language": "TypeScript",
+      "stars": 1900,
+      "url": "https://github.com/abhi1693/openclaw-mission-control",
+      "tags": [
+        "dashboard",
+        "orchestration",
+        "multi-agent",
+        "governance"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "privilege-escalation"
+      ],
+      "security_risk": "medium",
+      "note": "팀/조직용 중앙 관리 플랫폼. Gateway 연동 에이전트 관리, 승인 워크플로우"
+    },
+    {
+      "id": "clawwork",
+      "name": "HKUDS/ClawWork",
+      "category": "research",
+      "description": "ClawWork — OpenClaw as Your AI Coworker. 220개 실무 태스크, 44개 직업군, 11시간에 $15K 수익 데모",
+      "language": "Python",
+      "stars": 6900,
+      "url": "https://github.com/HKUDS/ClawWork",
+      "tags": [
+        "research",
+        "coworker",
+        "economic",
+        "task-automation",
+        "benchmark"
+      ],
+      "threat_ids": [
+        "unsafe-tool-use",
+        "data-exfiltration"
+      ],
+      "security_risk": "medium",
+      "note": "HKU 연구팀. AI 에이전트의 경제적 가치 실증 연구. 자율 수익 창출 에이전트 PoC",
+      "directory_repo_id": "clawwork"
+    },
+    {
+      "id": "clawdeck",
+      "name": "clawdeckio/clawdeck",
+      "category": "control-monitoring",
+      "description": "ClawDeck — 칸반 스타일 AI 에이전트 미션 컨트롤 대시보드. 태스크 추적, 에이전트 배정, 비동기 협업",
+      "language": "HTML",
+      "stars": 301,
+      "url": "https://github.com/clawdeckio/clawdeck",
+      "tags": [
+        "kanban",
+        "dashboard",
+        "task-management",
+        "mission-control"
+      ],
+      "threat_ids": [],
+      "security_risk": "low",
+      "note": "오픈소스 에이전트 태스크 관리 대시보드"
+    },
+    {
+      "id": "clawhost",
+      "name": "bfzli/clawhost",
+      "category": "cloud-hosted",
+      "description": "ClawHost — 원클릭 VPS 기반 OpenClaw 클라우드 호스팅. 자동 프로비저닝, DNS, SSL, 방화벽 설정",
+      "language": "TypeScript",
+      "stars": 235,
+      "url": "https://github.com/bfzli/clawhost",
+      "tags": [
+        "hosting",
+        "vps",
+        "cloud",
+        "one-click",
+        "self-hosted"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "privilege-escalation"
+      ],
+      "security_risk": "medium",
+      "note": "Hetzner/DigitalOcean/Vultr 지원. 자동 서버 프로비저닝 및 에이전트 배포"
+    },
+    {
+      "id": "k8s-operator",
+      "name": "openclaw-rocks/k8s-operator",
+      "category": "infrastructure",
+      "description": "OpenClaw Kubernetes Operator — 프로덕션급 보안, 옵저버빌리티, 라이프사이클 관리를 갖춘 K8s 오퍼레이터",
+      "language": "Go",
+      "stars": 160,
+      "url": "https://github.com/openclaw-rocks/k8s-operator",
+      "tags": [
+        "kubernetes",
+        "operator",
+        "k8s",
+        "production",
+        "infrastructure"
+      ],
+      "threat_ids": [
+        "privilege-escalation"
+      ],
+      "security_risk": "medium",
+      "note": "CRD 기반 선언적 에이전트 배포. 네트워킹, 스토리지, 모니터링 자동화"
+    },
+    {
+      "id": "openclaw-security-monitor",
+      "name": "adibirzu/openclaw-security-monitor",
+      "category": "security-sandbox",
+      "description": "OpenClaw Security Monitor — 48포인트 보안 평가, ClawHavoc/AMOS/Vidar/GhostSocks 탐지, IOC DB, 자동 치료",
+      "language": "Shell",
+      "stars": 15,
+      "url": "https://github.com/adibirzu/openclaw-security-monitor",
+      "tags": [
+        "security-monitor",
+        "threat-detection",
+        "ioc",
+        "clawhavoc",
+        "remediation"
+      ],
+      "threat_ids": [
+        "supply-chain-attack",
+        "remote-code-execution",
+        "credential-theft",
+        "data-exfiltration"
+      ],
+      "security_risk": "low",
+      "note": "48포인트 위협 스캐너. C2 인프라, 메모리 포이즈닝, WebSocket 하이재킹 탐지. CVE-2026-25253 점검"
+    },
+    {
+      "id": "secure-openclaw",
+      "name": "ComposioHQ/secure-openclaw",
+      "category": "core-platforms",
+      "description": "Secure-OpenClaw — 보안 강화 OpenClaw 포크. WhatsApp/Telegram/Signal/iMessage 지원, 500+ 앱 통합",
+      "language": "JavaScript",
+      "stars": 1400,
+      "url": "https://github.com/ComposioHQ/secure-openclaw",
+      "tags": [
+        "fork",
+        "security-hardened",
+        "composio",
+        "messaging",
+        "integrations"
+      ],
+      "threat_ids": [
+        "prompt-injection",
+        "credential-theft"
+      ],
+      "security_risk": "medium",
+      "note": "ComposioHQ의 보안 강화 OpenClaw 포크. 풀 도구 액세스, 영속 메모리, 예약 알림"
+    },
+    {
+      "id": "openclaw-helm",
+      "name": "serhanekicii/openclaw-helm",
+      "category": "infrastructure",
+      "description": "OpenClaw Helm Chart — Kubernetes에서 OpenClaw 배포를 위한 Helm 차트",
+      "language": "YAML",
+      "stars": 45,
+      "url": "https://github.com/serhanekicii/openclaw-helm",
+      "tags": [
+        "helm",
+        "kubernetes",
+        "chart",
+        "deployment"
+      ],
+      "threat_ids": [],
+      "security_risk": "low",
+      "note": "Kubernetes Helm 기반 OpenClaw 배포 자동화"
+    },
+    {
+      "id": "adversa-secureclaw",
+      "name": "adversa-ai/secureclaw",
+      "category": "security-sandbox",
+      "description": "Adversa SecureClaw — OWASP 정렬 OpenClaw 보안 플러그인/스킬. 56개 자동 검사, 8개 카테고리",
+      "language": "Python",
+      "stars": 320,
+      "url": "https://github.com/adversa-ai/secureclaw",
+      "tags": [
+        "security-plugin",
+        "owasp",
+        "audit",
+        "hardening",
+        "adversa"
+      ],
+      "threat_ids": [
+        "privilege-escalation",
+        "credential-theft",
+        "remote-code-execution"
+      ],
+      "security_risk": "low",
+      "note": "Adversa AI 개발. 7개 보안 프레임워크 매핑, 56개 자동 검사로 미설정/노출 감지"
+    },
+    {
+      "id": "max-claw",
+      "name": "minimax-ai/max-claw",
+      "category": "china-ecosystem",
+      "description": "MaxClaw — MiniMax의 OpenClaw 호환 에이전트. MiniMax-01 모델 기반, 음성·영상 멀티모달 에이전트, Hailuo AI 통합",
+      "language": "Python",
+      "stars": 8700,
+      "url": "https://github.com/minimax-ai/max-claw",
+      "tags": [
+        "minimax",
+        "multimodal",
+        "voice",
+        "video",
+        "china"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "data-exfiltration",
+        "unsafe-tool-use"
+      ],
+      "security_risk": "high",
+      "note": "MiniMax 개발. 음성합성·영상생성 에이전트로 차별화. Hailuo 영상 생성 API 내장. 멀티모달 입출력으로 인한 새로운 공격 표면(음성 인젝션, 딥페이크 생성)"
+    },
+    {
+      "id": "copaw",
+      "name": "alibaba-ai/copaw",
+      "category": "china-ecosystem",
+      "description": "CoPaw — Alibaba의 Qwen 모델 기반 엔터프라이즈 에이전트 플랫폼. DingTalk/Alibaba Cloud/Taobao 생태계 통합, 전자상거래 자동화",
+      "language": "Python",
+      "stars": 15200,
+      "url": "https://github.com/alibaba-ai/copaw",
+      "tags": [
+        "alibaba",
+        "qwen",
+        "enterprise",
+        "ecommerce",
+        "dingtalk",
+        "china"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "data-exfiltration",
+        "privilege-escalation",
+        "supply-chain-attack"
+      ],
+      "security_risk": "critical",
+      "note": "Alibaba Cloud 개발. Qwen2.5 모델 기반. DingTalk 10억+ 사용자 접근, Taobao/Tmall 전자상거래 자동화, Alibaba Cloud 인프라 관리. 광범위한 권한으로 Critical 리스크"
+    },
+    {
+      "id": "ark-claw",
+      "name": "bytedance-ai/ark-claw",
+      "category": "china-ecosystem",
+      "description": "ArkClaw — ByteDance의 Doubao/Skylark 모델 기반 에이전트. 화산엔진(Volcano Engine) 통합, Coze 플랫폼 연동, 숏폼 콘텐츠 자동화",
+      "language": "TypeScript",
+      "stars": 11300,
+      "url": "https://github.com/bytedance-ai/ark-claw",
+      "tags": [
+        "bytedance",
+        "doubao",
+        "volcano-engine",
+        "coze",
+        "tiktok",
+        "china"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "data-exfiltration",
+        "unsafe-tool-use",
+        "user-manipulation"
+      ],
+      "security_risk": "high",
+      "note": "ByteDance 개발. Coze(扣子) 봇 빌더 통합, Doubao(豆包) 모델 기반. TikTok/Douyin 콘텐츠 자동 생성·관리. 소셜미디어 조작 위험"
+    },
+    {
+      "id": "work-buddy",
+      "name": "tencent-ai/work-buddy",
+      "category": "china-ecosystem",
+      "description": "WorkBuddy — Tencent의 Hunyuan 모델 기반 업무 에이전트. WeChat Work/QQ/Tencent Meeting/Tencent Docs 생태계 통합",
+      "language": "TypeScript",
+      "stars": 9800,
+      "url": "https://github.com/tencent-ai/work-buddy",
+      "tags": [
+        "tencent",
+        "hunyuan",
+        "wechat-work",
+        "enterprise",
+        "china"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "data-exfiltration",
+        "privilege-escalation"
+      ],
+      "security_risk": "high",
+      "note": "Tencent 개발. Hunyuan 모델 기반. WeChat Work(企业微信) 12억 사용자 생태계 접근. 텐센트 회의·문서·클라우드 통합으로 기업 데이터 광범위 접근"
+    },
+    {
+      "id": "auto-claw",
+      "name": "zhipu-ai/auto-claw",
+      "category": "china-ecosystem",
+      "description": "AutoClaw — Zhipu AI의 GLM 모델 기반 자율형 에이전트. AutoGLM 웹 에이전트, 코드 인터프리터, 학술 검색 통합",
+      "language": "Python",
+      "stars": 7600,
+      "url": "https://github.com/zhipu-ai/auto-claw",
+      "tags": [
+        "zhipu",
+        "glm",
+        "autoglm",
+        "autonomous",
+        "academic",
+        "china"
+      ],
+      "threat_ids": [
+        "credential-theft",
+        "remote-code-execution",
+        "prompt-injection"
+      ],
+      "security_risk": "high",
+      "note": "Zhipu AI(智谱) 개발. GLM-4 모델 기반. AutoGLM 웹 내비게이션 에이전트 내장으로 브라우저 자율 조작. 코드 실행 + 웹 탐색 조합으로 RCE 위험 증가"
+    },
+    {
+      "id": "lobster",
+      "name": "openclaw/lobster",
+      "url": "https://github.com/openclaw/lobster",
+      "stars": 786,
+      "description": "Workflow shell: 타입 기반 로컬 매크로 엔진, 스킬/도구를 composable pipeline으로 변환",
+      "category": "framework-sdk",
+      "language": "",
+      "tags": [
+        "workflow",
+        "shell",
+        "pipeline"
+      ],
+      "threat_ids": [],
+      "note": ""
+    },
+    {
+      "id": "acpx",
+      "name": "openclaw/acpx",
+      "url": "https://github.com/openclaw/acpx",
+      "stars": 665,
+      "description": "Headless CLI 클라이언트 — 상태 기반 Agent Client Protocol(ACP) 세션 지원. Codex, Claude, Gemini 등 호환",
+      "category": "framework-sdk",
+      "language": "",
+      "tags": [
+        "cli",
+        "acp",
+        "headless"
+      ],
+      "threat_ids": [],
+      "note": ""
+    },
+    {
+      "id": "nix-openclaw",
+      "name": "openclaw/nix-openclaw",
+      "url": "https://github.com/openclaw/nix-openclaw",
+      "stars": 516,
+      "description": "Nix 기반 OpenClaw 패키징 — 재현 가능한 빌드 및 선언적 설치",
+      "category": "infrastructure",
+      "language": "Nix",
+      "tags": [
+        "nix",
+        "packaging",
+        "reproducible"
+      ],
+      "threat_ids": [],
+      "note": ""
+    },
+    {
+      "id": "openclaw-ansible",
+      "name": "openclaw/openclaw-ansible",
+      "url": "https://github.com/openclaw/openclaw-ansible",
+      "stars": 478,
+      "description": "자동화된 보안 강화 설치 — Tailscale VPN, UFW 방화벽, Docker 격리",
+      "category": "infrastructure",
+      "language": "YAML",
+      "tags": [
+        "ansible",
+        "deployment",
+        "security-hardening"
+      ],
+      "threat_ids": [],
+      "note": ""
+    },
+    {
+      "id": "clawdinators",
+      "name": "openclaw/clawdinators",
+      "url": "https://github.com/openclaw/clawdinators",
+      "stars": 137,
+      "description": "선언적 인프라 + NixOS 모듈 — CLAWTINATOR 호스트용 (GitHub/Discord 모니터링 에이전트)",
+      "category": "infrastructure",
+      "language": "Nix",
+      "tags": [
+        "nixos",
+        "monitoring",
+        "infrastructure"
+      ],
+      "threat_ids": [],
+      "note": ""
+    },
+    {
+      "id": "openclaw-trust",
+      "name": "openclaw/trust",
+      "url": "https://github.com/openclaw/trust",
+      "stars": 29,
+      "description": "OpenClaw 신뢰 리소스 — 보안 거버넌스 및 정책 관리",
+      "category": "security-sandbox",
+      "language": "",
+      "tags": [
+        "trust",
+        "governance",
+        "policy"
+      ],
+      "threat_ids": [],
+      "note": ""
+    },
+    {
+      "id": "nullclaw",
+      "name": "nullclaw/nullclaw",
+      "url": "https://github.com/nullclaw/nullclaw",
+      "stars": 450,
+      "description": "Zig 기반 초경량 AI 어시스턴트 — 678KB 바이너리, 제로 런타임 의존성",
+      "category": "lightweight",
+      "language": "Zig",
+      "tags": [
+        "zig",
+        "lightweight",
+        "minimal"
+      ],
+      "threat_ids": [],
+      "note": ""
+    },
+    {
+      "id": "ironclaw",
+      "name": "nearai/ironclaw",
+      "url": "https://github.com/nearai/ironclaw",
+      "stars": 380,
+      "description": "Rust 기반 OpenClaw 구현 — 프라이버시/보안 중심, WASM 샌드박스 + capability-based 권한",
+      "category": "lightweight",
+      "language": "Rust",
+      "tags": [
+        "rust",
+        "wasm",
+        "sandbox",
+        "privacy"
+      ],
+      "threat_ids": [],
+      "note": ""
+    },
+    {
+      "id": "superpowers",
+      "name": "obra/superpowers",
+      "url": "https://github.com/obra/superpowers",
+      "stars": 27000,
+      "description": "Agentic skills 프레임워크 — AI 코딩 에이전트용 설계/계획/구현 워크플로우 강제",
+      "category": "framework-sdk",
+      "language": "",
+      "tags": [
+        "agentic",
+        "skills",
+        "workflow",
+        "coding-agent"
+      ],
+      "threat_ids": [],
+      "note": ""
+    },
+    {
+      "id": "moltworker",
+      "name": "cloudflare/moltworker",
+      "url": "https://github.com/cloudflare/moltworker",
+      "stars": 520,
+      "description": "Cloudflare Workers 기반 OpenClaw 배포 — 완전 관리형, always-on 서버리스",
+      "category": "cloud-hosted",
+      "language": "",
+      "tags": [
+        "cloudflare",
+        "workers",
+        "serverless"
+      ],
+      "threat_ids": [],
+      "note": ""
+    },
+    {
+      "id": "github-mcp-server",
+      "name": "github/github-mcp-server",
+      "url": "https://github.com/github/github-mcp-server",
+      "stars": 4200,
+      "description": "GitHub 공식 MCP 서버 — Projects 도구, OAuth 스코프 필터링",
+      "category": "tool-integration",
+      "language": "",
+      "tags": [
+        "github",
+        "mcp",
+        "official"
+      ],
+      "threat_ids": [],
+      "note": ""
+    },
+    {
+      "id": "microsoft-mcp",
+      "name": "microsoft/mcp",
+      "url": "https://github.com/microsoft/mcp",
+      "stars": 1800,
+      "description": "Microsoft 공식 MCP 서버 카탈로그 — Azure, Office 365, Teams 통합",
+      "category": "tool-integration",
+      "language": "",
+      "tags": [
+        "microsoft",
+        "mcp",
+        "azure",
+        "office365"
+      ],
+      "threat_ids": [],
+      "note": ""
+    },
+    {
+      "id": "mcp-servers",
+      "name": "modelcontextprotocol/servers",
+      "url": "https://github.com/modelcontextprotocol/servers",
+      "stars": 15200,
+      "description": "Anthropic 공식 MCP 서버 레포지토리 — 표준 MCP 서버 구현체",
+      "category": "framework-sdk",
+      "language": "",
+      "tags": [
+        "anthropic",
+        "mcp",
+        "official",
+        "reference"
+      ],
+      "threat_ids": [],
+      "note": ""
+    },
+    {
+      "id": "awesome-mcp-servers",
+      "name": "punkpeye/awesome-mcp-servers",
+      "url": "https://github.com/punkpeye/awesome-mcp-servers",
+      "stars": 8900,
+      "description": "커뮤니티 큐레이션 MCP 서버 목록 — 500+ MCP 서버 카탈로그",
+      "category": "curated-lists",
+      "language": "",
+      "tags": [
+        "awesome-list",
+        "mcp",
+        "catalog"
+      ],
+      "threat_ids": [],
+      "note": ""
+    },
+    {
+      "id": "denchclaw",
+      "name": "DenchHQ/DenchClaw",
+      "url": "https://github.com/DenchHQ/DenchClaw",
+      "stars": 757,
+      "description": "완전 관리형 OpenClaw 프레임워크 — CRM 자동화 및 아웃리치 에이전트",
+      "category": "tool-integration",
+      "language": "",
+      "tags": [
+        "crm",
+        "automation",
+        "outreach"
+      ],
+      "threat_ids": [],
+      "note": ""
+    },
+    {
+      "id": "cai",
+      "name": "aliasrobotics/cai",
+      "url": "https://github.com/aliasrobotics/cai",
+      "stars": 320,
+      "description": "사이버보안 AI(CAI) 프레임워크 — AI 기반 공격/방어 보안",
+      "category": "security-sandbox",
+      "language": "",
+      "tags": [
+        "cybersecurity",
+        "offensive",
+        "defensive"
+      ],
+      "threat_ids": [],
+      "note": ""
+    }
   ]
 }

@@ -188,6 +188,7 @@
       "ATTACK-T1068"
     ],
     "github_url": "https://github.com/openclaw/skill-shell",
+    "ecosystem_repo_id": "claw-skills-terminal",
     "risk_score": {
       "execution": 30,
       "data_access": 25,
@@ -227,6 +228,7 @@
       "ATTACK-T1552"
     ],
     "github_url": "https://github.com/openclaw/skill-filesystem",
+    "ecosystem_repo_id": "claw-skills-filesystem",
     "risk_score": {
       "execution": 15,
       "data_access": 25,
@@ -266,6 +268,7 @@
       "ATTACK-T1059",
       "ATTACK-T1195"
     ],
+    "ecosystem_repo_id": "claw-skills-python",
     "github_url": "https://github.com/openclaw/skill-python",
     "risk_score": {
       "execution": 30,
@@ -493,6 +496,7 @@
       "ATTACK-T1195"
     ],
     "github_url": "https://github.com/openclaw/skill-github",
+    "ecosystem_repo_id": "claw-skills-github",
     "risk_score": {
       "execution": 10,
       "data_access": 20,

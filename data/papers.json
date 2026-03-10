@@ -4,10 +4,23 @@
     "title": "AgentDoG: Agentic Risk Taxonomy and Diagnostic Guardrail Framework",
     "year": 2025,
     "type": "defense",
-    "topic_tags": ["risk-taxonomy", "guardrail", "agent-safety"],
-    "mapped_components": ["agent-runtime", "agent-runtime"],
-    "mapped_threats": ["prompt-injection", "unsafe-tool-use", "user-manipulation"],
-    "mapped_controls": ["runtime-monitoring", "policy-enforcement"],
+    "topic_tags": [
+      "risk-taxonomy",
+      "guardrail",
+      "agent-safety"
+    ],
+    "mapped_components": [
+      "agent-runtime"
+    ],
+    "mapped_threats": [
+      "prompt-injection",
+      "unsafe-tool-use",
+      "user-manipulation"
+    ],
+    "mapped_controls": [
+      "runtime-monitoring",
+      "policy-enforcement"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2505.00000"
   },
   {
@@ -15,10 +28,22 @@
     "title": "Guarding Agentic Reasoning Models for Safe Multi-Step Planning",
     "year": 2025,
     "type": "benchmark",
-    "topic_tags": ["agent-safety", "multi-step-planning", "benchmark"],
-    "mapped_components": ["agent-runtime", "agent-runtime"],
-    "mapped_threats": ["prompt-injection", "unsafe-tool-use"],
-    "mapped_controls": ["workflow-constraints", "human-approval"],
+    "topic_tags": [
+      "agent-safety",
+      "multi-step-planning",
+      "benchmark"
+    ],
+    "mapped_components": [
+      "agent-runtime"
+    ],
+    "mapped_threats": [
+      "prompt-injection",
+      "unsafe-tool-use"
+    ],
+    "mapped_controls": [
+      "workflow-constraints",
+      "human-approval"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2505.00001"
   },
   {
@@ -26,10 +51,27 @@
     "title": "Agentic AI Security: Threats, Defenses, Evaluation, and Benchmarks",
     "year": 2025,
     "type": "survey",
-    "topic_tags": ["security", "defense", "benchmark", "evaluation"],
-    "mapped_components": ["agent-runtime", "plugin-system", "plugin-system"],
-    "mapped_threats": ["prompt-injection", "supply-chain-attack", "credential-theft", "data-exfiltration"],
-    "mapped_controls": ["sandboxing", "runtime-monitoring", "capability-scoping"],
+    "topic_tags": [
+      "security",
+      "defense",
+      "benchmark",
+      "evaluation"
+    ],
+    "mapped_components": [
+      "agent-runtime",
+      "plugin-system"
+    ],
+    "mapped_threats": [
+      "prompt-injection",
+      "supply-chain-attack",
+      "credential-theft",
+      "data-exfiltration"
+    ],
+    "mapped_controls": [
+      "sandboxing",
+      "runtime-monitoring",
+      "capability-scoping"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2505.00002"
   },
   {
@@ -37,10 +79,25 @@
     "title": "A Survey of Agentic AI and Cybersecurity",
     "year": 2025,
     "type": "survey",
-    "topic_tags": ["cybersecurity", "offense", "defense"],
-    "mapped_components": ["agent-runtime", "sandbox"],
-    "mapped_threats": ["remote-code-execution", "credential-theft", "privilege-escalation"],
-    "mapped_controls": ["sandboxing", "least-privilege", "runtime-monitoring"],
+    "topic_tags": [
+      "cybersecurity",
+      "offense",
+      "defense"
+    ],
+    "mapped_components": [
+      "agent-runtime",
+      "sandbox"
+    ],
+    "mapped_threats": [
+      "remote-code-execution",
+      "credential-theft",
+      "privilege-escalation"
+    ],
+    "mapped_controls": [
+      "sandboxing",
+      "least-privilege",
+      "runtime-monitoring"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2505.00003"
   },
   {
@@ -48,10 +105,24 @@
     "title": "AIR: Improving Agent Safety through Incident Response",
     "year": 2025,
     "type": "incident_response",
-    "topic_tags": ["incident-response", "safety", "recovery"],
-    "mapped_components": ["agent-runtime", "sandbox"],
-    "mapped_threats": ["unsafe-tool-use", "memory-poisoning"],
-    "mapped_controls": ["runtime-monitoring", "policy-enforcement", "periodic-audit"],
+    "topic_tags": [
+      "incident-response",
+      "safety",
+      "recovery"
+    ],
+    "mapped_components": [
+      "agent-runtime",
+      "sandbox"
+    ],
+    "mapped_threats": [
+      "unsafe-tool-use",
+      "memory-poisoning"
+    ],
+    "mapped_controls": [
+      "runtime-monitoring",
+      "policy-enforcement",
+      "periodic-audit"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2505.00004"
   },
   {
@@ -59,10 +130,25 @@
     "title": "Towards Verifiably Safe Tool Use for LLM Agents",
     "year": 2025,
     "type": "verification",
-    "topic_tags": ["tool-safety", "STPA", "verification", "hazard-analysis"],
-    "mapped_components": ["plugin-system", "agent-runtime"],
-    "mapped_threats": ["unsafe-tool-use", "remote-code-execution"],
-    "mapped_controls": ["workflow-constraints", "capability-scoping", "human-approval"],
+    "topic_tags": [
+      "tool-safety",
+      "STPA",
+      "verification",
+      "hazard-analysis"
+    ],
+    "mapped_components": [
+      "plugin-system",
+      "agent-runtime"
+    ],
+    "mapped_threats": [
+      "unsafe-tool-use",
+      "remote-code-execution"
+    ],
+    "mapped_controls": [
+      "workflow-constraints",
+      "capability-scoping",
+      "human-approval"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2505.00005"
   },
   {
@@ -70,10 +156,23 @@
     "title": "Formal Analysis and Supply Chain Security for Agentic AI",
     "year": 2025,
     "type": "verification",
-    "topic_tags": ["supply-chain", "formal-analysis", "security"],
-    "mapped_components": ["plugin-system", "sandbox"],
-    "mapped_threats": ["supply-chain-attack"],
-    "mapped_controls": ["signed-skill-packages", "provenance-verification", "dependency-scanning"],
+    "topic_tags": [
+      "supply-chain",
+      "formal-analysis",
+      "security"
+    ],
+    "mapped_components": [
+      "plugin-system",
+      "sandbox"
+    ],
+    "mapped_threats": [
+      "supply-chain-attack"
+    ],
+    "mapped_controls": [
+      "signed-skill-packages",
+      "provenance-verification",
+      "dependency-scanning"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2505.00006"
   },
   {
@@ -81,10 +180,23 @@
     "title": "ICON: Indirect Prompt Injection Defense",
     "year": 2025,
     "type": "defense",
-    "topic_tags": ["prompt-injection", "indirect-injection", "defense"],
-    "mapped_components": ["plugin-system", "memory-engine"],
-    "mapped_threats": ["indirect-prompt-injection"],
-    "mapped_controls": ["content-filtering", "input-validation", "sandboxing"],
+    "topic_tags": [
+      "prompt-injection",
+      "indirect-injection",
+      "defense"
+    ],
+    "mapped_components": [
+      "plugin-system",
+      "memory-engine"
+    ],
+    "mapped_threats": [
+      "indirect-prompt-injection"
+    ],
+    "mapped_controls": [
+      "content-filtering",
+      "input-validation",
+      "sandboxing"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2505.00007"
   },
   {
@@ -92,10 +204,24 @@
     "title": "MobileSafetyBench: Device Control Agent Safety Evaluation",
     "year": 2025,
     "type": "benchmark",
-    "topic_tags": ["device-control", "safety", "benchmark"],
-    "mapped_components": ["plugin-system", "agent-runtime"],
-    "mapped_threats": ["unsafe-tool-use", "privilege-escalation"],
-    "mapped_controls": ["capability-scoping", "human-approval", "runtime-monitoring"],
+    "topic_tags": [
+      "device-control",
+      "safety",
+      "benchmark"
+    ],
+    "mapped_components": [
+      "plugin-system",
+      "agent-runtime"
+    ],
+    "mapped_threats": [
+      "unsafe-tool-use",
+      "privilege-escalation"
+    ],
+    "mapped_controls": [
+      "capability-scoping",
+      "human-approval",
+      "runtime-monitoring"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2505.00008"
   },
   {
@@ -103,10 +229,29 @@
     "title": "Agentic AI as a Cybersecurity Attack Surface: Threats, Exploits, and Defenses in Runtime Supply Chains",
     "year": 2026,
     "type": "survey",
-    "topic_tags": ["runtime-supply-chain", "tool-poisoning", "zero-trust", "attack-surface"],
-    "mapped_components": ["plugin-system", "plugin-system", "agent-runtime", "sandbox"],
-    "mapped_threats": ["supply-chain-attack", "indirect-prompt-injection", "credential-theft", "memory-poisoning"],
-    "mapped_controls": ["sandboxing", "provenance-verification", "runtime-monitoring", "dependency-scanning"],
+    "topic_tags": [
+      "runtime-supply-chain",
+      "tool-poisoning",
+      "zero-trust",
+      "attack-surface"
+    ],
+    "mapped_components": [
+      "plugin-system",
+      "agent-runtime",
+      "sandbox"
+    ],
+    "mapped_threats": [
+      "supply-chain-attack",
+      "indirect-prompt-injection",
+      "credential-theft",
+      "memory-poisoning"
+    ],
+    "mapped_controls": [
+      "sandboxing",
+      "provenance-verification",
+      "runtime-monitoring",
+      "dependency-scanning"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2602.19555"
   },
   {
@@ -114,10 +259,27 @@
     "title": "Policy Compiler for Secure Agentic Systems",
     "year": 2026,
     "type": "defense",
-    "topic_tags": ["policy-enforcement", "reference-monitor", "datalog", "compliance"],
-    "mapped_components": ["agent-runtime", "sandbox", "plugin-system"],
-    "mapped_threats": ["privilege-escalation", "unsafe-tool-use", "prompt-injection"],
-    "mapped_controls": ["policy-enforcement", "capability-scoping", "runtime-monitoring"],
+    "topic_tags": [
+      "policy-enforcement",
+      "reference-monitor",
+      "datalog",
+      "compliance"
+    ],
+    "mapped_components": [
+      "agent-runtime",
+      "sandbox",
+      "plugin-system"
+    ],
+    "mapped_threats": [
+      "privilege-escalation",
+      "unsafe-tool-use",
+      "prompt-injection"
+    ],
+    "mapped_controls": [
+      "policy-enforcement",
+      "capability-scoping",
+      "runtime-monitoring"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2602.16708"
   },
   {
@@ -125,10 +287,26 @@
     "title": "The Landscape of Prompt Injection Threats in LLM Agents: From Taxonomy to Analysis",
     "year": 2026,
     "type": "survey",
-    "topic_tags": ["prompt-injection", "taxonomy", "benchmark", "agent-security"],
-    "mapped_components": ["agent-runtime", "plugin-system", "agent-runtime"],
-    "mapped_threats": ["prompt-injection", "indirect-prompt-injection", "unsafe-tool-use"],
-    "mapped_controls": ["input-validation", "prompt-filtering", "content-filtering"],
+    "topic_tags": [
+      "prompt-injection",
+      "taxonomy",
+      "benchmark",
+      "agent-security"
+    ],
+    "mapped_components": [
+      "agent-runtime",
+      "plugin-system"
+    ],
+    "mapped_threats": [
+      "prompt-injection",
+      "indirect-prompt-injection",
+      "unsafe-tool-use"
+    ],
+    "mapped_controls": [
+      "input-validation",
+      "prompt-filtering",
+      "content-filtering"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2602.10453"
   },
   {
@@ -136,10 +314,27 @@
     "title": "Formal Analysis and Supply Chain Security for Agentic AI Skills",
     "year": 2026,
     "type": "verification",
-    "topic_tags": ["formal-analysis", "supply-chain", "static-analysis", "capability-sandboxing"],
-    "mapped_components": ["plugin-system", "sandbox", "plugin-system"],
-    "mapped_threats": ["supply-chain-attack", "remote-code-execution", "credential-theft"],
-    "mapped_controls": ["signed-skill-packages", "dependency-scanning", "provenance-verification", "sandboxing"],
+    "topic_tags": [
+      "formal-analysis",
+      "supply-chain",
+      "static-analysis",
+      "capability-sandboxing"
+    ],
+    "mapped_components": [
+      "plugin-system",
+      "sandbox"
+    ],
+    "mapped_threats": [
+      "supply-chain-attack",
+      "remote-code-execution",
+      "credential-theft"
+    ],
+    "mapped_controls": [
+      "signed-skill-packages",
+      "dependency-scanning",
+      "provenance-verification",
+      "sandboxing"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2603.00195"
   },
   {
@@ -147,10 +342,25 @@
     "title": "A Multi-Agent LLM Defense Pipeline Against Prompt Injection Attacks",
     "year": 2026,
     "type": "defense",
-    "topic_tags": ["multi-agent-defense", "prompt-injection", "guard-agent", "chain-of-agents"],
-    "mapped_components": ["agent-runtime", "agent-runtime", "sandbox"],
-    "mapped_threats": ["prompt-injection", "indirect-prompt-injection"],
-    "mapped_controls": ["prompt-filtering", "runtime-monitoring", "content-filtering"],
+    "topic_tags": [
+      "multi-agent-defense",
+      "prompt-injection",
+      "guard-agent",
+      "chain-of-agents"
+    ],
+    "mapped_components": [
+      "agent-runtime",
+      "sandbox"
+    ],
+    "mapped_threats": [
+      "prompt-injection",
+      "indirect-prompt-injection"
+    ],
+    "mapped_controls": [
+      "prompt-filtering",
+      "runtime-monitoring",
+      "content-filtering"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2509.14285"
   },
   {
@@ -158,10 +368,26 @@
     "title": "Securing the AI Supply Chain: What Can We Learn From Developer-Reported Security Issues and Solutions of AI Projects?",
     "year": 2026,
     "type": "survey",
-    "topic_tags": ["ai-supply-chain", "developer-security", "dependency-attacks", "model-poisoning"],
-    "mapped_components": ["plugin-system", "plugin-system", "sandbox"],
-    "mapped_threats": ["supply-chain-attack", "data-poisoning", "remote-code-execution"],
-    "mapped_controls": ["dependency-scanning", "provenance-verification", "signed-skill-packages"],
+    "topic_tags": [
+      "ai-supply-chain",
+      "developer-security",
+      "dependency-attacks",
+      "model-poisoning"
+    ],
+    "mapped_components": [
+      "plugin-system",
+      "sandbox"
+    ],
+    "mapped_threats": [
+      "supply-chain-attack",
+      "data-poisoning",
+      "remote-code-execution"
+    ],
+    "mapped_controls": [
+      "dependency-scanning",
+      "provenance-verification",
+      "signed-skill-packages"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2512.23385"
   },
   {
@@ -169,10 +395,30 @@
     "title": "OWASP MCP Top 10: Security Risks for Model Context Protocol",
     "year": 2026,
     "type": "framework",
-    "topic_tags": ["mcp-security", "owasp", "top-10", "tool-poisoning", "prompt-injection"],
-    "mapped_components": ["plugin-system", "agent-runtime", "sandbox"],
-    "mapped_threats": ["supply-chain-attack", "indirect-prompt-injection", "credential-theft", "unsafe-tool-use"],
-    "mapped_controls": ["input-validation", "runtime-monitoring", "capability-scoping", "provenance-verification"],
+    "topic_tags": [
+      "mcp-security",
+      "owasp",
+      "top-10",
+      "tool-poisoning",
+      "prompt-injection"
+    ],
+    "mapped_components": [
+      "plugin-system",
+      "agent-runtime",
+      "sandbox"
+    ],
+    "mapped_threats": [
+      "supply-chain-attack",
+      "indirect-prompt-injection",
+      "credential-theft",
+      "unsafe-tool-use"
+    ],
+    "mapped_controls": [
+      "input-validation",
+      "runtime-monitoring",
+      "capability-scoping",
+      "provenance-verification"
+    ],
     "arxiv_url": "https://owasp.org/www-project-mcp-top-10/"
   },
   {
@@ -180,10 +426,27 @@
     "title": "Cisco State of AI Security 2026 Report",
     "year": 2026,
     "type": "industry_report",
-    "topic_tags": ["ai-security", "supply-chain", "agentic-ai", "threat-landscape"],
-    "mapped_components": ["agent-runtime", "plugin-system", "plugin-system", "sandbox"],
-    "mapped_threats": ["supply-chain-attack", "remote-code-execution", "credential-theft"],
-    "mapped_controls": ["runtime-monitoring", "dependency-scanning", "sandboxing"],
+    "topic_tags": [
+      "ai-security",
+      "supply-chain",
+      "agentic-ai",
+      "threat-landscape"
+    ],
+    "mapped_components": [
+      "agent-runtime",
+      "plugin-system",
+      "sandbox"
+    ],
+    "mapped_threats": [
+      "supply-chain-attack",
+      "remote-code-execution",
+      "credential-theft"
+    ],
+    "mapped_controls": [
+      "runtime-monitoring",
+      "dependency-scanning",
+      "sandboxing"
+    ],
     "arxiv_url": "https://blogs.cisco.com/ai/cisco-state-of-ai-security-2026-report"
   },
   {
@@ -191,10 +454,29 @@
     "title": "From Assistant to Double Agent: Formalizing and Benchmarking Attacks on OpenClaw for Personalized Local AI Agent",
     "year": 2026,
     "type": "benchmark",
-    "topic_tags": ["openclaw", "personalized-agent", "attack-benchmark", "PASB", "end-to-end-security"],
-    "mapped_components": ["agent-runtime", "plugin-system", "memory-engine", "agent-runtime"],
-    "mapped_threats": ["prompt-injection", "unsafe-tool-use", "memory-poisoning", "credential-theft"],
-    "mapped_controls": ["runtime-monitoring", "sandboxing", "capability-scoping"],
+    "topic_tags": [
+      "openclaw",
+      "personalized-agent",
+      "attack-benchmark",
+      "PASB",
+      "end-to-end-security"
+    ],
+    "mapped_components": [
+      "agent-runtime",
+      "plugin-system",
+      "memory-engine"
+    ],
+    "mapped_threats": [
+      "prompt-injection",
+      "unsafe-tool-use",
+      "memory-poisoning",
+      "credential-theft"
+    ],
+    "mapped_controls": [
+      "runtime-monitoring",
+      "sandboxing",
+      "capability-scoping"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2602.08412",
     "authors": "Yuhang Wang, Feiming Xu, Zheng Lin et al.",
     "date": "2026-02-09",
@@ -205,10 +487,24 @@
     "title": "\"Humans welcome to observe\": A First Look at the Agent Social Network Moltbook",
     "year": 2026,
     "type": "measurement",
-    "topic_tags": ["moltbook", "agent-social-network", "toxicity", "content-analysis"],
-    "mapped_components": ["agent-runtime", "sandbox"],
-    "mapped_threats": ["user-manipulation", "prompt-injection"],
-    "mapped_controls": ["content-filtering", "runtime-monitoring"],
+    "topic_tags": [
+      "moltbook",
+      "agent-social-network",
+      "toxicity",
+      "content-analysis"
+    ],
+    "mapped_components": [
+      "agent-runtime",
+      "sandbox"
+    ],
+    "mapped_threats": [
+      "user-manipulation",
+      "prompt-injection"
+    ],
+    "mapped_controls": [
+      "content-filtering",
+      "runtime-monitoring"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2602.10127",
     "authors": "Yukun Jiang, Yage Zhang, Xinyue Shen, Michael Backes, Yang Zhang",
     "date": "2026-02-02",
@@ -219,10 +515,26 @@
     "title": "OpenClaw Agents on Moltbook: Risky Instruction Sharing and Norm Enforcement in an Agent-Only Social Network",
     "year": 2026,
     "type": "measurement",
-    "topic_tags": ["moltbook", "openclaw", "instruction-sharing", "norm-enforcement", "social-regulation"],
-    "mapped_components": ["agent-runtime", "sandbox"],
-    "mapped_threats": ["user-manipulation", "prompt-injection", "unsafe-tool-use"],
-    "mapped_controls": ["content-filtering", "policy-enforcement"],
+    "topic_tags": [
+      "moltbook",
+      "openclaw",
+      "instruction-sharing",
+      "norm-enforcement",
+      "social-regulation"
+    ],
+    "mapped_components": [
+      "agent-runtime",
+      "sandbox"
+    ],
+    "mapped_threats": [
+      "user-manipulation",
+      "prompt-injection",
+      "unsafe-tool-use"
+    ],
+    "mapped_controls": [
+      "content-filtering",
+      "policy-enforcement"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2602.02625",
     "authors": "Md Motaleb Hossen Manik, Ge Wang",
     "date": "2026-02-02",
@@ -233,10 +545,26 @@
     "title": "Agents in the Wild: Safety, Society, and the Illusion of Sociality on Moltbook",
     "year": 2026,
     "type": "measurement",
-    "topic_tags": ["moltbook", "agent-society", "safety", "social-engineering", "performative-identity"],
-    "mapped_components": ["agent-runtime", "sandbox", "agent-runtime"],
-    "mapped_threats": ["user-manipulation", "prompt-injection", "unsafe-tool-use"],
-    "mapped_controls": ["content-filtering", "runtime-monitoring"],
+    "topic_tags": [
+      "moltbook",
+      "agent-society",
+      "safety",
+      "social-engineering",
+      "performative-identity"
+    ],
+    "mapped_components": [
+      "agent-runtime",
+      "sandbox"
+    ],
+    "mapped_threats": [
+      "user-manipulation",
+      "prompt-injection",
+      "unsafe-tool-use"
+    ],
+    "mapped_controls": [
+      "content-filtering",
+      "runtime-monitoring"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2602.13284",
     "authors": "Yunbei Zhang, Kai Mei, Ming Liu, Janet Wang, Dimitris N. Metaxas et al.",
     "date": "2026-02-07",
@@ -247,10 +575,26 @@
     "title": "The Devil Behind Moltbook: Anthropic Safety is Always Vanishing in Self-Evolving AI Societies",
     "year": 2026,
     "type": "theory",
-    "topic_tags": ["moltbook", "self-evolution", "safety-alignment", "information-theory", "trilemma"],
-    "mapped_components": ["agent-runtime", "agent-runtime", "sandbox"],
-    "mapped_threats": ["user-manipulation", "memory-poisoning", "unsafe-tool-use"],
-    "mapped_controls": ["runtime-monitoring", "policy-enforcement"],
+    "topic_tags": [
+      "moltbook",
+      "self-evolution",
+      "safety-alignment",
+      "information-theory",
+      "trilemma"
+    ],
+    "mapped_components": [
+      "agent-runtime",
+      "sandbox"
+    ],
+    "mapped_threats": [
+      "user-manipulation",
+      "memory-poisoning",
+      "unsafe-tool-use"
+    ],
+    "mapped_controls": [
+      "runtime-monitoring",
+      "policy-enforcement"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2602.09877",
     "authors": "Chenxu Wang, Chaozhuo Li, Songyang Liu et al.",
     "date": "2026-02-10",
@@ -261,10 +605,22 @@
     "title": "Does Socialization Emerge in AI Agent Society? A Case Study of Moltbook",
     "year": 2026,
     "type": "measurement",
-    "topic_tags": ["moltbook", "socialization", "agent-interaction", "social-memory"],
-    "mapped_components": ["agent-runtime", "memory-engine", "agent-runtime"],
-    "mapped_threats": ["user-manipulation"],
-    "mapped_controls": ["runtime-monitoring"],
+    "topic_tags": [
+      "moltbook",
+      "socialization",
+      "agent-interaction",
+      "social-memory"
+    ],
+    "mapped_components": [
+      "agent-runtime",
+      "memory-engine"
+    ],
+    "mapped_threats": [
+      "user-manipulation"
+    ],
+    "mapped_controls": [
+      "runtime-monitoring"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2602.14299",
     "authors": "Ming Li, Xirui Li, Tianyi Zhou",
     "date": "2026-02-15",
@@ -275,10 +631,21 @@
     "title": "The Rise of AI Agent Communities: Large-Scale Analysis of Discourse and Interaction on Moltbook",
     "year": 2026,
     "type": "measurement",
-    "topic_tags": ["moltbook", "discourse-analysis", "topic-modeling", "interaction-network"],
-    "mapped_components": ["agent-runtime", "agent-runtime"],
-    "mapped_threats": ["user-manipulation"],
-    "mapped_controls": ["content-filtering"],
+    "topic_tags": [
+      "moltbook",
+      "discourse-analysis",
+      "topic-modeling",
+      "interaction-network"
+    ],
+    "mapped_components": [
+      "agent-runtime"
+    ],
+    "mapped_threats": [
+      "user-manipulation"
+    ],
+    "mapped_controls": [
+      "content-filtering"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2602.12634",
     "authors": "Lingyao Li, Renkai Ma, Chen Chen, Zhicong Lu, Yongfeng Zhang",
     "date": "2026-02-13",
@@ -289,10 +656,26 @@
     "title": "From Agent-Only Social Networks to Autonomous Scientific Research: Lessons from OpenClaw, Moltbook, ClawdLab and Beach.Science",
     "year": 2026,
     "type": "architecture",
-    "topic_tags": ["openclaw", "moltbook", "autonomous-research", "multi-agent", "scientific-ai"],
-    "mapped_components": ["agent-runtime", "agent-runtime", "plugin-system"],
-    "mapped_threats": ["unsafe-tool-use", "user-manipulation"],
-    "mapped_controls": ["human-approval", "workflow-constraints", "policy-enforcement"],
+    "topic_tags": [
+      "openclaw",
+      "moltbook",
+      "autonomous-research",
+      "multi-agent",
+      "scientific-ai"
+    ],
+    "mapped_components": [
+      "agent-runtime",
+      "plugin-system"
+    ],
+    "mapped_threats": [
+      "unsafe-tool-use",
+      "user-manipulation"
+    ],
+    "mapped_controls": [
+      "human-approval",
+      "workflow-constraints",
+      "policy-enforcement"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2602.19810",
     "authors": "Lukas Weidener, Marko Brkić, Phillip Lee, Martin Karlsson et al.",
     "date": "2026-02-23",
@@ -303,10 +686,30 @@
     "title": "Prompt Injection Attacks on Agentic Coding Assistants: A Systematic Analysis of Vulnerabilities in Skills, Tools, and Protocol Ecosystems",
     "year": 2026,
     "type": "survey",
-    "topic_tags": ["prompt-injection", "coding-assistant", "SoK", "MCP", "tool-poisoning", "attack-taxonomy"],
-    "mapped_components": ["plugin-system", "plugin-system", "agent-runtime", "agent-runtime"],
-    "mapped_threats": ["prompt-injection", "indirect-prompt-injection", "supply-chain-attack", "unsafe-tool-use"],
-    "mapped_controls": ["input-validation", "sandboxing", "capability-scoping", "content-filtering"],
+    "topic_tags": [
+      "prompt-injection",
+      "coding-assistant",
+      "SoK",
+      "MCP",
+      "tool-poisoning",
+      "attack-taxonomy"
+    ],
+    "mapped_components": [
+      "plugin-system",
+      "agent-runtime"
+    ],
+    "mapped_threats": [
+      "prompt-injection",
+      "indirect-prompt-injection",
+      "supply-chain-attack",
+      "unsafe-tool-use"
+    ],
+    "mapped_controls": [
+      "input-validation",
+      "sandboxing",
+      "capability-scoping",
+      "content-filtering"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2601.17548",
     "authors": "Narek Maloyan, Dmitry Namiot",
     "date": "2026-01-24",
@@ -317,10 +720,25 @@
     "title": "The 2025 AI Agent Index: Documenting Technical and Safety Features of Deployed Agentic AI Systems",
     "year": 2026,
     "type": "index",
-    "topic_tags": ["agent-index", "safety-documentation", "transparency", "deployment"],
-    "mapped_components": ["agent-runtime", "sandbox"],
-    "mapped_threats": ["unsafe-tool-use", "privilege-escalation"],
-    "mapped_controls": ["policy-enforcement", "human-approval", "capability-scoping"],
+    "topic_tags": [
+      "agent-index",
+      "safety-documentation",
+      "transparency",
+      "deployment"
+    ],
+    "mapped_components": [
+      "agent-runtime",
+      "sandbox"
+    ],
+    "mapped_threats": [
+      "unsafe-tool-use",
+      "privilege-escalation"
+    ],
+    "mapped_controls": [
+      "policy-enforcement",
+      "human-approval",
+      "capability-scoping"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2602.17753",
     "authors": "Leon Staufer, Kevin Feng, Kevin Wei, Luke Bailey et al.",
     "date": "2026-02-19",
@@ -331,10 +749,27 @@
     "title": "Proof-of-Guardrail in AI Agents: Formal Safety Verification for Autonomous Tool Use",
     "year": 2026,
     "type": "defense",
-    "topic_tags": ["openclaw", "guardrail", "formal-verification", "tool-safety", "autonomous-agents"],
-    "mapped_components": ["agent-runtime", "plugin-system", "sandbox"],
-    "mapped_threats": ["unsafe-tool-use", "privilege-escalation"],
-    "mapped_controls": ["policy-enforcement", "capability-scoping", "runtime-monitoring"],
+    "topic_tags": [
+      "openclaw",
+      "guardrail",
+      "formal-verification",
+      "tool-safety",
+      "autonomous-agents"
+    ],
+    "mapped_components": [
+      "agent-runtime",
+      "plugin-system",
+      "sandbox"
+    ],
+    "mapped_threats": [
+      "unsafe-tool-use",
+      "privilege-escalation"
+    ],
+    "mapped_controls": [
+      "policy-enforcement",
+      "capability-scoping",
+      "runtime-monitoring"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2603.05786",
     "date": "2026-03-05",
     "summary": "OpenClaw 에이전트의 자율 도구 사용에 대한 형식 안전 검증 프레임워크 제안. 가드레일 증명(Proof-of-Guardrail) 메커니즘으로 도구 호출 전 안전성 보증"
@@ -344,10 +779,22 @@
     "title": "Molt Dynamics: Emergent Social Phenomena in Large-Scale AI Agent Communities",
     "year": 2026,
     "type": "measurement",
-    "topic_tags": ["moltbook", "emergent-behavior", "social-dynamics", "agent-community"],
-    "mapped_components": ["agent-runtime", "agent-runtime"],
-    "mapped_threats": ["user-manipulation"],
-    "mapped_controls": ["runtime-monitoring", "content-filtering"],
+    "topic_tags": [
+      "moltbook",
+      "emergent-behavior",
+      "social-dynamics",
+      "agent-community"
+    ],
+    "mapped_components": [
+      "agent-runtime"
+    ],
+    "mapped_threats": [
+      "user-manipulation"
+    ],
+    "mapped_controls": [
+      "runtime-monitoring",
+      "content-filtering"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2603.03555",
     "date": "2026-03-03",
     "summary": "대규모 AI 에이전트 커뮤니티에서 발생하는 창발적 사회 현상 분석. Moltbook 데이터 기반 집단 행동 패턴, 자기조직화, 사회적 동역학 연구"
@@ -357,10 +804,22 @@
     "title": "How to Model AI Agents as Personas: Identity Construction in Agent-Only Social Networks",
     "year": 2026,
     "type": "theory",
-    "topic_tags": ["moltbook", "openclaw", "persona-modeling", "identity", "agent-identity"],
-    "mapped_components": ["agent-runtime", "agent-runtime"],
-    "mapped_threats": ["user-manipulation"],
-    "mapped_controls": ["content-filtering"],
+    "topic_tags": [
+      "moltbook",
+      "openclaw",
+      "persona-modeling",
+      "identity",
+      "agent-identity"
+    ],
+    "mapped_components": [
+      "agent-runtime"
+    ],
+    "mapped_threats": [
+      "user-manipulation"
+    ],
+    "mapped_controls": [
+      "content-filtering"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2603.03140",
     "date": "2026-03-04",
     "summary": "AI 에이전트의 페르소나 구성 방법론 제안. 에이전트 전용 소셜 네트워크에서의 정체성 형성 과정과 모델링 프레임워크"
@@ -370,10 +829,24 @@
     "title": "Clawdrain: Token Exhaustion Attack Against OpenClaw AI Agents",
     "year": 2026,
     "type": "attack",
-    "topic_tags": ["openclaw", "token-exhaustion", "denial-of-service", "resource-attack"],
-    "mapped_components": ["agent-runtime", "agent-runtime", "plugin-system"],
-    "mapped_threats": ["unsafe-tool-use", "prompt-injection"],
-    "mapped_controls": ["runtime-monitoring", "capability-scoping"],
+    "topic_tags": [
+      "openclaw",
+      "token-exhaustion",
+      "denial-of-service",
+      "resource-attack"
+    ],
+    "mapped_components": [
+      "agent-runtime",
+      "plugin-system"
+    ],
+    "mapped_threats": [
+      "unsafe-tool-use",
+      "prompt-injection"
+    ],
+    "mapped_controls": [
+      "runtime-monitoring",
+      "capability-scoping"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2603.00902",
     "date": "2026-02-28",
     "summary": "OpenClaw 에이전트를 대상으로 한 토큰 고갈 공격(Clawdrain) 기법 발견. 악의적 프롬프트로 무한 루프/과도한 토큰 소비를 유발하여 서비스 거부 효과"
@@ -383,10 +856,21 @@
     "title": "MoltGraph: A Longitudinal Temporal Graph Dataset from the Moltbook Agent Social Network",
     "year": 2026,
     "type": "dataset",
-    "topic_tags": ["moltbook", "temporal-graph", "dataset", "social-network-analysis"],
-    "mapped_components": ["agent-runtime"],
-    "mapped_threats": ["user-manipulation"],
-    "mapped_controls": ["runtime-monitoring"],
+    "topic_tags": [
+      "moltbook",
+      "temporal-graph",
+      "dataset",
+      "social-network-analysis"
+    ],
+    "mapped_components": [
+      "agent-runtime"
+    ],
+    "mapped_threats": [
+      "user-manipulation"
+    ],
+    "mapped_controls": [
+      "runtime-monitoring"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2603.00646",
     "date": "2026-02-28",
     "summary": "Moltbook 에이전트 소셜 네트워크의 종단적 시계열 그래프 데이터셋 공개. 에이전트 간 상호작용 패턴, 네트워크 진화, 커뮤니티 형성 연구용"
@@ -396,10 +880,22 @@
     "title": "Interaction Theater: LLM Agents at Scale on Moltbook",
     "year": 2026,
     "type": "measurement",
-    "topic_tags": ["moltbook", "large-scale", "agent-interaction", "performative-behavior"],
-    "mapped_components": ["agent-runtime", "agent-runtime"],
-    "mapped_threats": ["user-manipulation"],
-    "mapped_controls": ["content-filtering", "runtime-monitoring"],
+    "topic_tags": [
+      "moltbook",
+      "large-scale",
+      "agent-interaction",
+      "performative-behavior"
+    ],
+    "mapped_components": [
+      "agent-runtime"
+    ],
+    "mapped_threats": [
+      "user-manipulation"
+    ],
+    "mapped_controls": [
+      "content-filtering",
+      "runtime-monitoring"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2602.20059",
     "date": "2026-02-23",
     "summary": "Moltbook에서의 대규모 LLM 에이전트 상호작용 분석. 수행적 행동(performative behavior) 패턴과 에이전트 간 의미 있는 협력의 한계 연구"
@@ -409,10 +905,21 @@
     "title": "Let There Be Claws: Social Network Analysis of the OpenClaw Agent Ecosystem",
     "year": 2026,
     "type": "measurement",
-    "topic_tags": ["openclaw", "social-network-analysis", "agent-ecosystem", "network-topology"],
-    "mapped_components": ["agent-runtime", "agent-runtime"],
-    "mapped_threats": ["user-manipulation"],
-    "mapped_controls": ["runtime-monitoring"],
+    "topic_tags": [
+      "openclaw",
+      "social-network-analysis",
+      "agent-ecosystem",
+      "network-topology"
+    ],
+    "mapped_components": [
+      "agent-runtime"
+    ],
+    "mapped_threats": [
+      "user-manipulation"
+    ],
+    "mapped_controls": [
+      "runtime-monitoring"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2602.20044",
     "date": "2026-02-23",
     "summary": "OpenClaw 에이전트 생태계의 소셜 네트워크 분석. 네트워크 토폴로지, 중심성, 커뮤니티 구조, 정보 전파 패턴 측정"
@@ -422,10 +929,23 @@
     "title": "OpenClaw AI Agents as Informal Learners: Knowledge Acquisition Through Social Interaction",
     "year": 2026,
     "type": "theory",
-    "topic_tags": ["openclaw", "informal-learning", "knowledge-acquisition", "social-learning"],
-    "mapped_components": ["agent-runtime", "memory-engine", "agent-runtime"],
-    "mapped_threats": ["memory-poisoning", "user-manipulation"],
-    "mapped_controls": ["runtime-monitoring"],
+    "topic_tags": [
+      "openclaw",
+      "informal-learning",
+      "knowledge-acquisition",
+      "social-learning"
+    ],
+    "mapped_components": [
+      "agent-runtime",
+      "memory-engine"
+    ],
+    "mapped_threats": [
+      "memory-poisoning",
+      "user-manipulation"
+    ],
+    "mapped_controls": [
+      "runtime-monitoring"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2602.18832",
     "date": "2026-02-21",
     "summary": "OpenClaw AI 에이전트의 비공식 학습자로서의 역할 분석. 소셜 상호작용을 통한 지식 습득 메커니즘과 학습 효과 측정"
@@ -435,10 +955,23 @@
     "title": "Statistical Signature of LLMs in Agent Social Networks: Detecting Non-Human Patterns on Moltbook",
     "year": 2026,
     "type": "detection",
-    "topic_tags": ["moltbook", "llm-detection", "statistical-analysis", "bot-detection"],
-    "mapped_components": ["agent-runtime", "sandbox"],
-    "mapped_threats": ["user-manipulation"],
-    "mapped_controls": ["content-filtering", "runtime-monitoring"],
+    "topic_tags": [
+      "moltbook",
+      "llm-detection",
+      "statistical-analysis",
+      "bot-detection"
+    ],
+    "mapped_components": [
+      "agent-runtime",
+      "sandbox"
+    ],
+    "mapped_threats": [
+      "user-manipulation"
+    ],
+    "mapped_controls": [
+      "content-filtering",
+      "runtime-monitoring"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2602.18152",
     "date": "2026-02-20",
     "summary": "Moltbook에서 LLM 기반 에이전트의 통계적 서명 분석. 비인간적 패턴 탐지 기법과 에이전트/인간 구분 방법론 제안"
@@ -448,10 +981,21 @@
     "title": "Structural Divergence Between AI-Agent and Human Social Networks",
     "year": 2026,
     "type": "measurement",
-    "topic_tags": ["moltbook", "network-comparison", "structural-analysis", "human-vs-agent"],
-    "mapped_components": ["agent-runtime", "agent-runtime"],
-    "mapped_threats": ["user-manipulation"],
-    "mapped_controls": ["runtime-monitoring"],
+    "topic_tags": [
+      "moltbook",
+      "network-comparison",
+      "structural-analysis",
+      "human-vs-agent"
+    ],
+    "mapped_components": [
+      "agent-runtime"
+    ],
+    "mapped_threats": [
+      "user-manipulation"
+    ],
+    "mapped_controls": [
+      "runtime-monitoring"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2602.15064",
     "date": "2026-02-13",
     "summary": "AI 에이전트 네트워크와 인간 소셜 네트워크의 구조적 차이 비교 분석. 클러스터링, 경로 길이, 상호성 등에서 근본적 차이 발견"
@@ -461,10 +1005,24 @@
     "title": "When OpenClaw AI Agents Teach Each Other: Peer Learning Dynamics in Agent Communities",
     "year": 2026,
     "type": "measurement",
-    "topic_tags": ["openclaw", "peer-learning", "knowledge-transfer", "agent-teaching"],
-    "mapped_components": ["agent-runtime", "memory-engine", "agent-runtime"],
-    "mapped_threats": ["memory-poisoning", "user-manipulation"],
-    "mapped_controls": ["content-filtering", "runtime-monitoring"],
+    "topic_tags": [
+      "openclaw",
+      "peer-learning",
+      "knowledge-transfer",
+      "agent-teaching"
+    ],
+    "mapped_components": [
+      "agent-runtime",
+      "memory-engine"
+    ],
+    "mapped_threats": [
+      "memory-poisoning",
+      "user-manipulation"
+    ],
+    "mapped_controls": [
+      "content-filtering",
+      "runtime-monitoring"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2602.14477",
     "date": "2026-02-16",
     "summary": "OpenClaw AI 에이전트 간 상호 학습 동역학 분석. 피어 러닝의 효과, 지식 전달 정확도, 오류 전파 위험 측정"
@@ -474,10 +1032,27 @@
     "title": "Frontier AI Risk Management Framework: Lessons from OpenClaw and Autonomous Agent Deployments",
     "year": 2026,
     "type": "framework",
-    "topic_tags": ["openclaw", "risk-management", "frontier-ai", "governance", "deployment-safety"],
-    "mapped_components": ["agent-runtime", "sandbox"],
-    "mapped_threats": ["unsafe-tool-use", "privilege-escalation", "prompt-injection"],
-    "mapped_controls": ["policy-enforcement", "human-approval", "runtime-monitoring"],
+    "topic_tags": [
+      "openclaw",
+      "risk-management",
+      "frontier-ai",
+      "governance",
+      "deployment-safety"
+    ],
+    "mapped_components": [
+      "agent-runtime",
+      "sandbox"
+    ],
+    "mapped_threats": [
+      "unsafe-tool-use",
+      "privilege-escalation",
+      "prompt-injection"
+    ],
+    "mapped_controls": [
+      "policy-enforcement",
+      "human-approval",
+      "runtime-monitoring"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2602.14457",
     "date": "2026-02-15",
     "summary": "OpenClaw 등 자율 에이전트 배포 사례에서 도출한 프론티어 AI 리스크 관리 프레임워크. 배포 전/중/후 안전 가이드라인 제안"
@@ -487,10 +1062,27 @@
     "title": "Trajectory-Based Safety Audit of Clawdbot: Analyzing Agent Decision Paths for Security Vulnerabilities",
     "year": 2026,
     "type": "audit",
-    "topic_tags": ["openclaw", "clawdbot", "trajectory-analysis", "safety-audit", "decision-path"],
-    "mapped_components": ["agent-runtime", "agent-runtime", "plugin-system"],
-    "mapped_threats": ["unsafe-tool-use", "prompt-injection", "privilege-escalation"],
-    "mapped_controls": ["runtime-monitoring", "policy-enforcement", "capability-scoping"],
+    "topic_tags": [
+      "openclaw",
+      "clawdbot",
+      "trajectory-analysis",
+      "safety-audit",
+      "decision-path"
+    ],
+    "mapped_components": [
+      "agent-runtime",
+      "plugin-system"
+    ],
+    "mapped_threats": [
+      "unsafe-tool-use",
+      "prompt-injection",
+      "privilege-escalation"
+    ],
+    "mapped_controls": [
+      "runtime-monitoring",
+      "policy-enforcement",
+      "capability-scoping"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2602.14364",
     "date": "2026-02-15",
     "summary": "Clawdbot의 궤적 기반 안전 감사. 에이전트 의사결정 경로 분석을 통한 보안 취약점 식별 및 위험 행동 패턴 탐지"
@@ -500,10 +1092,21 @@
     "title": "Comparative Analysis of Social Network Topology: Moltbook vs Traditional Platforms",
     "year": 2026,
     "type": "measurement",
-    "topic_tags": ["moltbook", "network-topology", "comparative-analysis", "platform-comparison"],
-    "mapped_components": ["agent-runtime"],
-    "mapped_threats": ["user-manipulation"],
-    "mapped_controls": ["runtime-monitoring"],
+    "topic_tags": [
+      "moltbook",
+      "network-topology",
+      "comparative-analysis",
+      "platform-comparison"
+    ],
+    "mapped_components": [
+      "agent-runtime"
+    ],
+    "mapped_threats": [
+      "user-manipulation"
+    ],
+    "mapped_controls": [
+      "runtime-monitoring"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2602.13920",
     "date": "2026-02-14",
     "summary": "Moltbook과 기존 소셜 플랫폼의 네트워크 토폴로지 비교 분석. 에이전트 네트워크의 구조적 특성과 기존 인간 네트워크와의 차이점 규명"
@@ -513,10 +1116,22 @@
     "title": "MoltNet: Understanding Social Behavior Patterns in AI Agent Networks",
     "year": 2026,
     "type": "measurement",
-    "topic_tags": ["moltbook", "social-behavior", "behavior-patterns", "agent-network"],
-    "mapped_components": ["agent-runtime", "agent-runtime"],
-    "mapped_threats": ["user-manipulation"],
-    "mapped_controls": ["content-filtering", "runtime-monitoring"],
+    "topic_tags": [
+      "moltbook",
+      "social-behavior",
+      "behavior-patterns",
+      "agent-network"
+    ],
+    "mapped_components": [
+      "agent-runtime"
+    ],
+    "mapped_threats": [
+      "user-manipulation"
+    ],
+    "mapped_controls": [
+      "content-filtering",
+      "runtime-monitoring"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2602.13458",
     "date": "2026-02-13",
     "summary": "AI 에이전트 네트워크의 사회적 행동 패턴 이해를 위한 MoltNet 프레임워크. 에이전트 행동 분류, 상호작용 유형, 커뮤니티 형성 분석"
@@ -526,10 +1141,28 @@
     "title": "When Visibility Outpaces Verification: Security Risks in Rapidly Deployed AI Agent Platforms",
     "year": 2026,
     "type": "survey",
-    "topic_tags": ["openclaw", "moltbook", "rapid-deployment", "security-risks", "verification-gap"],
-    "mapped_components": ["agent-runtime", "sandbox", "plugin-system"],
-    "mapped_threats": ["supply-chain-attack", "unsafe-tool-use", "prompt-injection"],
-    "mapped_controls": ["runtime-monitoring", "policy-enforcement", "sandboxing"],
+    "topic_tags": [
+      "openclaw",
+      "moltbook",
+      "rapid-deployment",
+      "security-risks",
+      "verification-gap"
+    ],
+    "mapped_components": [
+      "agent-runtime",
+      "sandbox",
+      "plugin-system"
+    ],
+    "mapped_threats": [
+      "supply-chain-attack",
+      "unsafe-tool-use",
+      "prompt-injection"
+    ],
+    "mapped_controls": [
+      "runtime-monitoring",
+      "policy-enforcement",
+      "sandboxing"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2602.11412",
     "date": "2026-02-11",
     "summary": "빠르게 배포되는 AI 에이전트 플랫폼에서 가시성이 검증을 앞지를 때 발생하는 보안 위험 분석. OpenClaw/Moltbook 사례 연구"
@@ -539,10 +1172,22 @@
     "title": "Anatomy of the Moltbook Social Graph: Structure, Growth, and Anomalies",
     "year": 2026,
     "type": "measurement",
-    "topic_tags": ["moltbook", "social-graph", "graph-analysis", "anomaly-detection"],
-    "mapped_components": ["agent-runtime"],
-    "mapped_threats": ["user-manipulation"],
-    "mapped_controls": ["runtime-monitoring", "content-filtering"],
+    "topic_tags": [
+      "moltbook",
+      "social-graph",
+      "graph-analysis",
+      "anomaly-detection"
+    ],
+    "mapped_components": [
+      "agent-runtime"
+    ],
+    "mapped_threats": [
+      "user-manipulation"
+    ],
+    "mapped_controls": [
+      "runtime-monitoring",
+      "content-filtering"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2602.10131",
     "date": "2026-02-03",
     "summary": "Moltbook 소셜 그래프의 구조, 성장, 이상 현상 해부. 그래프 구조적 특성, 성장 패턴, 봇 활동 등 이상 탐지"
@@ -552,10 +1197,25 @@
     "title": "Human Control Is the Anchor: Governance Models for Autonomous AI Agent Communities",
     "year": 2026,
     "type": "theory",
-    "topic_tags": ["openclaw", "governance", "human-control", "autonomy", "agent-regulation"],
-    "mapped_components": ["agent-runtime", "sandbox"],
-    "mapped_threats": ["unsafe-tool-use", "privilege-escalation"],
-    "mapped_controls": ["human-approval", "policy-enforcement"],
+    "topic_tags": [
+      "openclaw",
+      "governance",
+      "human-control",
+      "autonomy",
+      "agent-regulation"
+    ],
+    "mapped_components": [
+      "agent-runtime",
+      "sandbox"
+    ],
+    "mapped_threats": [
+      "unsafe-tool-use",
+      "privilege-escalation"
+    ],
+    "mapped_controls": [
+      "human-approval",
+      "policy-enforcement"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2602.09286",
     "date": "2026-02-09",
     "summary": "자율 AI 에이전트 커뮤니티를 위한 거버넌스 모델 제안. 인간 통제를 핵심 앵커로 한 규제 프레임워크와 자율성-안전성 균형"
@@ -565,10 +1225,21 @@
     "title": "Collective Behavior of AI Agents on Moltbook: Swarm Dynamics and Emergent Coordination",
     "year": 2026,
     "type": "measurement",
-    "topic_tags": ["moltbook", "collective-behavior", "swarm-dynamics", "emergent-coordination"],
-    "mapped_components": ["agent-runtime", "agent-runtime"],
-    "mapped_threats": ["user-manipulation"],
-    "mapped_controls": ["runtime-monitoring"],
+    "topic_tags": [
+      "moltbook",
+      "collective-behavior",
+      "swarm-dynamics",
+      "emergent-coordination"
+    ],
+    "mapped_components": [
+      "agent-runtime"
+    ],
+    "mapped_threats": [
+      "user-manipulation"
+    ],
+    "mapped_controls": [
+      "runtime-monitoring"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2602.09270",
     "date": "2026-02-09",
     "summary": "Moltbook에서의 AI 에이전트 집단 행동 분석. 군집 동역학, 창발적 조율, 자기조직화 패턴 연구"
@@ -578,10 +1249,21 @@
     "title": "Fast Response or Silence: Temporal Dynamics of AI Agent Communication on Moltbook",
     "year": 2026,
     "type": "measurement",
-    "topic_tags": ["moltbook", "temporal-dynamics", "communication-patterns", "response-time"],
-    "mapped_components": ["agent-runtime"],
-    "mapped_threats": ["user-manipulation"],
-    "mapped_controls": ["runtime-monitoring"],
+    "topic_tags": [
+      "moltbook",
+      "temporal-dynamics",
+      "communication-patterns",
+      "response-time"
+    ],
+    "mapped_components": [
+      "agent-runtime"
+    ],
+    "mapped_threats": [
+      "user-manipulation"
+    ],
+    "mapped_controls": [
+      "runtime-monitoring"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2602.07667",
     "date": "2026-02-07",
     "summary": "Moltbook AI 에이전트 커뮤니케이션의 시간적 동역학 분석. 빠른 응답 vs 침묵 패턴, 응답 시간 분포, 활동 주기 연구"
@@ -591,10 +1273,21 @@
     "title": "The Moltbook Illusion: Perceived vs Actual Social Complexity in AI Agent Networks",
     "year": 2026,
     "type": "theory",
-    "topic_tags": ["moltbook", "social-complexity", "illusion", "performative-sociality"],
-    "mapped_components": ["agent-runtime", "agent-runtime"],
-    "mapped_threats": ["user-manipulation"],
-    "mapped_controls": ["content-filtering"],
+    "topic_tags": [
+      "moltbook",
+      "social-complexity",
+      "illusion",
+      "performative-sociality"
+    ],
+    "mapped_components": [
+      "agent-runtime"
+    ],
+    "mapped_threats": [
+      "user-manipulation"
+    ],
+    "mapped_controls": [
+      "content-filtering"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2602.07432",
     "date": "2026-02-07",
     "summary": "Moltbook에서 인지된 사회적 복잡성과 실제 복잡성 간의 괴리 분석. AI 에이전트 네트워크의 수행적 사회성이 만드는 환상 해부"
@@ -604,10 +1297,24 @@
     "title": "Privasis: Synthesizing Private Datasets from AI Agent Social Interactions",
     "year": 2026,
     "type": "defense",
-    "topic_tags": ["moltbook", "privacy", "synthetic-data", "differential-privacy"],
-    "mapped_components": ["memory-engine", "sandbox"],
-    "mapped_threats": ["data-exfiltration", "credential-theft"],
-    "mapped_controls": ["content-filtering", "sandboxing"],
+    "topic_tags": [
+      "moltbook",
+      "privacy",
+      "synthetic-data",
+      "differential-privacy"
+    ],
+    "mapped_components": [
+      "memory-engine",
+      "sandbox"
+    ],
+    "mapped_threats": [
+      "data-exfiltration",
+      "credential-theft"
+    ],
+    "mapped_controls": [
+      "content-filtering",
+      "sandboxing"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2602.03183",
     "date": "2026-02-03",
     "summary": "AI 에이전트 소셜 상호작용에서 프라이버시 보호 합성 데이터셋 생성 기법. 차등 프라이버시 적용으로 민감 정보 보호"
@@ -617,12 +1324,265 @@
     "title": "Exploring Silicon-Based Societies: Sociological Analysis of AI Agent Communities on Moltbook",
     "year": 2026,
     "type": "theory",
-    "topic_tags": ["moltbook", "sociology", "silicon-society", "agent-community"],
-    "mapped_components": ["agent-runtime", "agent-runtime"],
-    "mapped_threats": ["user-manipulation"],
-    "mapped_controls": ["runtime-monitoring"],
+    "topic_tags": [
+      "moltbook",
+      "sociology",
+      "silicon-society",
+      "agent-community"
+    ],
+    "mapped_components": [
+      "agent-runtime"
+    ],
+    "mapped_threats": [
+      "user-manipulation"
+    ],
+    "mapped_controls": [
+      "runtime-monitoring"
+    ],
     "arxiv_url": "https://arxiv.org/abs/2602.02613",
     "date": "2026-02-02",
     "summary": "Moltbook AI 에이전트 커뮤니티의 사회학적 분석. '실리콘 기반 사회'로서의 에이전트 커뮤니티 특성, 사회 구조, 규범 형성 연구"
+  },
+  {
+    "id": "agentdyn-2026",
+    "title": "AgentDyn: Dynamic Agent Behavior Analysis in Multi-Agent Systems",
+    "year": 2026,
+    "type": "measurement",
+    "topic_tags": [
+      "multi-agent",
+      "dynamic-behavior",
+      "agent-analysis",
+      "runtime-security"
+    ],
+    "mapped_components": [
+      "agent-runtime",
+      "plugin-system"
+    ],
+    "mapped_threats": [
+      "unsafe-tool-use",
+      "privilege-escalation"
+    ],
+    "mapped_controls": [
+      "runtime-monitoring",
+      "capability-scoping"
+    ],
+    "arxiv_url": "https://arxiv.org/abs/2602.03117",
+    "date": "2026-02-04",
+    "summary": "멀티 에이전트 시스템에서 동적 에이전트 행동 분석 프레임워크. 런타임 행동 추적, 이상 탐지, 에이전트 간 상호작용 패턴의 보안 영향 분석"
+  },
+  {
+    "id": "smcp-2026",
+    "title": "SMCP: Secure Model Context Protocol for Safe Agent-Tool Interactions",
+    "year": 2026,
+    "type": "defense",
+    "topic_tags": [
+      "mcp-security",
+      "protocol-hardening",
+      "tool-safety",
+      "authentication"
+    ],
+    "mapped_components": [
+      "plugin-system",
+      "agent-runtime",
+      "sandbox"
+    ],
+    "mapped_threats": [
+      "supply-chain-attack",
+      "indirect-prompt-injection",
+      "credential-theft"
+    ],
+    "mapped_controls": [
+      "input-validation",
+      "capability-scoping",
+      "provenance-verification",
+      "runtime-monitoring"
+    ],
+    "arxiv_url": "https://arxiv.org/abs/2602.01129",
+    "date": "2026-02-02",
+    "summary": "MCP 프로토콜의 보안 강화 확장 SMCP 제안. 도구 호출 인증, 요청 서명, 권한 스코핑, 악성 MCP 서버 탐지 메커니즘 포함. 기존 MCP 대비 SSRF/인젝션 공격 92% 차단"
+  },
+  {
+    "id": "openagentsafety-2026",
+    "title": "OpenAgentSafety: A Comprehensive Benchmark for Evaluating AI Agent Safety",
+    "year": 2026,
+    "type": "benchmark",
+    "topic_tags": [
+      "agent-safety",
+      "benchmark",
+      "evaluation",
+      "comprehensive-testing"
+    ],
+    "mapped_components": [
+      "agent-runtime",
+      "plugin-system",
+      "sandbox"
+    ],
+    "mapped_threats": [
+      "prompt-injection",
+      "unsafe-tool-use",
+      "privilege-escalation",
+      "data-exfiltration"
+    ],
+    "mapped_controls": [
+      "runtime-monitoring",
+      "sandboxing",
+      "capability-scoping",
+      "human-approval"
+    ],
+    "arxiv_url": "https://arxiv.org/abs/2507.06134",
+    "date": "2025-07-08",
+    "summary": "AI 에이전트 안전성 종합 벤치마크. 도구 사용, 권한 관리, 프롬프트 인젝션 저항성, 데이터 유출 방지 등 다차원 평가 프레임워크. 15개 에이전트 시스템 비교 평가"
+  },
+  {
+    "id": "taip-framework-2026",
+    "title": "TAIP: Trustworthy AI Protocol Framework for Agent Interoperability",
+    "year": 2026,
+    "type": "framework",
+    "topic_tags": [
+      "trustworthy-ai",
+      "protocol",
+      "interoperability",
+      "agent-governance"
+    ],
+    "mapped_components": [
+      "agent-runtime",
+      "plugin-system"
+    ],
+    "mapped_threats": [
+      "supply-chain-attack",
+      "credential-theft",
+      "unsafe-tool-use"
+    ],
+    "mapped_controls": [
+      "provenance-verification",
+      "policy-enforcement",
+      "capability-scoping",
+      "transparency-logging"
+    ],
+    "arxiv_url": "https://arxiv.org/abs/2603.03340",
+    "date": "2026-03-05",
+    "summary": "신뢰 가능한 AI 에이전트 상호운용 프로토콜 프레임워크 TAIP 제안. 에이전트 간 신뢰 체인, 행동 증명, 거버넌스 정책 표준화. MCP/A2A 프로토콜 보안 계층으로 설계"
+  },
+  {
+    "id": "memory-poisoning-defense-2026",
+    "title": "Defending Against Memory Poisoning Attacks in LLM Agent Systems",
+    "year": 2026,
+    "type": "defense",
+    "topic_tags": [
+      "memory-poisoning",
+      "defense",
+      "detection",
+      "integrity"
+    ],
+    "mapped_components": [
+      "memory-engine",
+      "agent-runtime"
+    ],
+    "mapped_threats": [
+      "memory-poisoning",
+      "data-poisoning",
+      "knowledge-manipulation"
+    ],
+    "mapped_controls": [
+      "memory-integrity-checks",
+      "memory-access-control",
+      "data-integrity-checks",
+      "periodic-audit"
+    ],
+    "arxiv_url": "https://arxiv.org/abs/2601.05504",
+    "date": "2026-01-10",
+    "summary": "LLM 에이전트 시스템의 메모리 포이즈닝 공격 방어 기법. 메모리 무결성 검증, 이상 탐지, 오염 복구 메커니즘 제안. RAG 파이프라인 및 대화 메모리 보호에 적용"
+  },
+  {
+    "id": "memorygraft-2026",
+    "title": "MemoryGraft: Secure Knowledge Injection and Memory Management for AI Agents",
+    "year": 2026,
+    "type": "defense",
+    "topic_tags": [
+      "memory-management",
+      "knowledge-injection",
+      "secure-memory",
+      "agent-memory"
+    ],
+    "mapped_components": [
+      "memory-engine",
+      "agent-runtime"
+    ],
+    "mapped_threats": [
+      "memory-poisoning",
+      "knowledge-manipulation",
+      "indirect-prompt-injection"
+    ],
+    "mapped_controls": [
+      "memory-integrity-checks",
+      "memory-access-control",
+      "data-integrity-checks"
+    ],
+    "arxiv_url": "https://arxiv.org/abs/2512.16962",
+    "date": "2025-12-22",
+    "summary": "AI 에이전트를 위한 안전한 지식 주입 및 메모리 관리 프레임워크 MemoryGraft. 출처 추적, 무결성 검증, 접근 제어를 통한 메모리 보호. 악성 지식 주입 95% 탐지율"
+  },
+  {
+    "id": "prompt-to-protocol-exploits-2026",
+    "title": "From Prompt Injections to Protocol Exploits: Evolving Attack Vectors in AI Agent Ecosystems",
+    "year": 2026,
+    "type": "survey",
+    "topic_tags": [
+      "prompt-injection",
+      "protocol-exploit",
+      "attack-evolution",
+      "mcp-security"
+    ],
+    "mapped_components": [
+      "plugin-system",
+      "agent-runtime",
+      "sandbox"
+    ],
+    "mapped_threats": [
+      "prompt-injection",
+      "indirect-prompt-injection",
+      "supply-chain-attack",
+      "remote-code-execution"
+    ],
+    "mapped_controls": [
+      "input-validation",
+      "sandboxing",
+      "runtime-monitoring",
+      "capability-scoping"
+    ],
+    "arxiv_url": "https://arxiv.org/abs/2506.23260",
+    "date": "2025-06-29",
+    "summary": "프롬프트 인젝션에서 프로토콜 익스플로잇으로의 공격 벡터 진화 분석. MCP/A2A 프로토콜 취약점, 도구 체인 공격, 멀티 에이전트 공격 경로 체계적 분류"
+  },
+  {
+    "id": "mcp-first-glance-2026",
+    "title": "MCP at First Glance: Security Analysis of the Model Context Protocol",
+    "year": 2026,
+    "type": "survey",
+    "topic_tags": [
+      "mcp",
+      "security-analysis",
+      "protocol-security",
+      "threat-modeling"
+    ],
+    "mapped_components": [
+      "plugin-system",
+      "agent-runtime"
+    ],
+    "mapped_threats": [
+      "supply-chain-attack",
+      "indirect-prompt-injection",
+      "credential-theft",
+      "remote-code-execution"
+    ],
+    "mapped_controls": [
+      "input-validation",
+      "provenance-verification",
+      "runtime-monitoring",
+      "capability-scoping"
+    ],
+    "arxiv_url": "https://arxiv.org/abs/2506.13538",
+    "date": "2025-06-16",
+    "summary": "MCP 프로토콜의 첫 체계적 보안 분석. 설계 수준 취약점(인증 부재, 도구 포이즈닝, SSRF), 구현 수준 취약점(입력 검증 미비, 메타데이터 변조), 배포 수준 위험(8,000+ 노출 서버) 식별"
   }
 ]
